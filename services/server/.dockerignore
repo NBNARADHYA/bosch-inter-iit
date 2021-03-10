@@ -1,0 +1,30 @@
+# Source code
+.git*
+.dockerignore
+Dockerfile*
+docker-compose*
+STARTING.nd
+
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env*
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+*.log
+tests
+scripts
+postman
+./postgres-data
+
+# VS Code
+.vscode
