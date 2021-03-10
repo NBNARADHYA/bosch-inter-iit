@@ -13,7 +13,7 @@ services:
   #   ports:
   #     - "${DB_PORT_HOST}:5432"
 
-  model:
+  server:
     build:
       context: ./services/server
       dockerfile: Dockerfile.dev
@@ -32,7 +32,7 @@ services:
       - server
     volumes:
       - ./services/web/:/usr/app
-      - node_modules_web:/usr/app/node_modules
+      - node_modules_web:/usr/app/web/node_modules
     ports:
       - "3000:3000"
 

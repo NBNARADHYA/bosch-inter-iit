@@ -91,6 +91,6 @@ upstream	git@github.com:NBNARADHYA/bosch-inter-iit.git (push)
 1. Make sure you are in the root of the project (i.e., `./bosch-inter-iit/` folder).
 2. Setup environement variables in `.env` files of all `services` and `root` according to `example.env` files.
 3. Run `docker-compose up` to spin up the containers.
-4. The website would then be available locally at `http://localhost:3000/`.
+4. `web` would then be available locally at `http://localhost:3000` and `server` at `http://localhost:5000`
 5. The above command could be run in detached mode with `-d` flag as `docker-compose up -d`.
 6. For help, run the command `docker-compose -h`.
