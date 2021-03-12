@@ -1,4 +1,5 @@
 import albumentations as A
+
 augmentations_dict = {
     1: A.Blur,
     2: A.ChannelDropout,
@@ -70,5 +71,5 @@ augmentations_dict = {
     69: A.Rotate,
     70: A.ElasticTransform,
     71: A.Perspective,
-    72: A.ShiftScaleRotate
+    72: A.ShiftScaleRotate,
 }
