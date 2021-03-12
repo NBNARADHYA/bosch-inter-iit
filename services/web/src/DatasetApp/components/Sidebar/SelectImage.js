@@ -1,27 +1,25 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import {makeStyles} from "@material-ui/core/styles";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
+                               formControl : {
+                                 margin : theme.spacing(1),
+                                 minWidth : 120,
+                               },
+                               selectEmpty : {
+                                 marginTop : theme.spacing(2),
+                               },
+                             }));
 
 const SelectImage = () => {
   const [img, setImg] = React.useState("");
 
-  const handleImgChange = (e) => {
-    setImg(e.target.value);
-  };
+  const handleImgChange = (e) => { setImg(e.target.value); };
   const classes = useStyles();
   return (
     <FormControl className={classes.formControl}>
@@ -40,8 +38,8 @@ const SelectImage = () => {
         <MenuItem value={2}>Image 2</MenuItem>
         <MenuItem value={3}>Image 3</MenuItem>
       </Select>
-      {/* <FormHelperText>Label + placeholder</FormHelperText> */}
-    </FormControl>
+      {/* <FormHelperText>Label + placeholder</FormHelperText> */
+} < /FormControl>
   );
 };
 

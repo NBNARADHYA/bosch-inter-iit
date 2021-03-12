@@ -1,34 +1,35 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
 import Divider from "@material-ui/core/Divider";
+import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
+import {makeStyles} from "@material-ui/core/styles";
 import MailIcon from "@material-ui/icons/Mail";
+import InboxIcon from "@material-ui/icons/MoveToInbox";
+import React from "react";
 
 import SelectImage from "./SelectImage";
 
 const drawerWidth = 320;
 
-const useStyles = makeStyles((theme) => ({
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
-  },
-}));
+const useStyles =
+    makeStyles((theme) => ({
+                 drawer : {
+                   width : drawerWidth,
+                   flexShrink : 0,
+                 },
+                 drawerPaper : {
+                   width : drawerWidth,
+                 },
+                 // necessary for content to be below app bar
+                 toolbar : theme.mixins.toolbar,
+                 content : {
+                   flexGrow : 1,
+                   backgroundColor : theme.palette.background.default,
+                   padding : theme.spacing(3),
+                 },
+               }));
 
 const Sidebar = () => {
   const classes = useStyles();

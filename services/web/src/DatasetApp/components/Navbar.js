@@ -1,17 +1,17 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core";
+import {makeStyles} from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import React from "react";
 
 const drawerWidth = 320;
 
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-  },
-}));
+                               appBar : {
+                                 width : `calc(100% - ${drawerWidth}px)`,
+                                 marginLeft : drawerWidth,
+                               },
+                             }));
 
 const Navbar = () => {
   const classes = useStyles();
