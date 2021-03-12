@@ -1,7 +1,9 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8-slim
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
 
 COPY ./requirements.txt /app
 
 RUN pip3 install -r requirements.txt
 
-COPY ./src/ /app
+ENV GUNICORN_CMD_ARGS="--reload"
+
+COPY ./ /app
