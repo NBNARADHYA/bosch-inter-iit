@@ -1,5 +1,5 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 
@@ -8,10 +8,10 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
 
 const useStyles = makeStyles((theme) => ({
-                               root : {
-                                 display : "flex",
-                               },
-                             }));
+  root: {
+    display: "flex",
+  },
+}));
 
 const App = () => {
   const classes = useStyles();
