@@ -20,6 +20,7 @@ services:
     container_name: server
     volumes:
       - ./services/server/:/app
+      - server_images:/app/images
     ports:
       - "5000:80"
 
@@ -39,3 +40,4 @@ services:
 volumes:
   # dbdata:
   node_modules_web:
+  server_images:
