@@ -38,6 +38,7 @@ def hinted_tuple_hook(obj):
 @app.post("/transform_image")
 async def transform_image(
         response: Response,
+        preview: bool = False,
         parameters: str = Form(...),
         transformation: int = Form(...),
         transformation_step: Optional[int] = Form(None),
@@ -55,7 +56,7 @@ async def transform_image(
     if step_count is None:
         step_count = "0"
         response.set_cookie(key="step_count", value=step_count)
-    else:
+    elif not preview:
         step_count = str(int(step_count) + 1)
         response.set_cookie(key="step_count", value=step_count)
 
@@ -67,14 +68,15 @@ async def transform_image(
         image = cv2.imread(img_url)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        step_count = str(int(transformation_step) + 1)
-        response.set_cookie(key="step_count", value=step_count)
+        if not preview:
+            step_count = str(int(transformation_step) + 1)
+            response.set_cookie(key="step_count", value=step_count)
 
-        folder_actions.delete_files(
-            folder="images/" + str(id),
-            split_string="transformed_img_",
-            low=int(transformation_step),
-        )
+            folder_actions.delete_files(
+                folder="images/" + str(id),
+                split_string="transformed_img_",
+                low=int(transformation_step),
+            )
     else:
         return {"error": "image or transformation_step field required"}
 
@@ -87,8 +89,13 @@ async def transform_image(
     transformed_image = transformed["image"]
 
     im = Image.fromarray(transformed_image)
-    img_path = "images/" + str(id) + "/transformed_img_" + str(
-        step_count) + ".png"
+    img_path = "images/" + str(id)
+
+    if preview:
+        img_path += "/preview_img.png"
+    else:
+        img_path += "/transformed_img_" + str(step_count) + ".png"
+    
     im.save(img_path)
 
     return {"img_path": SERVER_BASE_URL + img_path}
@@ -113,7 +120,7 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
 
     transformed_images = map(
         lambda filename: SERVER_BASE_URL + "images/" + id + "/" + filename,
-        folder_actions.get_file_names("images/" + str(id)),
+        filter(lambda filename: filename != "preview_img.png", folder_actions.get_file_names("images/" + str(id)))
     )
 
     return {"transformed_images": list(transformed_images)}
