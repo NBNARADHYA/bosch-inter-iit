@@ -1,16 +1,16 @@
-from typing import Optional
-from fastapi import FastAPI, File, UploadFile, Response, Cookie, Form
-from fastapi.staticfiles import StaticFiles
-import augmentations
-from PIL import Image
-from io import BytesIO
-import numpy as np
 import json
-import uuid
-import folder_actions
 import os
-import cv2
+import uuid
+from io import BytesIO
+from typing import Optional
 
+import augmentations
+import cv2
+import folder_actions
+import numpy as np
+from fastapi import Cookie, FastAPI, File, Form, Response, UploadFile
+from fastapi.staticfiles import StaticFiles
+from PIL import Image
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
