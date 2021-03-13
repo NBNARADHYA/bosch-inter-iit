@@ -12,7 +12,7 @@ import os
 import cv2
 
 
-SERVER_BASE_URL = os.environ['SERVER_BASE_URL']
+SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
 
 app = FastAPI()
@@ -26,14 +26,22 @@ def load_image_into_numpy_array(data):
 
 
 def hinted_tuple_hook(obj):
-    if '__tuple__' in obj:
-        return tuple(obj['items'])
+    if "__tuple__" in obj:
+        return tuple(obj["items"])
     else:
         return obj
 
 
 @app.post("/transform_image")
-async def transform_image(response: Response, parameters: str = Form(...), transformation: int = Form(...), transformation_step: Optional[int] = Form(None), image: Optional[UploadFile] = File(None), id: Optional[str] = Cookie(None), step_count: Optional[str] = Cookie(None)):
+async def transform_image(
+    response: Response,
+    parameters: str = Form(...),
+    transformation: int = Form(...),
+    transformation_step: Optional[int] = Form(None),
+    image: Optional[UploadFile] = File(None),
+    id: Optional[str] = Cookie(None),
+    step_count: Optional[str] = Cookie(None),
+):
     if id is None:
         id = str(uuid.uuid4())
         print(id)
@@ -51,8 +59,13 @@ async def transform_image(response: Response, parameters: str = Form(...), trans
     if image is not None:
         image = load_image_into_numpy_array(await image.read())
     elif transformation_step is not None:
-        img_url = "images/" + str(id) + "/transformed_img_" + \
-            str(transformation_step) + ".png"
+        img_url = (
+            "images/"
+            + str(id)
+            + "/transformed_img_"
+            + str(transformation_step)
+            + ".png"
+        )
         image = cv2.imread(img_url)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -60,12 +73,14 @@ async def transform_image(response: Response, parameters: str = Form(...), trans
         response.set_cookie(key="step_count", value=step_count)
 
         folder_actions.delete_files(
-            folder="images/" + str(id), split_string="transformed_img_", low=int(transformation_step))
+            folder="images/" + str(id),
+            split_string="transformed_img_",
+            low=int(transformation_step),
+        )
     else:
         return {"error": "image or transformation_step field required"}
 
-    parameters = json.loads(json.loads(parameters),
-                            object_hook=hinted_tuple_hook)
+    parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
 
     transform = augmentations.augmentations_dict[transformation](**parameters)
 
@@ -73,8 +88,7 @@ async def transform_image(response: Response, parameters: str = Form(...), trans
     transformed_image = transformed["image"]
 
     im = Image.fromarray(transformed_image)
-    img_path = "images/" + \
-        str(id) + "/transformed_img_" + str(step_count) + ".png"
+    img_path = "images/" + str(id) + "/transformed_img_" + str(step_count) + ".png"
     im.save(img_path)
 
     return {"img_path": SERVER_BASE_URL + img_path}
@@ -97,7 +111,9 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
     if not id:
         return {"transformed_images": []}
 
-    transformed_images = map(lambda filename: SERVER_BASE_URL + "images/" +
-                             id + "/" + filename, folder_actions.get_file_names("images/" + str(id)))
+    transformed_images = map(
+        lambda filename: SERVER_BASE_URL + "images/" + id + "/" + filename,
+        folder_actions.get_file_names("images/" + str(id)),
+    )
 
     return {"transformed_images": list(transformed_images)}

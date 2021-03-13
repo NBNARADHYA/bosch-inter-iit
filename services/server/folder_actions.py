@@ -30,7 +30,7 @@ def delete_files(folder, split_string=None, low=None):
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+            print("Failed to delete %s. Reason: %s" % (file_path, e))
 
 
 def get_file_names(folder):
