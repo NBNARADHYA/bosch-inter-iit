@@ -1,6 +1,8 @@
-import os, os.path
+import os
+import os.path
 import errno
-import os, shutil
+import os
+import shutil
 
 
 def mkdir_p(path):
@@ -9,17 +11,18 @@ def mkdir_p(path):
     except OSError as exc:
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
-        else: raise
+        else:
+            raise
 
 
-def delete_files(folder, split_string = None, low = None):
+def delete_files(folder, split_string=None, low=None):
     for filename in os.listdir(folder):
         if split_string is not None and low is not None:
             step = int(filename.split(split_string)[1].split(".")[0])
 
             if step <= low:
                 continue
-        
+
         file_path = os.path.join(folder, filename)
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
