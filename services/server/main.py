@@ -19,9 +19,7 @@ from PIL import Image
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
-
 app = FastAPI()
-
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
 
@@ -39,13 +37,13 @@ def hinted_tuple_hook(obj):
 
 @app.post("/transform_image")
 async def transform_image(
-    response: Response,
-    parameters: str = Form(...),
-    transformation: int = Form(...),
-    transformation_step: Optional[int] = Form(None),
-    image: Optional[UploadFile] = File(None),
-    id: Optional[str] = Cookie(None),
-    step_count: Optional[str] = Cookie(None),
+        response: Response,
+        parameters: str = Form(...),
+        transformation: int = Form(...),
+        transformation_step: Optional[int] = Form(None),
+        image: Optional[UploadFile] = File(None),
+        id: Optional[str] = Cookie(None),
+        step_count: Optional[str] = Cookie(None),
 ):
     if id is None:
         id = str(uuid.uuid4())
@@ -64,13 +62,8 @@ async def transform_image(
     if image is not None:
         image = load_image_into_numpy_array(await image.read())
     elif transformation_step is not None:
-        img_url = (
-            "images/"
-            + str(id)
-            + "/transformed_img_"
-            + str(transformation_step)
-            + ".png"
-        )
+        img_url = ("images/" + str(id) + "/transformed_img_" +
+                   str(transformation_step) + ".png")
         image = cv2.imread(img_url)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -85,7 +78,8 @@ async def transform_image(
     else:
         return {"error": "image or transformation_step field required"}
 
-    parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
+    parameters = json.loads(json.loads(parameters),
+                            object_hook=hinted_tuple_hook)
 
     transform = augmentations.augmentations_dict[transformation](**parameters)
 
@@ -93,7 +87,8 @@ async def transform_image(
     transformed_image = transformed["image"]
 
     im = Image.fromarray(transformed_image)
-    img_path = "images/" + str(id) + "/transformed_img_" + str(step_count) + ".png"
+    img_path = "images/" + str(id) + "/transformed_img_" + str(
+        step_count) + ".png"
     im.save(img_path)
 
     return {"img_path": SERVER_BASE_URL + img_path}
