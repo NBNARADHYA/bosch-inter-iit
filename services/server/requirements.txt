@@ -4,3 +4,4 @@ albumentations
 opencv-python
 python-multipart
 numpy
+aiofiles
