@@ -39,10 +39,11 @@ def hinted_tuple_hook(obj):
 async def transform_image(
         response: Response,
         preview: bool = False,
-        parameters: str = Form(...),
-        transformation: int = Form(...),
+        parameters: Optional[str] = Form(None),
+        transformation: Optional[int] = Form(None),
         transformation_step: Optional[int] = Form(None),
         img_url: Optional[str] = Form(None),
+        preview_url: Optional[str] = Form(None),
         image: Optional[UploadFile] = File(None),
         id: Optional[str] = Cookie(None),
         step_count: Optional[str] = Cookie(None),
@@ -70,33 +71,45 @@ async def transform_image(
 
         folder_actions.delete_files(folder="images/" + str(id))
 
-    elif img_url is not None and transformation_step is not None:
-        img_extension = "." + img_url.split("transformed_img_")[1].split(".")[1]
+    elif img_url is not None or preview_url is not None:
+        img_url_new = ("images/" + str(id))
+        if img_url is not None:
+            if transformation_step is None:
+                return {"error": "transformation_step field required"}
+            
+            img_extension = "." + img_url.split("transformed_img_")[1].split(".")[1]
 
-        img_url = ("images/" + str(id) + "/transformed_img_" +
-                   str(transformation_step) + img_extension)
-        image = cv2.imread(img_url)
+            img_url_new += "/transformed_img_" + str(transformation_step) + img_extension
+
+            if not preview:
+                step_count = str(int(transformation_step) + 1)
+                response.set_cookie(key="step_count", value=step_count)
+
+                folder_actions.delete_files(
+                    folder="images/" + str(id),
+                    split_string="transformed_img_",
+                    low=int(transformation_step),
+                )
+        elif preview_url is not None:
+            img_extension = "." + preview_url.split("preview_img")[1].split(".")[1]
+
+            img_url_new += "/preview_img" + img_extension
+
+        
+        image = cv2.imread(img_url_new)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        if not preview:
-            step_count = str(int(transformation_step) + 1)
-            response.set_cookie(key="step_count", value=step_count)
-
-            folder_actions.delete_files(
-                folder="images/" + str(id),
-                split_string="transformed_img_",
-                low=int(transformation_step),
-            )
     else:
-        return {"error": "image or transformation_step field required"}
+        return {"error": "img_url or preview_url required"}
 
-    parameters = json.loads(json.loads(parameters),
-                            object_hook=hinted_tuple_hook)
+    transformed_image = image
 
-    transform = augmentations.augmentations_dict[transformation](**parameters)
+    if img_url is not None or preview_url is None:
+        parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
+        transform = augmentations.augmentations_dict[transformation](**parameters)
 
-    transformed = transform(image=image)
-    transformed_image = transformed["image"]
+        transformed = transform(image=image)
+        transformed_image = transformed["image"]
 
     im = Image.fromarray(transformed_image)
     img_path = "images/" + str(id)
@@ -128,7 +141,7 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
     if not id:
         return {"transformed_images": []}
 
-    transformed_images = [SERVER_BASE_URL + "images/" + id + "/" + filename for filename in enumerate(filter(lambda filename: filename.split(".")[0] != "preview_img", folder_actions.get_file_names("images/" + str(id))))]
+    transformed_images = [SERVER_BASE_URL + "images/" + str(id) + "/" + filename for _, filename in enumerate(filter(lambda filename: filename.split(".")[0] != "preview_img", folder_actions.get_file_names("images/" + str(id))))]
 
     return {"transformed_images": list(transformed_images)}
 
@@ -146,10 +159,10 @@ async def transform_images(
     folder_actions.mkdir_p(base_img_path)
 
     image = load_image_into_numpy_array(await image.read())
-    transform = A.Compose([ augmentations.augmentations_dict[transformation](**parameters[idx]) for transformation, idx in enumerate(transformations)])
+    transform = A.Compose([ augmentations.augmentations_dict[transformation](**parameters[idx]) for idx, transformation in enumerate(transformations)])
 
-    img_names = [image.filename for image in enumerate(images)]
-    images = [load_image_into_numpy_array(await image.read()) for image in enumerate(images)]
+    img_names = [image.filename for _, image in enumerate(images)]
+    images = [load_image_into_numpy_array(await image.read()) for _, image in enumerate(images)]
 
     base_img_path += str(id)
 
