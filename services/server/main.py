@@ -22,6 +22,7 @@ SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 app = FastAPI()
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
+app.mount("/img_dataset", StaticFiles(directory="img_dataset"), name="img_dataset")
 
 
 def load_image_into_numpy_array(data):
@@ -77,7 +78,7 @@ async def transform_image(
             if transformation_step is None:
                 return {"error": "transformation_step field required"}
             
-            img_extension = "." + img_url.split("transformed_img_")[1].split(".")[1]
+            img_extension = "." + img_url.split(".")[1]
 
             img_url_new += "/transformed_img_" + str(transformation_step) + img_extension
 
@@ -91,7 +92,7 @@ async def transform_image(
                     low=int(transformation_step),
                 )
         elif preview_url is not None:
-            img_extension = "." + preview_url.split("preview_img")[1].split(".")[1]
+            img_extension = "." + preview_url.split(".")[1]
 
             img_url_new += "/preview_img" + img_extension
 
@@ -141,15 +142,15 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
     if not id:
         return {"transformed_images": []}
 
-    transformed_images = [SERVER_BASE_URL + "images/" + str(id) + "/" + filename for _, filename in enumerate(filter(lambda filename: filename.split(".")[0] != "preview_img", folder_actions.get_file_names("images/" + str(id))))]
+    transformed_images = [SERVER_BASE_URL + "images/" + str(id) + "/" + filename for filename in filter(lambda filename: filename.split(".")[0] != "preview_img", folder_actions.get_file_names("images/" + str(id)))]
 
     return {"transformed_images": list(transformed_images)}
 
 
 @app.post("/transform_images")
 async def transform_images(
-        parameters: List[str] = Form(...),
-        transformations: List[int] = Form(...),
+        parameters: str = Form(...),
+        transformations: str = Form(...),
         num_iterations: int = Form(...),
         class_id: int = Form(...),
         images: List[UploadFile] = File(...),
@@ -158,22 +159,31 @@ async def transform_images(
     base_img_path = "img_dataset/" + str(class_id) + "/"
     folder_actions.mkdir_p(base_img_path)
 
-    image = load_image_into_numpy_array(await image.read())
+    parameters = json.loads(json.loads(parameters),object_hook=hinted_tuple_hook)
+    transformations = json.loads(json.loads(transformations),object_hook=hinted_tuple_hook)
+
     transform = A.Compose([ augmentations.augmentations_dict[transformation](**parameters[idx]) for idx, transformation in enumerate(transformations)])
 
-    img_names = [image.filename for _, image in enumerate(images)]
-    images = [load_image_into_numpy_array(await image.read()) for _, image in enumerate(images)]
+    img_names = [image.filename for image in images]
+    images = [load_image_into_numpy_array(await image.read()) for image in images]
 
     base_img_path += str(id)
+
+    transformed_images = []
 
     for idx in range(num_iterations):
         for i in range(len(images)):
             transformed = transform(image=images[i])
             images[i] = transformed["image"]
+            transformed_images.append({"image": images[i], "name": str(idx) + img_names[i]})
+
+    img_path = base_img_path
     
-    for image, i in images:
-        im = Image.fromarray(image)
-        img_path = base_img_path + img_names[i]
+    for i in range(len(transformed_images)):
+        image = transformed_images[i]
+        im = Image.fromarray(image["image"])
+        img_path = base_img_path + image["name"]
         im.save(img_path)
+
 
     return {"done": True}
