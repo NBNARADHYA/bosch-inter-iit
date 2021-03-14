@@ -21,6 +21,7 @@ services:
     volumes:
       - ./services/server/:/app
       - server_images:/app/images
+      - server_img_dataset:/app/img_dataset
     ports:
       - "5000:80"
 
@@ -41,3 +42,4 @@ volumes:
   # dbdata:
   node_modules_web:
   server_images:
+  server_img_dataset:
