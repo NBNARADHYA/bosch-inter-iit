@@ -66,15 +66,6 @@ const augmentations = [
     category: 0,
   },
   {
-    id: 9,
-    name: "Emboss",
-    description:
-      "Emboss the input image and overlays the result with the original image.",
-    parameters:
-      '[{"name":"alpha","type":"[float, float]","description":"range to choose the visibility of the embossed image. At 0, only the original image is visible,at 1.0 only its embossed version is visible. Default: (0.2, 0.5).","default":"(0.2,0.5)"},{"name":"strength","type":"[float, float]","description":"strength range of the embossing. Default: (0.2, 0.7).","default":"(0.2,0.7)"},{"name":"p","type":"float","description":"probability of applying the transform. Default: 0.5.","default":0.5}]',
-    category: 0,
-  },
-  {
     id: 10,
     name: "Equalize",
     description: "Equalize the image histogram.",
@@ -353,14 +344,6 @@ const augmentations = [
     category: 0,
   },
   {
-    id: 44,
-    name: "RandomToneCurve",
-    description:
-      "Randomly change the relationship between bright and dark areas of the image by manipulating its tone curve.",
-    parameters: `[{"name":"scale","type":"float","description":"standard deviation of the normal distribution. Used to sample random distances to move two control points that modify the image's curve. Values should be in range [0, 1]. Default: 0.1","default":0.1}]`,
-    category: 0,
-  },
-  {
     id: 45,
     name: "RGBShift",
     description:
@@ -370,29 +353,11 @@ const augmentations = [
     category: 0,
   },
   {
-    id: 46,
-    name: "Sharpen",
-    description:
-      "Sharpen the input image and overlays the result with the original image.",
-    parameters:
-      '[{"name":"alpha","type":"[float, float]","description":"range to choose the visibility of the sharpened image. At 0, only the original image is visible, at 1.0 only its sharpened version is visible. Default: (0.2, 0.5).","default":"(0.2,0.5)"},{"name":"lightness","type":"[float, float]","description":"range to choose the lightness of the sharpened image. Default: (0.5, 1.0).","default":"(0.5,1.0)"},{"name":"p","type":"float","description":"probability of applying the transform. Default: 0.5.","default":0.5}]',
-    category: 0,
-  },
-  {
     id: 47,
     name: "Solarize",
     description: "Invert all pixel values above a threshold.",
     parameters:
       '[{"name":"threshold","type":"[int, int] or int, or [float, float] or float","description":"range for solarizing threshold.","default":128},{"name":"If","type":"threshold is a single value, the range will be [threshold, threshold]. Default","description":"128.","default":null},{"name":"p","type":"float","description":"probability of applying the transform. Default: 0.5.","default":0.5}]',
-    category: 0,
-  },
-  {
-    id: 48,
-    name: "Superpixels",
-    description:
-      "Transform images parially/completely to their superpixel representation. This implementation uses skimage's version of the SLIC algorithm.",
-    parameters:
-      '[{"name":"p_replace","type":"float or tuple of float","description":"Defines for any segment the probability that the pixels within that segment are replaced by their average color (otherwise, the pixels are not changed). Examples: * A probability of 0.0 would mean, that the pixels in no segment are replaced by their average color (image is not changed at all). * A probability of 0.5 would mean, that around half of all segments are replaced by their average color. * A probability of 1.0 would mean, that all segments are replaced by their average color (resulting in a voronoi image). Behaviour based on chosen data types for this parameter: * If a float, then that flat will always be used. * If tuple (a, b), then a random probability will be sampled from the interval [a, b] per image.","default":0.1},{"name":"n_segments","type":"int, or tuple of int","description":"Rough target number of how many superpixels to generate (the algorithm may deviate from this number). Lower value will lead to coarser superpixels. Higher values are computationally more intensive and will hence lead to a slowdown * If a single int, then that value will always be used as the number of segments. * If a tuple (a, b), then a value from the discrete interval [a..b] will be sampled per image.","default":100},{"name":"max_size","type":"int or None","description":"Maximum image size at which the augmentation is performed. If the width or height of an image exceeds this value, it will be downscaled before the augmentation so that the longest side matches max_size. This is done to speed up the process. The final output image has the same size as the input image. Note that in case p_replace is below 1.0, the down-/upscaling will affect the not-replaced pixels too. Use None to apply no down-/upscaling.","default":128},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","default":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 0.5.","default":0.5}]',
     category: 0,
   },
   {
@@ -451,14 +416,6 @@ const augmentations = [
     description: "Crop region from image.",
     parameters:
       '[{"name":"x_min","type":"int","description":"Minimum upper left x coordinate.","default":0},{"name":"y_min","type":"int","description":"Minimum upper left y coordinate.","default":0},{"name":"x_max","type":"int","description":"Maximum lower right x coordinate.","default":1024},{"name":"y_max","type":"int","description":"Maximum lower right y coordinate.","default":1024}]',
-    category: 1,
-  },
-  {
-    id: 57,
-    name: "CropAndPad",
-    description:
-      "Crop and pad images by pixel amounts or fractions of image sizes. Cropping removes pixels at the sides (i.e. extracts a subimage from a given full image). Padding adds pixels to the sides (e.g. black pixels). This transformation will never crop images below a height or width of 1.",
-    parameters: `[{"name":"px","type":"int or tuple","description":"The number of pixels to crop (negative values) or pad (positive values) on each side of the image. Either this or the parameter percent may be set, not both at the same time. * If None, then pixel-based cropping/padding will not be used. * If int, then that exact number of pixels will always be cropped/padded. * If a tuple of two int s with values a and b, then each side will be cropped/padded by a random amount sampled uniformly per image and side from the interval [a, b]. If however sample_independently is set to False, only one value will be sampled per image and used for all sides. * If a tuple of four entries, then the entries represent top, right, bottom, left. Each entry may be a single int (always crop/pad by exactly that value), a tuple of two int s a and b (crop/pad by an amount within [a, b]), a list of int s (crop/pad by a random value that is contained in the list).","default":"None"},{"name":"percent","type":"float or tuple","description":"The number of pixels to crop (negative values) or pad (positive values) on each side of the image given as a fraction of the image height/width. E.g. if this is set to -0.1, the transformation will always crop away 10% of the image's height at both the top and the bottom (both 10% each), as well as 10% of the width at the right and left. Expected value range is (-1.0, inf). Either this or the parameter px may be set, not both at the same time. * If None, then fraction-based cropping/padding will not be used. * If float, then that fraction will always be cropped/padded. * If a tuple of two float s with values a and b, then each side will be cropped/padded by a random fraction sampled uniformly per image and side from the interval [a, b]. If however sample_independently is set to False, only one value will be sampled per image and used for all sides. * If a tuple of four entries, then the entries represent top, right, bottom, left. Each entry may be a single float (always crop/pad by exactly that percent value), a tuple of two float s a and b (crop/pad by a fraction from [a, b]), a list of float s (crop/pad by a random value that is contained in the list).","default":"None"},{"name":"pad_mode","type":"int","description":"OpenCV border mode.","default":0},{"name":"pad_cval","type":"number, Sequence[number]","description":"The constant value to use if the pad mode is BORDER_CONSTANT. * If number, then that value will be used. * If a tuple of two number s and at least one of them is a float, then a random number will be uniformly sampled per image from the continuous interval [a, b] and used as the value. If both number s are int s, the interval is discrete. * If a list of number, then a random value will be chosen from the elements of the list and used as the value.","default":0},{"name":"pad_cval_mask","type":"number, Sequence[number]","description":"Same as pad_cval but only for masks.","default":0},{"name":"keep_size","type":"bool","description":"After cropping and padding, the result image will usually have a different height/width compared to the original input image. If this parameter is set to True, then the cropped/padded image will be resized to the input image's size, i.e. the output shape is always identical to the input shape.","default":"True"},{"name":"sample_independently","type":"bool","description":"If False and the values for px/percent result in exactly one probability distribution for all image sides, only one single value will be sampled from that probability distribution and used for all sides. I.e. the crop/pad amount then is the same for all sides. If True, four values will be sampled independently, one per side.","default":"True"},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","default":1}]`,
     category: 1,
   },
   {
@@ -571,14 +528,6 @@ const augmentations = [
       "Elastic deformation of images as described in [Simard2003]_ (with modifications). Based on https://gist.github.com/erniejunior/601cdf56d2b424757de5",
     parameters:
       '[{"name":"alpha","type":"float","description":null,"default":1},{"name":"sigma","type":"float","description":"Gaussian filter parameter.","default":50},{"name":"alpha_affine","type":"float","description":"The range will be (-alpha_affine, alpha_affine)","default":50},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","default":1},{"name":"border_mode","type":"OpenCV flag","description":"flag that is used to specify the pixel extrapolation method. Should be one of: cv2.BORDER_CONSTANT, cv2.BORDER_REPLICATE, cv2.BORDER_REFLECT, cv2.BORDER_WRAP, cv2.BORDER_REFLECT_101. Default: cv2.BORDER_REFLECT_101","default":4},{"name":"value","type":"int, float, list of ints, list of float","description":"padding value if border_mode is cv2.BORDER_CONSTANT.","default":"None"},{"name":"mask_value","type":"int, float, list of ints, list of float","description":"padding value if border_mode is cv2.BORDER_CONSTANT applied for masks.","default":"None"},{"name":"approximate","type":"boolean","description":"Whether to smooth displacement map with fixed kernel size. Enabling this option gives ~2X speedup on large images.","default":"False"}]',
-    category: 4,
-  },
-  {
-    id: 71,
-    name: "Perspective",
-    description:
-      "Perform a random four point perspective transform of the input.",
-    parameters: `[{"name":"scale","type":"float or [float, float]","description":"standard deviation of the normal distributions. These are used to sample the random distances of the subimage's corners from the full image's corners. If scale is a single float value, the range will be (0, scale). Default: (0.05, 0.1).","default":"(0.05,0.1)"},{"name":"keep_size","type":"bool","description":"Whether to resize image’s back to their original size after applying the perspective transform. If set to False, the resulting images may end up having different shapes and will always be a list, never an array. Default: True","default":"True"},{"name":"pad_mode","type":"OpenCV flag","description":"OpenCV border mode.","default":0},{"name":"pad_val","type":"int, float, list of int, list of float","description":"padding value if border_mode is cv2.BORDER_CONSTANT. ","default":0},{"name":"mask_pad_val","type":"int, float, list of int, list of float","description":"padding value for mask if border_mode is cv2.BORDER_CONSTANT. ","default":0},{"name":"fit_output","type":"bool","description":"If True, the image plane size and position will be adjusted to still capture the whole image after perspective transformation. (Followed by image resizing if keep_size is set to True.) Otherwise, parts of the transformed image may be outside of the image plane. This setting should not be set to True when using large scale values as it could lead to very large images. Default: False","default":"False"},{"name":"p","type":"float","description":"probability of applying the transform. Default: 0.5.","default":0.5}]`,
     category: 4,
   },
   {
