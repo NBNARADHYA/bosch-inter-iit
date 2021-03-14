@@ -24,7 +24,9 @@ SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 app = FastAPI()
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
-app.mount("/img_dataset", StaticFiles(directory="img_dataset"), name="img_dataset")
+app.mount("/img_dataset",
+          StaticFiles(directory="img_dataset"),
+          name="img_dataset")
 
 
 def load_image_into_numpy_array(data):
@@ -40,16 +42,16 @@ def hinted_tuple_hook(obj):
 
 @app.post("/transform_image")
 async def transform_image(
-    response: Response,
-    preview: bool = False,
-    parameters: Optional[str] = Form(None),
-    transformation: Optional[int] = Form(None),
-    transformation_step: Optional[int] = Form(None),
-    img_url: Optional[str] = Form(None),
-    preview_url: Optional[str] = Form(None),
-    image: Optional[UploadFile] = File(None),
-    id: Optional[str] = Cookie(None),
-    step_count: Optional[str] = Cookie(None),
+        response: Response,
+        preview: bool = False,
+        parameters: Optional[str] = Form(None),
+        transformation: Optional[int] = Form(None),
+        transformation_step: Optional[int] = Form(None),
+        img_url: Optional[str] = Form(None),
+        preview_url: Optional[str] = Form(None),
+        image: Optional[UploadFile] = File(None),
+        id: Optional[str] = Cookie(None),
+        step_count: Optional[str] = Cookie(None),
 ):
     if id is None:
         id = str(uuid.uuid4())
@@ -82,9 +84,8 @@ async def transform_image(
 
             img_extension = "." + img_url.split(".")[1]
 
-            img_url_new += (
-                "/transformed_img_" + str(transformation_step) + img_extension
-            )
+            img_url_new += ("/transformed_img_" + str(transformation_step) +
+                            img_extension)
 
             if not preview:
                 step_count = str(int(transformation_step) + 1)
@@ -109,8 +110,10 @@ async def transform_image(
     transformed_image = image
 
     if img_url is not None or preview_url is None:
-        parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
-        transform = augmentations.augmentations_dict[transformation](**parameters)
+        parameters = json.loads(json.loads(parameters),
+                                object_hook=hinted_tuple_hook)
+        transform = augmentations.augmentations_dict[transformation](
+            **parameters)
 
         transformed = transform(image=image)
         transformed_image = transformed["image"]
@@ -158,30 +161,30 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
 
 @app.post("/transform_images")
 async def transform_images(
-    parameters: str = Form(...),
-    transformations: str = Form(...),
-    num_iterations: int = Form(...),
-    class_id: int = Form(...),
-    images: List[UploadFile] = File(...),
-    id: Optional[str] = Cookie(None),
+        parameters: str = Form(...),
+        transformations: str = Form(...),
+        num_iterations: int = Form(...),
+        class_id: int = Form(...),
+        images: List[UploadFile] = File(...),
+        id: Optional[str] = Cookie(None),
 ):
     base_img_path = "img_dataset/" + str(class_id) + "/"
     folder_actions.mkdir_p(base_img_path)
 
-    parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
-    transformations = json.loads(
-        json.loads(transformations), object_hook=hinted_tuple_hook
-    )
+    parameters = json.loads(json.loads(parameters),
+                            object_hook=hinted_tuple_hook)
+    transformations = json.loads(json.loads(transformations),
+                                 object_hook=hinted_tuple_hook)
 
-    transform = A.Compose(
-        [
-            augmentations.augmentations_dict[transformation](**parameters[idx])
-            for idx, transformation in enumerate(transformations)
-        ]
-    )
+    transform = A.Compose([
+        augmentations.augmentations_dict[transformation](**parameters[idx])
+        for idx, transformation in enumerate(transformations)
+    ])
 
     img_names = [image.filename for image in images]
-    images = [load_image_into_numpy_array(await image.read()) for image in images]
+    images = [
+        load_image_into_numpy_array(await image.read()) for image in images
+    ]
 
     base_img_path += str(id)
 
@@ -191,9 +194,10 @@ async def transform_images(
         for i in range(len(images)):
             transformed = transform(image=images[i])
             images[i] = transformed["image"]
-            transformed_images.append(
-                {"image": images[i], "name": str(idx) + img_names[i]}
-            )
+            transformed_images.append({
+                "image": images[i],
+                "name": str(idx) + img_names[i]
+            })
 
     img_path = base_img_path
 
