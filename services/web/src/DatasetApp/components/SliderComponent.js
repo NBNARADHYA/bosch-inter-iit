@@ -2,6 +2,7 @@ import React from "react";
 import { Typography, Slider } from "@material-ui/core";
 
 const SliderComponent = ({ classes, step, range }) => {
+  console.log(step);
   return (
     <div className={classes.spacing}>
       <Typography id="range-slider" gutterBottom>

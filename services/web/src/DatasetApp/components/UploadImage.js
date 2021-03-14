@@ -1,22 +1,18 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
+import ImageUploader from "react-images-upload";
 
-const UploadImage = ({ classes }) => {
+const UploadImage = ({ classes, img, handleImgChange }) => {
+  const noOfImg = img?.img?.length;
   return (
     <div className={classes.spacing}>
-      <input
-        accept="image/*"
-        className={classes.input}
-        style={{ display: "none" }}
-        id="raised-button-file"
-        multiple
-        type="file"
+      <ImageUploader
+        withIcon={true}
+        buttonText={
+          noOfImg > 0 ? `${noOfImg} images selected` : "Choose images"
+        }
+        withPreview={true}
+        onChange={(files, pictures) => handleImgChange(files, pictures)}
       />
-      <label htmlFor="raised-button-file">
-        <Button variant="raised" component="span" className={classes.button}>
-          Upload
-        </Button>
-      </label>
     </div>
   );
 };

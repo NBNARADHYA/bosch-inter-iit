@@ -8,13 +8,9 @@ import augmentations from "../../Constants/augmentations";
 const changeToNormalCase = (camelCase) => {
   var name = camelCase.charAt(0).toLowerCase() + camelCase.substring(1);
 
-  name = name
-    // insert a space before all caps
-    .replace(/([A-Z])/g, " $1")
-    // uppercase the first character
-    .replace(/^./, function (str) {
-      return str.toUpperCase();
-    });
+  name = name.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
+    return str.toUpperCase();
+  });
   return name;
 };
 

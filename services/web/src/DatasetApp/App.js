@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
@@ -6,7 +6,7 @@ import Content from "./components/Content";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
-const drawerWidth = 320;
+const drawerWidth = 360;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -77,6 +77,16 @@ const App = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const [img, setImg] = useState({});
+
+  const handleImgChange = (img, pictures) => {
+    let newState = {};
+    newState.img = img;
+    newState.pictures = pictures;
+    setImg(newState);
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -92,8 +102,10 @@ const App = () => {
         open={open}
         handleDrawerClose={handleDrawerClose}
         theme={theme}
+        img={img}
+        handleImgChange={handleImgChange}
       />
-      <Content classes={classes} open={open} />
+      <Content classes={classes} open={open} img={img} />
     </div>
   );
 };
