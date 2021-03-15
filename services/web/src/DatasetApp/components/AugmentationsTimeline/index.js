@@ -1,33 +1,16 @@
 import React,{ useEffect, useState, useRef } from 'react';
 import Drawer from '@material-ui/core/Drawer';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Fab from '@material-ui/core/Fab';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Timeline from '@material-ui/lab/Timeline';
-import Tooltip from '@material-ui/core/Tooltip';
-import Zoom from '@material-ui/core/Zoom';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
-import TimelineContent from '@material-ui/lab/TimelineContent';
 import CloseIcon from '@material-ui/icons/Close';
-import RestoreRoundedIcon from '@material-ui/icons/RestoreRounded';
-import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
+import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from "@material-ui/core";
+import TimelineStage from './TimelineStage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flex: 1,
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-  paper: {
-    padding: '6px 16px',
-    background: '#f3e5f5'
   },
   drawerPaper: {
     width: '45vw'
@@ -35,9 +18,6 @@ const useStyles = makeStyles((theme) => ({
   closeMenuButton: {
     marginLeft: 'auto',
     marginRight: 0,
-  },  
-  connector: {
-    backgroundColor: theme.palette.primary.main,
   },  
 }));
 
@@ -136,94 +116,35 @@ function AugmentationsTimeline(props) {
     </Grid>
 }    
    {augmentations && !!augmentations.length && <Timeline align="alternate">
-      {augmentations.map((aug,i) => {
+      {augmentations.map((aug,i) => { 
       if(i+1 === augmentations.length)
         return null;
       else
-      return <TimelineItem key={i.toString()}  onMouseOver={() => setSelectedIndex(i)}
-      >
-        { selectedIndex===i && i+1 !==augmentations.length && <TimelineOppositeContent>
-         <Fab
-          size="small"
-          color="inherit"
-          aria-label="add"
-          className={classes.margin}
-        >
-          <Tooltip TransitionComponent={Zoom} title="Restore until this augmentation">              
-              <IconButton onClick={()=> {console.log('restored '+i)}}>              
-                <RestoreRoundedIcon color="primary"></RestoreRoundedIcon>
-              </IconButton>
-            </Tooltip>
-        </Fab></TimelineOppositeContent>}        
-        <TimelineSeparator>
-        <img src={aug.image} alt={'Loading..'} height='60px' width='60px'/>
-           {i!==augmentations.length-1 && <TimelineConnector className={classes.connector}/>}
-        </TimelineSeparator>
-        <TimelineContent>
-          <Paper elevation={3} className={classes.paper}>
-          <Grid container direction="row" justify="center" alignItems="center">
-          {i%2===1 && selectedIndex===i && <Grid item xs={2}>
-            <Tooltip TransitionComponent={Zoom} title="Remove augmentation">                  
-              <IconButton onClick={()=> {console.log('removed '+i)}}>              
-                <CancelRoundedIcon color="secondary"></CancelRoundedIcon>
-              </IconButton>
-            </Tooltip>
-            </Grid>}            
-            <Grid item xs={10}>            
-            <Typography variant="h6" component="h1">
-            {aug.name}
-            </Typography>
-            <Typography>Probability : {aug.parameters['p']?aug.parameters['p']:'1.0'}</Typography>
-            </Grid>
-            {i%2===0 && selectedIndex===i &&  <Grid item xs={2}>
-            <Tooltip TransitionComponent={Zoom} title="Remove augmentation">              
-              <IconButton onClick={()=> {console.log('removed '+i)}}>              
-                <CancelRoundedIcon color="secondary"></CancelRoundedIcon>
-              </IconButton>
-            </Tooltip>
-            </Grid>}
-          </Grid>
-          </Paper>
-          <Grid container align="center">
-        </Grid>      
-        </TimelineContent>        
-      </TimelineItem>}
+      return <TimelineStage
+              key={i.toString()}
+              handleMouseOver={() => setSelectedIndex(i)}
+              isSelected={selectedIndex===i}
+              isLast={false} 
+              handleRestore={()=> {console.log('restored '+i)}}
+              handleRemove={()=> {console.log('removed '+i)}}
+              image={aug.image}
+              name={aug.name}
+              parameters={aug.parameters}
+              even={i%2===0}
+            />}
       )}
-      <TimelineItem onMouseOver={() => setSelectedIndex(augmentations.length-1)}
-      ref={lastRef}
-      >
-        <TimelineSeparator>
-        <img alt={'Loading'} src={augmentations[augmentations.length-1].image} height='60px' width='60px'/>
-        </TimelineSeparator>
-        <TimelineContent>
-          <Paper elevation={3} className={classes.paper}>
-          <Grid container direction="row" justify="center" alignItems="center">
-          {augmentations.length%2===0 && selectedIndex===augmentations.length-1 && <Grid item xs={2}>
-            <Tooltip TransitionComponent={Zoom} title="Remove augmentation">                  
-              <IconButton onClick={()=> {console.log('removed '+augmentations.length-1)}}>              
-                <CancelRoundedIcon color="secondary"></CancelRoundedIcon>
-              </IconButton>
-            </Tooltip>
-            </Grid>}            
-            <Grid item xs={10}>            
-            <Typography variant="h6" component="h1">
-            {augmentations[augmentations.length-1].name}
-            </Typography>
-            <Typography>Probability : {augmentations[augmentations.length-1].parameters['p']?augmentations[augmentations.length-1].parameters['p']:'1.0'}</Typography>
-            </Grid>
-            {augmentations.length%2===1 && selectedIndex===augmentations.length-1 &&  <Grid item xs={2}>
-            <Tooltip TransitionComponent={Zoom} title="Remove augmentation">              
-              <IconButton onClick={()=> {console.log('removed '+augmentations.length-1)}}>              
-                <CancelRoundedIcon color="secondary"></CancelRoundedIcon>
-              </IconButton>
-            </Tooltip>
-            </Grid>}
-          </Grid>
-          </Paper>
-          <Grid container align="center">
-        </Grid>      
-        </TimelineContent>        
-      </TimelineItem>      
+      <TimelineStage
+          ref={lastRef}
+          handleMouseOver={() => setSelectedIndex(augmentations.length-1)}
+          isSelected={selectedIndex===augmentations.length-1}
+          isLast 
+          handleRestore={()=> {console.log('restored '+augmentations.length-1)}}
+          handleRemove={()=> {console.log('removed '+augmentations.length-1)}}
+          image={augmentations[augmentations.length-1].image}
+          name={augmentations[augmentations.length-1].name}
+          parameters={augmentations[augmentations.length-1].parameters}
+          even={(augmentations.length-1)%2===0}
+        />            
     </Timeline>}
     </div>
 </Drawer>
