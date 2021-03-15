@@ -2,24 +2,51 @@ import React, { useState } from "react";
 import Drawer from "@material-ui/core/Drawer";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
+import DoneIcon from '@material-ui/icons/Done';
+import ClearIcon from '@material-ui/icons/Clear';
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import SelectTranformation from "./SelectTransformation";
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles, withStyles } from "@material-ui/core";
 import augmentations from "../../Constants/augmentations";
 import UploadImage from "./UploadImage";
 import Params from "./Params";
-import { Button, ButtonGroup } from "@material-ui/core";
+import { Button } from "@material-ui/core";
+
+import { green, red } from '@material-ui/core/colors';
 
 const useStyle = makeStyles(() => ({
   spacing: {
     margin: "20px",
-    width: 280,
+    width: 280
   },
   slider: {
     padding: "0px",
   },
+  buttonGrid: {
+    margin: "10px",
+  },
 }));
+
+const DoneButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(green[700]),
+    backgroundColor: green[500],
+    '&:hover': {
+      backgroundColor: green[700],
+    },
+  },
+}))(Button);
+
+const ResetButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(red[700]),
+    backgroundColor: red[500],
+    '&:hover': {
+      backgroundColor: red[700],
+    },
+  },
+}))(Button);
 
 const Sidebar = ({
   classes,
@@ -41,7 +68,8 @@ const Sidebar = ({
   const [transformation, setTransformation] = useState(augmentations[0]);
 
   const handleTransformationChange = (e) => {
-    setTransformation(e.target.value);
+    const selectedTransformation = augmentations.filter(({id}) => id==e.target.value)[0];
+    setTransformation(selectedTransformation);
     setParams({});
     // let { parameters } = transformation;
     // parameters = JSON.parse(parameters);
@@ -90,15 +118,24 @@ const Sidebar = ({
         handleParamsChange={handleParamsChange}
       />
       <Divider />
-      <ButtonGroup
-        color="primary"
-        aria-label="outlined secondary button group"
-        className={spacing.spacing}
-        size="large"
-      >
-        <Button>Apply</Button>
-        <Button>Reset</Button>
-      </ButtonGroup>
+      <br/>
+        <Grid container justify="space-around" className={classes.buttonGrid}>
+          <DoneButton
+            variant="contained"
+            startIcon={<DoneIcon/>}
+          >
+            Apply
+          </DoneButton>
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.resetButton}
+            startIcon={<ClearIcon/>}
+          >
+            Reset
+          </Button>
+        </Grid>
+      <br/>
     </Drawer>
   );
 };

@@ -25,17 +25,17 @@ const Content = ({ classes, open, img }) => {
 
       {img?.img?.length > 0 ? (
         <div className={styles.spacing}>
-          <Typography variant="h4">Sample Image</Typography>
+          <Typography variant="h6" align="center">Original image</Typography>
           <img src={img.pictures[0]} className={styles.imgStyle} />
           <br></br>
           <br></br>
-          <Typography variant="h4">Resultant Image</Typography>
+          <Typography variant="h6" align="center">Transformed image</Typography>
           <img src={img.pictures[0]} className={styles.imgStyle} />
         </div>
       ) : (
         <div className={styles.spacing}>
-          <Typography variant="h4">
-            Please select images from the sidebar menu.
+          <Typography variant="h6">
+            Please upload images in the sidebar menu.
           </Typography>
         </div>
       )}

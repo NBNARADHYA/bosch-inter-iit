@@ -1,14 +1,14 @@
 import React from "react";
 import { Typography, Slider } from "@material-ui/core";
 
-const Minmax = ({ classes, name, step, defaultVal, handleParamsChange }) => {
+const Minmax = ({ classes, name, displayName,  step, defaultVal, handleParamsChange }) => {
   if (!defaultVal) defaultVal = [10, 20];
   else if (typeof defaultVal == "int")
     defaultVal = [defaultVal, defaultVal + 10];
   return (
     <div className={classes.spacing}>
       <Typography id="range-slider" gutterBottom>
-        <strong>{name}</strong>
+        <strong>{displayName}</strong>
       </Typography>
       <Slider
         defaultValue={defaultVal}

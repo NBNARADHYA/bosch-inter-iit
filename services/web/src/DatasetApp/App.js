@@ -9,6 +9,20 @@ import Sidebar from "./components/Sidebar";
 const drawerWidth = 360;
 
 const useStyles = makeStyles((theme) => ({
+    '@global': {
+      '*::-webkit-scrollbar': {
+        width: '0.5em'
+      },
+      '*::-webkit-scrollbar-track': {
+        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+      },
+      '*::-webkit-scrollbar-thumb': {
+        '&:hover': {
+          backgroundColor: '#757575',
+          outline: '1px solid #757575'
+        }
+      },
+    },  
   root: {
     display: "flex",
   },
@@ -68,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);

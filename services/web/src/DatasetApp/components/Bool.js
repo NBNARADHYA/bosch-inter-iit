@@ -1,11 +1,11 @@
 import React from "react";
 import { FormControlLabel, Checkbox } from "@material-ui/core";
 
-const Bool = ({ classes, name, defaultVal, handleParamsChange }) => {
+const Bool = ({ classes, name, displayName, defaultVal, handleParamsChange }) => {
   return (
     <div className={classes.spacing}>
       <FormControlLabel
-        label={name}
+        label={displayName}
         control={
           <Checkbox
             checked={defaultVal}

@@ -3,15 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import Minmax from "./Minmax";
 import Single from "./Single";
 import Bool from "./Bool";
-
-const changeToNormalCase = (camelCase) => {
-  var name = camelCase.charAt(0).toLowerCase() + camelCase.substring(1);
-
-  name = name.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
-    return str.toUpperCase();
-  });
-  return name;
-};
+import { changeCamelCaseToNormal, displayParameterName } from '../../Utils';
 
 const isMinmax = (list) => {
   let found = false;
@@ -60,9 +52,9 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
   parameters = JSON.parse(parameters);
 
   //Map each argument to its component
-  const args = parameters.map((arg) => {
+  const args = parameters.map((arg,i) => {
     let { name, type, defaultVal } = arg;
-
+    const displayName = displayParameterName(name);
     if (!type) return;
 
     //Get step size of the slider based upon whether the arg is int or float
@@ -74,8 +66,10 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
     if (isBool(type)) {
       return (
         <Bool
+          key={i.toString()}
           classes={classes}
           name={name}
+          displayName={displayName}
           defaultVal={defaultVal}
           handleParamsChange={handleParamsChange}
         />
@@ -89,6 +83,7 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
           classes={classes}
           step={step}
           name={name}
+          displayName={displayName}
           isRange={false}
           defaultVal={defaultVal}
           params={params}
@@ -105,6 +100,7 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
           classes={classes}
           step={step}
           name={name}
+          displayName={displayName}
           isRange={false}
           defaultVal={defaultVal}
           params={params}
@@ -129,7 +125,7 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
   return (
     <Fragment>
       <Typography variant="h6" component="h6" className={classes.spacing}>
-        <strong>Params of the {changeToNormalCase(transformation.name)}</strong>
+        <strong>Params of the {changeCamelCaseToNormal(transformation.name)}</strong>
       </Typography>
       {validArguments > 0 ? args : def}
     </Fragment>

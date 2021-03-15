@@ -4,26 +4,18 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import augmentations from "../../Constants/augmentations";
-
-const changeToNormalCase = (camelCase) => {
-  var name = camelCase.charAt(0).toLowerCase() + camelCase.substring(1);
-
-  name = name.replace(/([A-Z])/g, " $1").replace(/^./, function (str) {
-    return str.toUpperCase();
-  });
-  return name;
-};
+import { changeCamelCaseToNormal } from '../../Utils';
 
 const SelectTransformation = ({
   classes,
-  transormation,
+  transformation,
   handleTransformationChange,
 }) => {
-  const options = augmentations.map((augmentation, ind) => {
-    const name = changeToNormalCase(augmentation.name);
+  const options = augmentations.map((augmentation) => {
+    const name = changeCamelCaseToNormal(augmentation.name);
     const id = augmentation.id;
     return (
-      <MenuItem key={id} value={augmentation}>
+      <MenuItem key={id.toString()} value={id}>
         {name}
       </MenuItem>
     );
@@ -36,7 +28,7 @@ const SelectTransformation = ({
       <Select
         labelId="demo-simple-select-placeholder-label-label"
         id="demo-simple-select-placeholder-label"
-        value={transormation}
+        value={transformation && transformation.id}
         onChange={handleTransformationChange}
         displayEmpty
       >
