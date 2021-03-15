@@ -99,4 +99,5 @@ upstream	git@github.com:NBNARADHYA/bosch-inter-iit.git (push)
    at `http://localhost:5000`
 5. The above command could be run in detached mode with `-d` flag as
    `docker-compose up -d`.
-6. For help, run the command `docker-compose -h`.
+6. To install new dependencies to `web`, run `docker-compose run web yarn add <pkg_name>`
+7. For help, run the command `docker-compose -h`.
