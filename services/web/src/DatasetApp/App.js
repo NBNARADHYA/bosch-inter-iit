@@ -18,10 +18,8 @@ const useStyles = makeStyles((theme) => ({
         '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
       },
       '*::-webkit-scrollbar-thumb': {
-        '&:hover': {
           backgroundColor: '#757575',
           outline: '1px solid #757575'
-        }
       },
     },  
   root: {

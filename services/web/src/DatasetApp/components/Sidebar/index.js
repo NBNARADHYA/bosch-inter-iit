@@ -8,16 +8,20 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import SelectTranformation from "./SelectTransformation";
 import { Grid, makeStyles, withStyles } from "@material-ui/core";
-import augmentations from "../../Constants/augmentations";
+import augmentations from "../../../Constants/augmentations";
 import UploadImage from "./UploadImage";
-import Params from "./Params";
+import Params from "../Params";
 import { Button } from "@material-ui/core";
 import { green, red } from '@material-ui/core/colors';
+import ResetDialog from "./ResetDialog";
 
 const useStyle = makeStyles(() => ({
   spacing: {
     margin: "20px",
     width: 280
+  },
+  spacingUploadButton: {
+    margin: "5px"
   },
   slider: {
     padding: "0px",
@@ -56,7 +60,7 @@ const Sidebar = ({
   handleImgChange,
 }) => {
   const [params, setParams] = useState({});
-
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const handleParamsChange = useCallback((prop, val) => {
     let newState = params;
     newState[prop] = val;
@@ -69,11 +73,6 @@ const Sidebar = ({
     const selectedTransformation = augmentations.filter(({id}) => id===e.target.value)[0];
     setTransformation(selectedTransformation);
     setParams({});
-    // let { parameters } = transformation;
-    // parameters = JSON.parse(parameters);
-    // parameters.forEach((param) => {
-    //   handleParamsChange(param.name, param.default);
-    // });
   },[]);
 
   const spacing = useStyle();
@@ -126,11 +125,17 @@ const Sidebar = ({
           <ResetButton
             variant="contained"
             startIcon={<ClearIcon/>}
+            onClick={()=> {setResetDialogOpen(true);}}
           >
             Reset
           </ResetButton>          
         </Grid>
       <br/>
+      <ResetDialog
+        handleClose={()=> {setResetDialogOpen(false);}}
+        handleReset={()=> {setResetDialogOpen(false);}}
+        isOpen={resetDialogOpen}
+      />
     </Drawer>
   );
 };

@@ -8,7 +8,7 @@ const Bool = ({ classes, name, displayName, defaultVal, handleParamsChange }) =>
         label={displayName}
         control={
           <Checkbox
-            checked={defaultVal}
+            defaultChecked={defaultVal==="True"}
             onChange={(e, val) => handleParamsChange(name, val)}
             name="checkedB"
             color="primary"

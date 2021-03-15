@@ -3,15 +3,17 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import augmentations from "../../Constants/augmentations";
-import { changeCamelCaseToNormal } from '../../Utils';
+import augmentations from "../../../Constants/augmentations";
+import { changeCamelCaseToNormal } from '../../../Utils';
 
 const SelectTransformation = ({
   classes,
   transformation,
   handleTransformationChange,
 }) => {
-  const options = augmentations.map((augmentation) => {
+  const options = augmentations
+    .sort((a,b) => a.name < b.name ? -1 : 1)
+    .map((augmentation) => {
     const name = changeCamelCaseToNormal(augmentation.name);
     const id = augmentation.id;
     return (

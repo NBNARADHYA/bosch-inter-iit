@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import Minmax from "./Minmax";
 import Single from "./Single";
 import Bool from "./Bool";
-import { displayParameterName } from '../../Utils';
+import { displayParameterName } from '../../../Utils';
 
 const isMinmax = (list) => {
   return list.some((item) => item.indexOf("min") !== -1 || item.indexOf("max") !== -1);
@@ -43,8 +43,7 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
     const single = isSingle(type);
 
     type = type.split("or").map((item) => item.trim().toLowerCase());
-
-    if (isBool(type)) {
+     if (isBool(type)) {
       return (
         <Bool
           key={i.toString()}
