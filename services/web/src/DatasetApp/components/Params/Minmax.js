@@ -2,7 +2,18 @@ import React from "react";
 import { Typography, Slider } from "@material-ui/core";
 import Tooltip from '@material-ui/core/Tooltip';
 
-const Minmax = ({ classes, name, min, max, isFloat, description, tooltipStyles, displayName,  step, defaultVal, handleParamsChange }) => {
+const Minmax = ({
+  classes,
+  name,
+  min,
+  max,
+  isFloat,
+  description,
+  tooltipStyles,
+  displayName,
+  step,
+  defaultVal,
+  handleParamsChange }) => {
   let mn,mx;
   if(isFloat) {
     mn=0;

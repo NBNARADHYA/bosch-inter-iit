@@ -2,7 +2,18 @@ import React from "react";
 import { Typography, Slider } from "@material-ui/core";
 import Tooltip from '@material-ui/core/Tooltip';
 
-const Single = ({ classes, name, displayName, step, description, defaultVal, tooltipStyles, min, max, handleParamsChange }) => {
+const Single = ({
+  classes,
+  name,
+  displayName,
+  step,
+  description,
+  defaultVal,
+  tooltipStyles,
+  min,
+  max,
+  handleParamsChange }) => {
+    
   if (!defaultVal || isNaN(Number(defaultVal)) ) defaultVal = 1;
   let mn,mx;
   if(typeof min ==='number')

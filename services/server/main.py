@@ -62,7 +62,6 @@ async def transform_image(
         id: Optional[str] = Cookie(None),
         step_count: Optional[str] = Cookie(None),
 ):
-    print(transformation, parameters)
     if id is None:
         id = str(uuid.uuid4())
         print(id)
@@ -110,7 +109,6 @@ async def transform_image(
             img_extension = "." + preview_url.split(".")[1]
 
             img_url_new += "/preview_img" + img_extension
-
         image = cv2.imread(img_url_new)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 

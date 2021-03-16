@@ -60,7 +60,10 @@ const Sidebar = ({
   params,
   setParams,
   transformation,
-  setTransformation
+  setTransformation,
+  addToHistory,
+  resetHistory,
+  history
 }) => {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const handleParamsChange = useCallback((prop, val) => {
@@ -119,6 +122,8 @@ const Sidebar = ({
           <DoneButton
             variant="contained"
             startIcon={<DoneIcon/>}
+            onClick={addToHistory}
+            disabled={!img || !img.img || !img.img.length}
           >
             Apply
           </DoneButton>
@@ -126,6 +131,7 @@ const Sidebar = ({
             variant="contained"
             startIcon={<ClearIcon/>}
             onClick={()=> {setResetDialogOpen(true);}}
+            disabled={!history.length}
           >
             Reset
           </ResetButton>          
@@ -133,7 +139,7 @@ const Sidebar = ({
       <br/>
       <ResetDialog
         handleClose={()=> {setResetDialogOpen(false);}}
-        handleReset={()=> {setResetDialogOpen(false);}}
+        handleReset={()=> {resetHistory(); setResetDialogOpen(false);}}
         isOpen={resetDialogOpen}
       />
     </Drawer>

@@ -21,61 +21,8 @@ const useStyles = makeStyles((theme) => ({
   },  
 }));
 
-const augmentations = [
-  {
-    name: 'Random Crop',
-    image: 'https://via.placeholder.com/150/00FF00/FFFFFF/',
-    parameters: {
-      'p': 0.5
-    }
-  },
-  {
-    name: 'Random Fog',
-    image: 'https://via.placeholder.com/150/000000/FFFFFF/',
-    parameters: {
-      'p': 0.3 
-    }
-  },
-  {name: 'Blur',
-  image: 'https://via.placeholder.com/150/000FF0/FFFFFF/',
-  parameters: {
-    'p': 0.2 
-  }
-},
-{name: 'To Sepia',
-image: 'https://via.placeholder.com/150/FF00FF/0000FF/',
-parameters: { 
-}
-},
-{
-  name: 'Random Crop',
-  image: 'https://via.placeholder.com/150/00FF00/FFFFFF/',
-  parameters: {
-    'p': 0.5
-  }
-},
-{
-  name: 'Random Fog',
-  image: 'https://via.placeholder.com/150/000000/FFFFFF/',
-  parameters: {
-    'p': 0.3 
-  }
-},
-{name: 'Blur',
-image: 'https://via.placeholder.com/150/000FF0/FFFFFF/',
-parameters: {
-  'p': 0.2 
-}
-},
-{name: 'To Sepia',
-image: 'https://via.placeholder.com/150/FF00FF/0000FF/',
-parameters: { 
-}
-}    
-]
-
 function AugmentationsTimeline(props) {
-  const { isOpen, toggleDrawer } = props;
+  const { isOpen, toggleDrawer, history, setHistory } = props;
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const closeDrawer = () => {
     if(isOpen)
@@ -85,7 +32,7 @@ function AugmentationsTimeline(props) {
   const lastRef = useRef(null);
   useEffect(()=> {
     // scroll to bottom
-    if(isOpen)
+    if(isOpen && lastRef.current)
     {
       setTimeout(()=> {
         lastRef.current.scrollIntoView({ behavior: 'smooth', block: "end", inline: "nearest" });
@@ -110,40 +57,40 @@ function AugmentationsTimeline(props) {
             </IconButton>    
 </Grid>
 </Grid>        
-{
-  (!augmentations || !augmentations.length) &&  <Grid container item xs={12} align="center" justify="center">
-    <Typography variant="body2" align="center" style={{marginTop: '35vh'}}>No augmentations applied yet.</Typography>
-    </Grid>
-}    
-   {augmentations && !!augmentations.length && <Timeline align="alternate">
-      {augmentations.map((aug,i) => { 
-      if(i+1 === augmentations.length)
-        return null;
-      else
-      return <TimelineStage
-              key={i.toString()}
-              handleMouseOver={() => setSelectedIndex(i)}
-              isSelected={selectedIndex===i}
-              isLast={false} 
-              handleRestore={()=> {console.log('restored '+i)}}
-              handleRemove={()=> {console.log('removed '+i)}}
-              image={aug.image}
-              name={aug.name}
-              parameters={aug.parameters}
-              even={i%2===0}
-            />}
-      )}
+  {
+    (!history || !history.length) &&  <Grid container item xs={12} align="center" justify="center">
+      <Typography variant="body2" align="center" style={{marginTop: '35vh'}}>No augmentations applied yet.</Typography>
+      </Grid>
+  }    
+  {history && !!history.length && <Timeline align="alternate">
+    {history.map((aug,i) => { 
+    if(i+1 === history.length)
+      return null;
+    else
+    return <TimelineStage
+            key={i.toString()}
+            handleMouseOver={() => setSelectedIndex(i)}
+            isSelected={selectedIndex===i}
+            isLast={false} 
+            handleRestore={()=> {console.log('restored '+i)}}
+            handleRemove={()=> {console.log('removed '+i)}}
+            image={aug.image}
+            name={aug.name}
+            parameters={aug.parameters}
+            even={i%2===0}
+          />}
+    )}
       <TimelineStage
           ref={lastRef}
-          handleMouseOver={() => setSelectedIndex(augmentations.length-1)}
-          isSelected={selectedIndex===augmentations.length-1}
+          handleMouseOver={() => setSelectedIndex(history.length-1)}
+          isSelected={selectedIndex===history.length-1}
           isLast 
-          handleRestore={()=> {console.log('restored '+augmentations.length-1)}}
-          handleRemove={()=> {console.log('removed '+augmentations.length-1)}}
-          image={augmentations[augmentations.length-1].image}
-          name={augmentations[augmentations.length-1].name}
-          parameters={augmentations[augmentations.length-1].parameters}
-          even={(augmentations.length-1)%2===0}
+          handleRestore={()=> {console.log('restored '+history.length-1)}}
+          handleRemove={()=> {console.log('removed '+history.length-1)}}
+          image={history[history.length-1].image}
+          name={history[history.length-1].name}
+          parameters={history[history.length-1].parameters}
+          even={(history.length-1)%2===0}
         />            
     </Timeline>}
     </div>

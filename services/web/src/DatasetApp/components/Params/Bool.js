@@ -2,7 +2,15 @@ import React from "react";
 import { FormControlLabel, Checkbox } from "@material-ui/core";
 import Tooltip from '@material-ui/core/Tooltip';
 
-const Bool = ({ classes, name, displayName, description, defaultVal, tooltipStyles, handleParamsChange }) => {
+const Bool = ({
+  classes,
+  name, 
+  displayName, 
+  description,
+  defaultVal,
+  tooltipStyles,
+  handleParamsChange }) => {
+    
   return (
     <div className={classes.spacing}>
       <Tooltip title={description} placement="top" classes={tooltipStyles}>

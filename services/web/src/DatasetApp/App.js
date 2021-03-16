@@ -7,6 +7,7 @@ import Content from "./components/Content";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import serverUrl from "../Constants/serverUrl";
+import { changeCamelCaseToNormal } from "../Utils";
 
 const drawerWidth = 360;
 
@@ -123,10 +124,12 @@ const App = () => {
     if(history.length===0) {
       data.append('image',img.img[0]); 
     } else {
-      data.append('img_url',history[0].img_url);
+      data.append('img_url',history[history.length-1].image);
+      data.append('transformation_step',history.length-1);      
     }
     fetch(`${serverUrl}transform_image?preview=true`,{
       method: 'POST',
+      credentials: 'include',
       body: data
     })
     .then(res => res.json())
@@ -134,12 +137,69 @@ const App = () => {
       if(error)
         console.log(error);
       else
-        setPreviewImg(img_path);
+          setPreviewImg(`${img_path}?${Date.now()}`);
     })
     .catch((err) => {
       console.log(err);
     })
   },[params, img, transformation, history])
+
+  const addToHistory = useCallback(()=> {
+    if(!img || !img.img || !img.img.length) {
+      return;
+    }
+    const data = new FormData();
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='p') && !params['p'])
+    {
+      params['p']=1.0;
+    }
+
+    // if(previewImg) {
+    //   data.append('preview_url',previewImg.substr(serverUrl.length));
+    // } else
+     if(history.length){
+      data.append('img_url',history[history.length-1].image);      
+      data.append('parameters',JSON.stringify(JSON.stringify(params)));
+      data.append('transformation',transformation.id);
+      data.append('transformation_step',history.length-1);      
+    } else {
+      data.append('image',img.img[0]); 
+      data.append('parameters',JSON.stringify(JSON.stringify(params)));
+      data.append('transformation',transformation.id);
+    }
+
+    fetch(`${serverUrl}transform_image?preview=false`,{
+      method: 'POST',
+      credentials: 'include',      
+      body: data
+    })
+    .then(res => res.json())
+    .then((res)=> {
+      console.log(res);
+      const {error, img_path}=res;
+      if(!error)
+        {
+          const newHistory = [...history,{
+            image: img_path,
+            id: transformation.id,
+            name: changeCamelCaseToNormal(transformation.name),
+            parameters: params,
+          }];
+          setHistory(newHistory);
+        }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  },[params, img, transformation, history]);
+
+  const resetHistory = useCallback(() => {
+    setHistory([]);
+    fetch(`${serverUrl}reset_images`,{
+      method: 'POST',
+      body: {}
+    })
+  },[])
 
   return (
     <div className={classes.root}>
@@ -163,9 +223,24 @@ const App = () => {
         setParams={setParams}     
         transformation={transformation}
         setTransformation={setTransformation}
+        addToHistory={addToHistory}
+        resetHistory={resetHistory}
+        history={history}
       />
-      <Content classes={classes} open={open} img={img} previewImg={previewImg}  />
-      <AugmentationsTimeline isOpen={isTimelineOpen} toggleDrawer={toggleTimelineOpen}/>  
+      <Content
+        classes={classes}
+        open={open}
+        img={img}
+        previewImg={previewImg}
+        params={params}
+        transformation={transformation}
+      />
+      <AugmentationsTimeline
+        isOpen={isTimelineOpen}
+        toggleDrawer={toggleTimelineOpen}
+        history={history}
+        setHistory={setHistory}
+      />  
     </div>
   );
 };
