@@ -3,14 +3,25 @@ import Typography from "@material-ui/core/Typography";
 import Minmax from "./Minmax";
 import Single from "./Single";
 import Bool from "./Bool";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import { displayParameterName } from '../../../Utils';
+
+const useStyles = makeStyles(() => createStyles({
+  tooltipPlacementTop: {
+      margin: '4px 2px',
+  }
+}));
 
 const isMinmax = (list) => {
   return list.some((item) => item.indexOf("min") !== -1 || item.indexOf("max") !== -1);
 };
 
-const isTuple = (list) => {
-  return list.some((item) => item === "tuple");
+const isFloatPair = (list) => {
+  return list.some((item) => item.indexOf("[float, float]") !== -1 );
+};
+
+const isIntPair = (list) => {
+  return list.some((item) => item.indexOf("[int, int]") !== -1);
 };
 
 const isBool = (list) => {
@@ -31,10 +42,11 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
   //Parse parameters into array of objects
   let { parameters } = transformation;
   parameters = JSON.parse(parameters);
+  const tooltipStyles = useStyles();
 
   //Map each argument to its component
   const args = parameters.map((arg,i) => {
-    let { name, type, defaultVal } = arg;
+    let { name, type, defaultVal, min, max, description } = arg;
     const displayName = displayParameterName(name);
     if (!type) return null;
 
@@ -51,31 +63,31 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
           name={name}
           displayName={displayName}
           defaultVal={defaultVal}
+          description={description}          
           handleParamsChange={handleParamsChange}
+          tooltipStyles={tooltipStyles}
         />
       );
     }
-
-    defaultVal = parseFloat(defaultVal);
-    if (isMinmax(type)) {
-      return (
-        <Minmax
-          key={i.toString()}        
-          classes={classes}
-          step={step}
-          name={name}
-          displayName={displayName}
-          isRange={false}
-          defaultVal={defaultVal}
-          params={params}
-          handleParamsChange={handleParamsChange}
-        />
-      );
+    if ((isMinmax(type) || isFloatPair(type) || isIntPair(type)) && isNaN(Number(defaultVal))) {
+      return <Minmax
+              key={i.toString()}        
+              classes={classes}
+              step={step}
+              name={name}
+              displayName={displayName}
+              isFloat={isFloatPair(type)}
+              defaultVal={defaultVal}
+              params={params}
+              description={description}              
+              handleParamsChange={handleParamsChange}
+              min={min}
+              max={max}
+              tooltipStyles={tooltipStyles}              
+            />;
     }
-    if (isTuple(type)) {
-      return null;
-    }
-    if (single) {
+    defaultVal = parseFloat(defaultVal);    
+    if (single && name.indexOf("ignore") === -1) {
       return (
         <Single
           key={i.toString()}        
@@ -86,10 +98,14 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
           isRange={false}
           defaultVal={defaultVal}
           params={params}
+          min={min}
+          max={max}          
+          description={description}
           handleParamsChange={handleParamsChange}
+          tooltipStyles={tooltipStyles}          
         />
       );
-    }
+    }    
     else  
       return null;
   });

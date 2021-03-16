@@ -1,11 +1,12 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AugmentationsTimeline from "./components/AugmentationsTimeline"
-
+import augmentations from "../Constants/augmentations";
 import Content from "./components/Content";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
+import serverUrl from "../Constants/serverUrl";
 
 const drawerWidth = 360;
 
@@ -81,11 +82,17 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
   const classes = useStyles();
   const [isTimelineOpen, setTimelineOpen] = useState(false);
-  const toggleTimelineOpen = ()=> {
-    setTimelineOpen(!isTimelineOpen);
-  }
+  const [history, setHistory] = useState([]);
+  const [previewImg, setPreviewImg] = useState("");  
   const theme = useTheme();
   const [open, setOpen] = useState(true);
+  const [img, setImg] = useState({});
+  const [params, setParams] = useState({});
+  const [transformation, setTransformation] = useState(augmentations[0]);  
+
+  const toggleTimelineOpen = useCallback(()=> {
+    setTimelineOpen(!isTimelineOpen);
+  },[isTimelineOpen]);
 
   const handleDrawerOpen =  useCallback(() => {
     setOpen(true);
@@ -95,14 +102,44 @@ const App = () => {
     setOpen(false);
   }, []);
 
-  const [img, setImg] = useState({});
-
   const handleImgChange = useCallback((img, pictures) => {
     let newState = {};
     newState.img = img;
     newState.pictures = pictures;
     setImg(newState);
   },[]);
+
+  useEffect(()=> {
+    if(!img || !img.img || !img.img.length) {
+      return;
+    }
+    const data = new FormData();
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='p') && !params['p'])
+    {
+      params['p']=1.0;
+    }
+    data.append('parameters',JSON.stringify(JSON.stringify(params)));
+    data.append('transformation',transformation.id);
+    if(history.length===0) {
+      data.append('image',img.img[0]); 
+    } else {
+      data.append('img_url',history[0].img_url);
+    }
+    fetch(`${serverUrl}transform_image?preview=true`,{
+      method: 'POST',
+      body: data
+    })
+    .then(res => res.json())
+    .then(({error, img_path})=> {
+      if(error)
+        console.log(error);
+      else
+        setPreviewImg(img_path);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  },[params, img, transformation, history])
 
   return (
     <div className={classes.root}>
@@ -122,8 +159,12 @@ const App = () => {
         theme={theme}
         img={img}
         handleImgChange={handleImgChange}
+        params={params}
+        setParams={setParams}     
+        transformation={transformation}
+        setTransformation={setTransformation}
       />
-      <Content classes={classes} open={open} img={img} />
+      <Content classes={classes} open={open} img={img} previewImg={previewImg}  />
       <AugmentationsTimeline isOpen={isTimelineOpen} toggleDrawer={toggleTimelineOpen}/>  
     </div>
   );

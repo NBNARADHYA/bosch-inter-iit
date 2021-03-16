@@ -17,6 +17,7 @@ from fastapi import Form
 from fastapi import Response
 from fastapi import UploadFile
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
@@ -28,6 +29,14 @@ app.mount("/img_dataset",
           StaticFiles(directory="img_dataset"),
           name="img_dataset")
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def load_image_into_numpy_array(data):
     return np.array(Image.open(BytesIO(data)))
@@ -53,6 +62,7 @@ async def transform_image(
         id: Optional[str] = Cookie(None),
         step_count: Optional[str] = Cookie(None),
 ):
+    print(transformation, parameters)
     if id is None:
         id = str(uuid.uuid4())
         print(id)

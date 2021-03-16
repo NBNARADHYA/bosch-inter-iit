@@ -24,7 +24,6 @@ const useStyle = makeStyles(() => ({
     margin: "5px"
   },
   slider: {
-    padding: "0px",
   },
   buttonGrid: {
     margin: "10px",
@@ -58,22 +57,23 @@ const Sidebar = ({
   theme,
   img,
   handleImgChange,
+  params,
+  setParams,
+  transformation,
+  setTransformation
 }) => {
-  const [params, setParams] = useState({});
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const handleParamsChange = useCallback((prop, val) => {
-    let newState = params;
+    let newState = {...params};
     newState[prop] = val;
     setParams(newState);
-  },[params]);
-
-  const [transformation, setTransformation] = useState(augmentations[0]);
+  },[params, setParams]);
 
   const handleTransformationChange = useCallback((e) => {
     const selectedTransformation = augmentations.filter(({id}) => id===e.target.value)[0];
     setTransformation(selectedTransformation);
     setParams({});
-  },[]);
+  },[setParams, setTransformation]);
 
   const spacing = useStyle();
   return (

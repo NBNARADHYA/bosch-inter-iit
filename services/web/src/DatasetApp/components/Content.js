@@ -2,6 +2,7 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import { Grid, makeStyles } from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   spacing: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Content = ({ classes, open, img }) => {
+const Content = ({ classes, open, img, previewImg }) => {
   const styles = useStyles();
   return (
     <main
@@ -26,11 +27,14 @@ const Content = ({ classes, open, img }) => {
       {img?.img?.length > 0 ? (
         <Grid container justify="center" alignItems="center" direction="column">
           <Typography variant="h6" align="center">Original image</Typography>
+          <br/>
           <img src={img.pictures[0]} alt={'Loading'} className={styles.imgStyle} />
           <br></br>
           <br></br>
           <Typography variant="h6" align="center">Transformed image</Typography>
-          <img src={img.pictures[0]} alt={'Loading'} className={styles.imgStyle}/>
+          <br/>
+          {!previewImg && <CircularProgress />}
+          {previewImg && <img src={previewImg || img.pictures[0]} alt={'Loading'} className={styles.imgStyle}/>}
         </Grid>
       ) : (
         <Grid container justify="center" alignItems="center" direction="column">
