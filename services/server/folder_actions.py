@@ -13,7 +13,10 @@ def mkdir_p(path):
             raise
 
 
-def delete_files(folder, split_string=None, low=None, restriction_string="preview_img"):
+def delete_files(folder,
+                 split_string=None,
+                 low=None,
+                 restriction_string="preview_img"):
     for filename in os.listdir(folder):
         if restriction_string in filename:
             continue

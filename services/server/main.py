@@ -14,8 +14,9 @@ from fastapi import Cookie
 from fastapi import FastAPI
 from fastapi import File
 from fastapi import Form
+from fastapi import HTTPException
 from fastapi import Response
-from fastapi import UploadFile, HTTPException
+from fastapi import UploadFile
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 
@@ -55,11 +56,14 @@ async def transform_image(
 ):
     if id is None:
         if image is None:
-            raise HTTPException(
-                status_code=400, detail="Image has to be uploaded")
+            raise HTTPException(status_code=400,
+                                detail="Image has to be uploaded")
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
-                status_code=400, detail="Image has to be added to the history before refering it")
+                status_code=400,
+                detail=
+                "Image has to be added to the history before refering it",
+            )
 
         id = str(uuid.uuid4())
         print(id)
@@ -88,7 +92,8 @@ async def transform_image(
         if img_url is not None:
             if transformation_step is None:
                 raise HTTPException(
-                    status_code=400, detail="transformation_step field required")
+                    status_code=400,
+                    detail="transformation_step field required")
 
             img_extension = "." + img_url.split(".")[1]
 
@@ -113,8 +118,8 @@ async def transform_image(
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     else:
-        raise HTTPException(
-            status_code=400, detail="img_url or preview_url required")
+        raise HTTPException(status_code=400,
+                            detail="img_url or preview_url required")
 
     transformed_image = image
 
