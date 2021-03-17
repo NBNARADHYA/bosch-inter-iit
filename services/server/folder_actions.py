@@ -13,9 +13,7 @@ def mkdir_p(path):
             raise
 
 
-def delete_files(folder,
-                 split_string=None,
-                 low=None):
+def delete_files(folder, split_string=None, low=None):
     for filename in os.listdir(folder):
         if split_string is not None and low is not None:
             step = int(filename.split(split_string)[1].split(".")[0])

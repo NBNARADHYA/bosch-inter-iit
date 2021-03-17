@@ -4,12 +4,14 @@ import uuid
 from io import BytesIO
 from typing import List
 from typing import Optional
-import pandas as pd
+
 import albumentations as A
 import augmentations
 import cv2
 import folder_actions
 import numpy as np
+import pandas as pd
+from balance import Balance
 from fastapi import Cookie
 from fastapi import FastAPI
 from fastapi import File
@@ -17,10 +19,9 @@ from fastapi import Form
 from fastapi import HTTPException
 from fastapi import Response
 from fastapi import UploadFile
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
-from balance import Balance
 from split import SplitDataset
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
@@ -31,11 +32,12 @@ app.mount("/images", StaticFiles(directory="images"), name="images")
 app.mount("/img_dataset",
           StaticFiles(directory="img_dataset"),
           name="img_dataset")
-app.mount("/image_previews", StaticFiles(directory="image_previews"),
+app.mount("/image_previews",
+          StaticFiles(directory="image_previews"),
           name="image_previews")
-app.mount("/train_val_csv", StaticFiles(directory="train_val_csv"),
+app.mount("/train_val_csv",
+          StaticFiles(directory="train_val_csv"),
           name="train_val_csv")
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -77,7 +79,8 @@ async def transform_image(
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
-                detail="Image has to be added to the history before refering it",
+                detail=
+                "Image has to be added to the history before refering it",
             )
 
         id = str(uuid.uuid4())
@@ -227,8 +230,10 @@ async def transform_images(
             transformed = transform(image=images[i])
             images[i] = transformed["image"]
             transformed_images.append({
-                "image": images[i],
-                "path": base_img_path + str(idx) + img_names[i]
+                "image":
+                images[i],
+                "path":
+                base_img_path + str(idx) + img_names[i]
             })
 
     for i in range(len(transformed_images)):
@@ -236,7 +241,10 @@ async def transform_images(
         im = Image.fromarray(image["image"])
         im.save(image["path"])
 
-    return {"done": True, "images": [image["path"] for image in transformed_images]}
+    return {
+        "done": True,
+        "images": [image["path"] for image in transformed_images]
+    }
 
 
 @app.post("/balance_dataset")
@@ -249,8 +257,8 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
         for filename in filenames:
             done = True
             class_id = dirname.split("/")[1]
-            img_df.loc[len(img_df.index)] = [
-                os.path.join(dirname, filename), class_id]
+            img_df.loc[len(
+                img_df.index)] = [os.path.join(dirname, filename), class_id]
 
     if not done:
         return {"done": done}
@@ -262,7 +270,11 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
 
 
 @app.post("/split_dataset")
-async def split_dataset(response: Response, split_percentage: Optional[float] = Form(None), id: Optional[str] = Cookie(None)):
+async def split_dataset(
+        response: Response,
+        split_percentage: Optional[float] = Form(None),
+        id: Optional[str] = Cookie(None),
+):
     if id is None:
         id = str(uuid.uuid4())
         response.set_cookie(key="id", value=id)
@@ -276,8 +288,8 @@ async def split_dataset(response: Response, split_percentage: Optional[float] = 
         for filename in filenames:
             done = True
             class_id = dirname.split("/")[1]
-            img_df.loc[len(img_df.index)] = [
-                os.path.join(dirname, filename), class_id]
+            img_df.loc[len(
+                img_df.index)] = [os.path.join(dirname, filename), class_id]
 
     if not done:
         return {"done": done}
@@ -292,4 +304,8 @@ async def split_dataset(response: Response, split_percentage: Optional[float] = 
 
     img_path = SERVER_BASE_URL + img_path
 
-    return {"done": True, "train": img_path + "_train.csv", "val": img_path + "_val.csv"}
+    return {
+        "done": True,
+        "train": img_path + "_train.csv",
+        "val": img_path + "_val.csv",
+    }
