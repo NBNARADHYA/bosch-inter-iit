@@ -15,11 +15,8 @@ def mkdir_p(path):
 
 def delete_files(folder,
                  split_string=None,
-                 low=None,
-                 restriction_string="preview_img"):
+                 low=None):
     for filename in os.listdir(folder):
-        if restriction_string in filename:
-            continue
         if split_string is not None and low is not None:
             step = int(filename.split(split_string)[1].split(".")[0])
             if step <= low:

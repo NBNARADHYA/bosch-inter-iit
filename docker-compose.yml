@@ -21,7 +21,9 @@ services:
     volumes:
       - ./services/server/:/app
       - server_images:/app/images
+      - server_image_previews:/app/image_previews
       - server_img_dataset:/app/img_dataset
+      - server_train_val_csv:/app/train_val_csv
     ports:
       - "5000:80"
 
@@ -43,3 +45,5 @@ volumes:
   node_modules_web:
   server_images:
   server_img_dataset:
+  server_image_previews:
+  server_train_val_csv:

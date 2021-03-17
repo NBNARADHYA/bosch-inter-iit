@@ -5,3 +5,6 @@ opencv-python
 python-multipart
 numpy
 aiofiles
+matplotlib
+pandas
+sklearn
