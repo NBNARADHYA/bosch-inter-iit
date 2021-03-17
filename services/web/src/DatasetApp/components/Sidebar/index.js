@@ -63,7 +63,8 @@ const Sidebar = ({
   setTransformation,
   addToHistory,
   resetHistory,
-  history
+  history,
+  imgDimensions
 }) => {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const handleParamsChange = useCallback((prop, val) => {
@@ -115,6 +116,7 @@ const Sidebar = ({
         transformation={transformation}
         params={params}
         handleParamsChange={handleParamsChange}
+        imgDimensions={imgDimensions}
       />
       <Divider />
       <br/>

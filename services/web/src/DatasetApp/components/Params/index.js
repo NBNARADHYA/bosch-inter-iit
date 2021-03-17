@@ -38,7 +38,7 @@ const stepSize = (str) => {
   return res;
 };
 
-const Params = ({ classes, transformation, params, handleParamsChange }) => {
+const Params = ({ classes, transformation, params, handleParamsChange, imgDimensions }) => {
   //Parse parameters into array of objects
   let { parameters } = transformation;
   parameters = JSON.parse(parameters);
@@ -83,7 +83,8 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
               handleParamsChange={handleParamsChange}
               min={min}
               max={max}
-              tooltipStyles={tooltipStyles}              
+              tooltipStyles={tooltipStyles}     
+              imgDimensions={imgDimensions}              
             />;
     }
     defaultVal = parseFloat(defaultVal);    
@@ -102,7 +103,8 @@ const Params = ({ classes, transformation, params, handleParamsChange }) => {
           max={max}          
           description={description}
           handleParamsChange={handleParamsChange}
-          tooltipStyles={tooltipStyles}          
+          tooltipStyles={tooltipStyles}     
+          imgDimensions={imgDimensions}     
         />
       );
     }    

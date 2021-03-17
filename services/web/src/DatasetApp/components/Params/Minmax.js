@@ -13,7 +13,10 @@ const Minmax = ({
   displayName,
   step,
   defaultVal,
-  handleParamsChange }) => {
+  handleParamsChange,
+  imgDimensions
+ }) => {
+  const { height, width } = imgDimensions;   
   let mn,mx;
   if(isFloat) {
     mn=0;
@@ -53,6 +56,13 @@ const Minmax = ({
 
   if(typeof max ==='number') {
     mx=max;
+  } else if(max==='h')
+  {
+    mx=height;
+  }
+  else if(max==='w')
+  {
+    mx=width;
   }
 
   const marks = [{

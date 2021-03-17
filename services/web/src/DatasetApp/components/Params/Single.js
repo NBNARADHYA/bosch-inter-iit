@@ -12,14 +12,24 @@ const Single = ({
   tooltipStyles,
   min,
   max,
-  handleParamsChange }) => {
-    
+  handleParamsChange,
+  imgDimensions
+ }) => {
+  const { height, width } = imgDimensions;
   if (!defaultVal || isNaN(Number(defaultVal)) ) defaultVal = 1;
   let mn,mx;
   if(typeof min ==='number')
     mn=min;
   if(typeof max ==='number')
     mx=max;
+  else if(max==='h')
+  {
+    mx=height;
+  }
+  else if(max==='w')
+  {
+    mx=width;
+  }
   else if(defaultVal >=0 && defaultVal <1)
   {
     mn=0;

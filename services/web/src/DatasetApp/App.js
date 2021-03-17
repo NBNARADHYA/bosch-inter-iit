@@ -7,7 +7,7 @@ import Content from "./components/Content";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import serverUrl from "../Constants/serverUrl";
-import { changeCamelCaseToNormal } from "../Utils";
+import { changeCamelCaseToNormal,removeQueryParams } from "../Utils";
 
 const drawerWidth = 360;
 
@@ -88,6 +88,9 @@ const App = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [img, setImg] = useState({});
+  const [originalDimensions, setOriginalDimensions] = useState({width: 300});  
+  const [previewDimensions, setPreviewDimensions] = useState({width: 300});    
+  const [historyDimensions, setHistoryDimensions] = useState({width: 300});      
   const [params, setParams] = useState({});
   const [transformation, setTransformation] = useState(augmentations[0]);  
 
@@ -124,7 +127,9 @@ const App = () => {
     if(history.length===0) {
       data.append('image',img.img[0]); 
     } else {
-      data.append('img_url',history[history.length-1].image);
+      if(parseInt(history[history.length-1].image.split("transformed_img_")[1])!==history.length-1)
+        return;
+      data.append('img_url',removeQueryParams(history[history.length-1].image));
       data.append('transformation_step',history.length-1);      
     }
     fetch(`${serverUrl}transform_image?preview=true`,{
@@ -133,16 +138,23 @@ const App = () => {
       body: data
     })
     .then(res => res.json())
-    .then(({error, img_path})=> {
-      if(error)
-        console.log(error);
-      else
+    .then(({img_path})=> {
           setPreviewImg(`${img_path}?${Date.now()}`);
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err.message || err);
     })
   },[params, img, transformation, history])
+
+  useEffect(() => {
+    if(!history.length)
+      return;
+    var imgObj = new Image();
+    imgObj.onload = function(){
+      setHistoryDimensions({height:this.height, width:this.width});
+    };
+    imgObj.src = history[history.length-1].image;                       
+  },[history])
 
   const addToHistory = useCallback(()=> {
     if(!img || !img.img || !img.img.length) {
@@ -158,7 +170,7 @@ const App = () => {
     //   data.append('preview_url',previewImg.substr(serverUrl.length));
     // } else
      if(history.length){
-      data.append('img_url',history[history.length-1].image);      
+      data.append('img_url',removeQueryParams(history[history.length-1].image));      
       data.append('parameters',JSON.stringify(JSON.stringify(params)));
       data.append('transformation',transformation.id);
       data.append('transformation_step',history.length-1);      
@@ -175,7 +187,6 @@ const App = () => {
     })
     .then(res => res.json())
     .then((res)=> {
-      console.log(res);
       const {error, img_path}=res;
       if(!error)
         {
@@ -197,7 +208,7 @@ const App = () => {
     setHistory([]);
     fetch(`${serverUrl}reset_images`,{
       method: 'POST',
-      body: {}
+      credentials: 'include'
     })
   },[])
 
@@ -226,6 +237,7 @@ const App = () => {
         addToHistory={addToHistory}
         resetHistory={resetHistory}
         history={history}
+        imgDimensions={history.length?historyDimensions:originalDimensions}      
       />
       <Content
         classes={classes}
@@ -234,12 +246,17 @@ const App = () => {
         previewImg={previewImg}
         params={params}
         transformation={transformation}
+        originalDimensions={originalDimensions}
+        setOriginalDimensions={setOriginalDimensions}
+        previewDimensions={previewDimensions}
+        setPreviewDimensions={setPreviewDimensions}
       />
       <AugmentationsTimeline
         isOpen={isTimelineOpen}
         toggleDrawer={toggleTimelineOpen}
         history={history}
         setHistory={setHistory}
+        img={img}
       />  
     </div>
   );

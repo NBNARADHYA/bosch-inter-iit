@@ -398,7 +398,7 @@ const augmentations = [
     name: "CenterCrop",
     description: "Crop the central part of the input.",
     parameters:
-      '[{"name":"height","type":"int","description":"height of the crop."},{"name":"width","type":"int","description":"width of the crop."},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
+      '[{"name":"height","type":"int","description":"height of the crop.","min":1, "max": "h"},{"name":"width","type":"int","description":"width of the crop.","min":1, "max": "w"},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
     category: 1,
   },
   {
@@ -406,7 +406,7 @@ const augmentations = [
     name: "Crop",
     description: "Crop region from image.",
     parameters:
-      '[{"name":"x_min","type":"int","description":"Minimum upper left x coordinate.","defaultVal":0},{"name":"y_min","type":"int","description":"Minimum upper left y coordinate.","defaultVal":0},{"name":"x_max","type":"int","description":"Maximum lower right x coordinate.","defaultVal":1024},{"name":"y_max","type":"int","description":"Maximum lower right y coordinate.","defaultVal":1024}]',
+      '[{"name":"x_min","type":"int","description":"Minimum upper left x coordinate.","defaultVal":0,"min":0,"max":"w"},{"name":"y_min","type":"int","description":"Minimum upper left y coordinate.","defaultVal":0,"min":0,"max":"h"},{"name":"x_max","type":"int","description":"Maximum lower right x coordinate.","defaultVal":1024,"min":1, "max": "w"},{"name":"y_max","type":"int","description":"Maximum lower right y coordinate.","defaultVal":1024,"min":1, "max": "h"}]',
     category: 1,
   },
   {
@@ -414,7 +414,7 @@ const augmentations = [
     name: "RandomCrop",
     description: "Crop a random part of the input.",
     parameters:
-      '[{"name":"height","type":"int","description":"height of the crop."},{"name":"width","type":"int","description":"width of the crop."},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
+      '[{"name":"height","type":"int","description":"height of the crop.","min":1, "max": "h"},{"name":"width","type":"int","description":"width of the crop.","min":1, "max": "w"},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
     category: 1,
   },
   {
@@ -431,7 +431,7 @@ const augmentations = [
     description:
       "Torchvision's variant of crop a random part of the input and rescale it to some size.",
     parameters:
-      '[{"name":"height","type":"int","description":"height after crop and resize."},{"name":"width","type":"int","description":"width after crop and resize."},{"name":"scale","type":"[float, float]","description":"range of size of the origin size cropped","defaultVal":"(0.08,1.0)"},{"name":"ratio","type":"[float, float]","description":"range of aspect ratio of the origin aspect ratio cropped","defaultVal":"(0.75,1.3333333333333333)"},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
+      '[{"name":"height","type":"int","description":"height after crop and resize.","min":1, "max": "h"},{"name":"width","type":"int","description":"width after crop and resize.","min":1, "max": "w"},{"name":"scale","type":"[float, float]","description":"range of size of the origin size cropped","defaultVal":"(0.08,1.0)"},{"name":"ratio","type":"[float, float]","description":"range of aspect ratio of the origin aspect ratio cropped","defaultVal":"(0.75,1.3333333333333333)"},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
     category: 1,
   },
   {
@@ -440,7 +440,7 @@ const augmentations = [
     description:
       "Crop a random part of the input and rescale it to some size without loss of bboxes.",
     parameters:
-      '[{"name":"height","type":"int","description":"height after crop and resize."},{"name":"width","type":"int","description":"width after crop and resize."},{"name":"erosion_rate","type":"float","description":"erosion rate applied on input image height before crop.","defaultVal":0},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
+      '[{"name":"height","type":"int","description":"height after crop and resize.","min":1, "max": "h"},{"name":"width","type":"int","description":"width after crop and resize.","min":1, "max": "w"},{"name":"erosion_rate","type":"float","description":"erosion rate applied on input image height before crop.","defaultVal":0},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
     category: 1,
   },
   {
@@ -448,7 +448,7 @@ const augmentations = [
     name: "RandomSizedCrop",
     description: "Crop a random part of the input and rescale it to some size.",
     parameters:
-      '[{"name":"min_max_height","type":"[int, int]","description":"crop size limits."},{"name":"height","type":"int","description":"height after crop and resize."},{"name":"width","type":"int","description":"width after crop and resize."},{"name":"w2h_ratio","type":"float","description":"aspect ratio of crop.","defaultVal":1},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
+      '[{"name":"min_max_height","type":"[int, int]","description":"crop size limits.","min":1, "max": "h"},{"name":"height","type":"int","description":"height after crop and resize."},{"name":"width","type":"int","description":"width after crop and resize.","min":1, "max": "w"},{"name":"w2h_ratio","type":"float","description":"aspect ratio of crop.","defaultVal":1},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
     category: 1,
   },
   {
@@ -474,7 +474,7 @@ const augmentations = [
     name: "Resize",
     description: "Resize the input to the given height and width.",
     parameters:
-      '[{"name":"height","type":"int","description":"desired height of the output."},{"name":"width","type":"int","description":"desired width of the output."},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
+      '[{"name":"height","type":"int","description":"desired height of the output.","min":1, "max": 1024},{"name":"width","type":"int","description":"desired width of the output.","min":1, "max": 1024},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
     category: 2,
   },
   {
