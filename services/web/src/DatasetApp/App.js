@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import serverUrl from "../Constants/serverUrl";
 import { changeCamelCaseToNormal,removeQueryParams } from "../Utils";
+import CustomSnackbar from "../Common/CustomSnackbar";
 
 const drawerWidth = 360;
 
@@ -93,6 +94,7 @@ const App = () => {
   const [historyDimensions, setHistoryDimensions] = useState({width: 300});      
   const [params, setParams] = useState({});
   const [transformation, setTransformation] = useState(augmentations[0]);  
+  const [snackPack, setSnackPack] = React.useState([]);
 
   const toggleTimelineOpen = useCallback(()=> {
     setTimelineOpen(!isTimelineOpen);
@@ -190,13 +192,18 @@ const App = () => {
       const {error, img_path}=res;
       if(!error)
         {
+          const displayName = changeCamelCaseToNormal(transformation.name);
           const newHistory = [...history,{
             image: img_path,
             id: transformation.id,
-            name: changeCamelCaseToNormal(transformation.name),
+            name: displayName,
             parameters: params,
           }];
           setHistory(newHistory);
+          setSnackPack((prev) => [...prev, {
+             message: `${displayName} with probability ${params['p']} added to timeline`, 
+             key: new Date().getTime() 
+            }]);          
         }
     })
     .catch((err) => {
@@ -211,6 +218,13 @@ const App = () => {
       credentials: 'include'
     })
   },[])
+
+  const handleUndo = useCallback(()  => {
+    if(!history.length)
+      return;
+    const newHistory = history.filter((h,i) => i !== history.length-1);
+    setHistory(newHistory);
+  },[history])
 
   return (
     <div className={classes.root}>
@@ -258,6 +272,11 @@ const App = () => {
         setHistory={setHistory}
         img={img}
       />  
+      <CustomSnackbar
+        snackPack={snackPack}
+        setSnackPack={setSnackPack}
+        handleUndo={handleUndo}
+      />
     </div>
   );
 };
