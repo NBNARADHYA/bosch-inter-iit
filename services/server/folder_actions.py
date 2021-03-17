@@ -21,8 +21,6 @@ def delete_files(folder,
         if restriction_string in filename:
             continue
         if split_string is not None and low is not None:
-            if 'preview_img' in filename:
-                continue
             step = int(filename.split(split_string)[1].split(".")[0])
             if step <= low:
                 continue
