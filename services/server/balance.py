@@ -15,40 +15,38 @@ class Balance:
 
         if min_samples == -1:
             self.min_samples = int(
-                (self.df.groupby(by="label").count().values.max()) * 0.8
-            )
+                (self.df.groupby(by="label").count().values.max()) * 0.8)
 
         self.oversampling()
 
     def oversampling(self):
-        self.transform = A.Compose(
-            [
-                A.RandomBrightnessContrast(
-                    always_apply=False,
-                    p=0.4,
-                    brightness_limit=(-0.2, 0.2),
-                    contrast_limit=(-0.2, 0.2),
-                ),
-                A.CLAHE(
-                    always_apply=False, p=0.5, clip_limit=(1, 4), tile_grid_size=(8, 8)
-                ),
-                A.GaussNoise(always_apply=False, p=0.4, var_limit=(20, 40)),
-                A.Downscale(
-                    always_apply=False,
-                    p=0.4,
-                    scale_min=0.5,
-                    scale_max=0.8,
-                    interpolation=0,
-                ),
-                A.HueSaturationValue(
-                    always_apply=False,
-                    p=0.4,
-                    hue_shift_limit=(-20, 20),
-                    sat_shift_limit=(-30, 30),
-                    val_shift_limit=(-20, 20),
-                ),
-            ]
-        )
+        self.transform = A.Compose([
+            A.RandomBrightnessContrast(
+                always_apply=False,
+                p=0.4,
+                brightness_limit=(-0.2, 0.2),
+                contrast_limit=(-0.2, 0.2),
+            ),
+            A.CLAHE(always_apply=False,
+                    p=0.5,
+                    clip_limit=(1, 4),
+                    tile_grid_size=(8, 8)),
+            A.GaussNoise(always_apply=False, p=0.4, var_limit=(20, 40)),
+            A.Downscale(
+                always_apply=False,
+                p=0.4,
+                scale_min=0.5,
+                scale_max=0.8,
+                interpolation=0,
+            ),
+            A.HueSaturationValue(
+                always_apply=False,
+                p=0.4,
+                hue_shift_limit=(-20, 20),
+                sat_shift_limit=(-30, 30),
+                val_shift_limit=(-20, 20),
+            ),
+        ])
 
     def balance(self):
         class_ids = self.df.label.unique()
@@ -61,7 +59,7 @@ class Balance:
             images = group[id]
 
             temp = images[0]
-            path = temp[: temp.rfind("/") + 1]
+            path = temp[:temp.rfind("/") + 1]
             if not os.path.exists(path):
                 os.makedirs(path)
 
@@ -73,7 +71,8 @@ class Balance:
                 image = plt.imread(imagepath)
                 transformed = self.transform(image=image)
                 transformed_image = transformed["image"]
-                pathimg = path + "newsample_" + str(id) + str(i) + imagepath[-4:]
+                pathimg = path + "newsample_" + str(id) + str(
+                    i) + imagepath[-4:]
                 plt.imsave(pathimg, transformed_image)
                 self.df.loc[len(self.df.index)] = [pathimg, id]
 

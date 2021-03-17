@@ -10,9 +10,10 @@ class SplitDataset:
         self.percentage = split_percentage
 
     def split(self):
-        df_train, df_val = train_test_split(
-            self.df, test_size=self.percentage, shuffle=True, stratify=self.df.label
-        )
+        df_train, df_val = train_test_split(self.df,
+                                            test_size=self.percentage,
+                                            shuffle=True,
+                                            stratify=self.df.label)
 
         return (df_train, df_val)
 

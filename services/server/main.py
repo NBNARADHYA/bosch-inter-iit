@@ -29,14 +29,15 @@ SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 app = FastAPI()
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
-app.mount("/img_dataset", StaticFiles(directory="img_dataset"), name="img_dataset")
-app.mount(
-    "/image_previews", StaticFiles(directory="image_previews"), name="image_previews"
-)
-app.mount(
-    "/train_val_csv", StaticFiles(directory="train_val_csv"), name="train_val_csv"
-)
-
+app.mount("/img_dataset",
+          StaticFiles(directory="img_dataset"),
+          name="img_dataset")
+app.mount("/image_previews",
+          StaticFiles(directory="image_previews"),
+          name="image_previews")
+app.mount("/train_val_csv",
+          StaticFiles(directory="train_val_csv"),
+          name="train_val_csv")
 
 app.add_middleware(
     CORSMiddleware,
@@ -60,24 +61,26 @@ def hinted_tuple_hook(obj):
 
 @app.post("/transform_image", status_code=200)
 async def transform_image(
-    response: Response,
-    preview: bool = False,
-    parameters: Optional[str] = Form(None),
-    transformation: Optional[int] = Form(None),
-    transformation_step: Optional[int] = Form(None),
-    img_url: Optional[str] = Form(None),
-    preview_url: Optional[str] = Form(None),
-    image: Optional[UploadFile] = File(None),
-    id: Optional[str] = Cookie(None),
-    step_count: Optional[str] = Cookie(None),
+        response: Response,
+        preview: bool = False,
+        parameters: Optional[str] = Form(None),
+        transformation: Optional[int] = Form(None),
+        transformation_step: Optional[int] = Form(None),
+        img_url: Optional[str] = Form(None),
+        preview_url: Optional[str] = Form(None),
+        image: Optional[UploadFile] = File(None),
+        id: Optional[str] = Cookie(None),
+        step_count: Optional[str] = Cookie(None),
 ):
     if id is None:
         if image is None:
-            raise HTTPException(status_code=400, detail="Image has to be uploaded")
+            raise HTTPException(status_code=400,
+                                detail="Image has to be uploaded")
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
-                detail="Image has to be added to the history before refering it",
+                detail=
+                "Image has to be added to the history before refering it",
             )
 
         id = str(uuid.uuid4())
@@ -106,14 +109,13 @@ async def transform_image(
         if img_url is not None:
             if transformation_step is None:
                 raise HTTPException(
-                    status_code=400, detail="transformation_step field required"
-                )
+                    status_code=400,
+                    detail="transformation_step field required")
 
             img_extension = "." + img_url.split(".")[1]
 
-            img_url_new += (
-                "/transformed_img_" + str(transformation_step) + img_extension
-            )
+            img_url_new += ("/transformed_img_" + str(transformation_step) +
+                            img_extension)
 
             if not preview:
                 step_count = str(int(transformation_step) + 1)
@@ -133,13 +135,16 @@ async def transform_image(
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     else:
-        raise HTTPException(status_code=400, detail="img_url or preview_url required")
+        raise HTTPException(status_code=400,
+                            detail="img_url or preview_url required")
 
     transformed_image = image
 
     if img_url is not None or preview_url is None:
-        parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
-        transform = augmentations.augmentations_dict[transformation](**parameters)
+        parameters = json.loads(json.loads(parameters),
+                                object_hook=hinted_tuple_hook)
+        transform = augmentations.augmentations_dict[transformation](
+            **parameters)
 
         transformed = transform(image=image)
         transformed_image = transformed["image"]
@@ -184,13 +189,13 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
 
 @app.post("/transform_images")
 async def transform_images(
-    response: Response,
-    parameters: str = Form(...),
-    transformations: str = Form(...),
-    num_iterations: int = Form(...),
-    class_id: int = Form(...),
-    images: List[UploadFile] = File(...),
-    id: Optional[str] = Cookie(None),
+        response: Response,
+        parameters: str = Form(...),
+        transformations: str = Form(...),
+        num_iterations: int = Form(...),
+        class_id: int = Form(...),
+        images: List[UploadFile] = File(...),
+        id: Optional[str] = Cookie(None),
 ):
 
     if id is None:
@@ -201,20 +206,20 @@ async def transform_images(
     base_img_path = "img_dataset/" + str(class_id) + "/"
     folder_actions.mkdir_p(base_img_path)
 
-    parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
-    transformations = json.loads(
-        json.loads(transformations), object_hook=hinted_tuple_hook
-    )
+    parameters = json.loads(json.loads(parameters),
+                            object_hook=hinted_tuple_hook)
+    transformations = json.loads(json.loads(transformations),
+                                 object_hook=hinted_tuple_hook)
 
-    transform = A.Compose(
-        [
-            augmentations.augmentations_dict[transformation](**parameters[idx])
-            for idx, transformation in enumerate(transformations)
-        ]
-    )
+    transform = A.Compose([
+        augmentations.augmentations_dict[transformation](**parameters[idx])
+        for idx, transformation in enumerate(transformations)
+    ])
 
     img_names = [image.filename for image in images]
-    images = [load_image_into_numpy_array(await image.read()) for image in images]
+    images = [
+        load_image_into_numpy_array(await image.read()) for image in images
+    ]
 
     base_img_path += str(id)
 
@@ -224,16 +229,22 @@ async def transform_images(
         for i in range(len(images)):
             transformed = transform(image=images[i])
             images[i] = transformed["image"]
-            transformed_images.append(
-                {"image": images[i], "path": base_img_path + str(idx) + img_names[i]}
-            )
+            transformed_images.append({
+                "image":
+                images[i],
+                "path":
+                base_img_path + str(idx) + img_names[i]
+            })
 
     for i in range(len(transformed_images)):
         image = transformed_images[i]
         im = Image.fromarray(image["image"])
         im.save(image["path"])
 
-    return {"done": True, "images": [image["path"] for image in transformed_images]}
+    return {
+        "done": True,
+        "images": [image["path"] for image in transformed_images]
+    }
 
 
 @app.post("/balance_dataset")
@@ -246,7 +257,8 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
         for filename in filenames:
             done = True
             class_id = dirname.split("/")[1]
-            img_df.loc[len(img_df.index)] = [os.path.join(dirname, filename), class_id]
+            img_df.loc[len(
+                img_df.index)] = [os.path.join(dirname, filename), class_id]
 
     if not done:
         return {"done": done}
@@ -259,9 +271,9 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
 
 @app.post("/split_dataset")
 async def split_dataset(
-    response: Response,
-    split_percentage: Optional[float] = Form(None),
-    id: Optional[str] = Cookie(None),
+        response: Response,
+        split_percentage: Optional[float] = Form(None),
+        id: Optional[str] = Cookie(None),
 ):
     if id is None:
         id = str(uuid.uuid4())
@@ -276,7 +288,8 @@ async def split_dataset(
         for filename in filenames:
             done = True
             class_id = dirname.split("/")[1]
-            img_df.loc[len(img_df.index)] = [os.path.join(dirname, filename), class_id]
+            img_df.loc[len(
+                img_df.index)] = [os.path.join(dirname, filename), class_id]
 
     if not done:
         return {"done": done}
