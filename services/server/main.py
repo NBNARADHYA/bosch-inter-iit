@@ -2,20 +2,15 @@ import json
 import os
 import uuid
 from io import BytesIO
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import albumentations as A
 import augmentations
 import cv2
 import folder_actions
 import numpy as np
-from fastapi import Cookie
-from fastapi import FastAPI
-from fastapi import File
-from fastapi import Form
-from fastapi import Response
-from fastapi import UploadFile, HTTPException
+from fastapi import (Cookie, FastAPI, File, Form, HTTPException, Response,
+                     UploadFile)
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 
