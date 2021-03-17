@@ -1,19 +1,32 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   spacing: {
-    margin: "30px 180px",
+    margin: "70px 180px"
   },
-  imgStyle: {
-    width: "700px",
-    height: "450px",
+  fixedWidthImg: {
+    textAlign: "center",
+    width: "300px"
+  },
+  originalImg: {
+    textAlign: "center"
   },
 }));
 
-const Content = ({ classes, open, img }) => {
+const Content = ({
+  classes,
+  open,
+  img,
+  previewImg,
+  originalDimensions,
+  setOriginalDimensions,
+  previewDimensions,
+  setPreviewDimensions
+}) => {
   const styles = useStyles();
   return (
     <main
@@ -24,20 +37,41 @@ const Content = ({ classes, open, img }) => {
       <div className={classes.drawerHeader} />
 
       {img?.img?.length > 0 ? (
-        <div className={styles.spacing}>
+        <Grid container justify="center" alignItems="center" direction="column">
           <Typography variant="h6" align="center">Original image</Typography>
-          <img src={img.pictures[0]} className={styles.imgStyle} />
+          <br/>
+          <img src={img.pictures[0]} alt={'Loading'} className={originalDimensions.width > 300 ? styles.fixedWidthImg: styles.originalImg}
+               onLoad={() => {
+                var imgObj = new Image();
+                imgObj.onload = function(){
+                  setOriginalDimensions({height:this.height, width:this.width});
+                };
+                imgObj.src = img.pictures[0];                 
+              }}
+          />
           <br></br>
           <br></br>
           <Typography variant="h6" align="center">Transformed image</Typography>
-          <img src={img.pictures[0]} className={styles.imgStyle} />
-        </div>
+          <br/>
+          {!previewImg && <CircularProgress />}
+          {previewImg && 
+          <img src={previewImg || img.pictures[0]} alt={'Loading'} className={previewDimensions.width > 300 ? styles.fixedWidthImg: styles.originalImg}
+               onLoad={() => {
+                var imgObj = new Image();
+                imgObj.onload = function(){
+                  setPreviewDimensions({height:this.height, width:this.width});
+                };
+                imgObj.src = previewImg || img.pictures[0];                 
+              }}
+          />}
+        </Grid>
       ) : (
-        <div className={styles.spacing}>
+        <Grid container justify="center" alignItems="center" direction="column">
+          <br/>
           <Typography variant="h6">
             Please upload images in the sidebar menu.
           </Typography>
-        </div>
+        </Grid>
       )}
     </main>
   );

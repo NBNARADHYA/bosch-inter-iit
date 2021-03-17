@@ -15,3 +15,11 @@ export function displayParameterName(paraName) {
   paraName = paraName.charAt(0).toUpperCase() + paraName.substring(1);
   return paraName;
 }
+
+export function removeQueryParams(url) {
+  const indexQ = url.lastIndexOf("?");
+  if(indexQ===-1)
+    return url;
+  else
+    return url.substr(0,indexQ);
+}

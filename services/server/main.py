@@ -18,6 +18,7 @@ from fastapi import HTTPException
 from fastapi import Response
 from fastapi import UploadFile
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
@@ -29,6 +30,14 @@ app.mount("/img_dataset",
           StaticFiles(directory="img_dataset"),
           name="img_dataset")
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def load_image_into_numpy_array(data):
     return np.array(Image.open(BytesIO(data)))
@@ -113,7 +122,6 @@ async def transform_image(
             img_extension = "." + preview_url.split(".")[1]
 
             img_url_new += "/preview_img" + img_extension
-
         image = cv2.imread(img_url_new)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 

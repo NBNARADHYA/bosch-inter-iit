@@ -1,10 +1,14 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
+import AugmentationsTimeline from "./components/AugmentationsTimeline"
+import augmentations from "../Constants/augmentations";
 import Content from "./components/Content";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
+import serverUrl from "../Constants/serverUrl";
+import { changeCamelCaseToNormal,removeQueryParams } from "../Utils";
+import CustomSnackbar from "../Common/CustomSnackbar";
 
 const drawerWidth = 360;
 
@@ -17,10 +21,8 @@ const useStyles = makeStyles((theme) => ({
         '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
       },
       '*::-webkit-scrollbar-thumb': {
-        '&:hover': {
           backgroundColor: '#757575',
           outline: '1px solid #757575'
-        }
       },
     },  
   root: {
@@ -81,8 +83,22 @@ const useStyles = makeStyles((theme) => ({
 
 const App = () => {
   const classes = useStyles();
+  const [isTimelineOpen, setTimelineOpen] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [previewImg, setPreviewImg] = useState("");  
   const theme = useTheme();
   const [open, setOpen] = useState(true);
+  const [img, setImg] = useState({});
+  const [originalDimensions, setOriginalDimensions] = useState({width: 300});  
+  const [previewDimensions, setPreviewDimensions] = useState({width: 300});    
+  const [historyDimensions, setHistoryDimensions] = useState({width: 300});      
+  const [params, setParams] = useState({});
+  const [transformation, setTransformation] = useState(augmentations[0]);  
+  const [snackPack, setSnackPack] = React.useState([]);
+
+  const toggleTimelineOpen = useCallback(()=> {
+    setTimelineOpen(!isTimelineOpen);
+  },[isTimelineOpen]);
 
   const handleDrawerOpen =  useCallback(() => {
     setOpen(true);
@@ -92,14 +108,123 @@ const App = () => {
     setOpen(false);
   }, []);
 
-  const [img, setImg] = useState({});
-
   const handleImgChange = useCallback((img, pictures) => {
     let newState = {};
     newState.img = img;
     newState.pictures = pictures;
     setImg(newState);
   },[]);
+
+  useEffect(()=> {
+    if(!img || !img.img || !img.img.length) {
+      return;
+    }
+    const data = new FormData();
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='p') && !params['p'])
+    {
+      params['p']=1.0;
+    }
+    data.append('parameters',JSON.stringify(JSON.stringify(params)));
+    data.append('transformation',transformation.id);
+    if(history.length===0) {
+      data.append('image',img.img[0]); 
+    } else {
+      if(parseInt(history[history.length-1].image.split("transformed_img_")[1])!==history.length-1)
+        return;
+      data.append('img_url',removeQueryParams(history[history.length-1].image));
+      data.append('transformation_step',history.length-1);      
+    }
+    fetch(`${serverUrl}transform_image?preview=true`,{
+      method: 'POST',
+      credentials: 'include',
+      body: data
+    })
+    .then(res => res.json())
+    .then(({img_path})=> {
+          setPreviewImg(`${img_path}?${Date.now()}`);
+    })
+    .catch((err) => {
+      console.log(err.message || err);
+    })
+  },[params, img, transformation, history])
+
+  useEffect(() => {
+    if(!history.length)
+      return;
+    var imgObj = new Image();
+    imgObj.onload = function(){
+      setHistoryDimensions({height:this.height, width:this.width});
+    };
+    imgObj.src = history[history.length-1].image;                       
+  },[history])
+
+  const addToHistory = useCallback(()=> {
+    if(!img || !img.img || !img.img.length) {
+      return;
+    }
+    const data = new FormData();
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='p') && !params['p'])
+    {
+      params['p']=1.0;
+    }
+
+    // if(previewImg) {
+    //   data.append('preview_url',previewImg.substr(serverUrl.length));
+    // } else
+     if(history.length){
+      data.append('img_url',removeQueryParams(history[history.length-1].image));      
+      data.append('parameters',JSON.stringify(JSON.stringify(params)));
+      data.append('transformation',transformation.id);
+      data.append('transformation_step',history.length-1);      
+    } else {
+      data.append('image',img.img[0]); 
+      data.append('parameters',JSON.stringify(JSON.stringify(params)));
+      data.append('transformation',transformation.id);
+    }
+
+    fetch(`${serverUrl}transform_image?preview=false`,{
+      method: 'POST',
+      credentials: 'include',      
+      body: data
+    })
+    .then(res => res.json())
+    .then((res)=> {
+      const {error, img_path}=res;
+      if(!error)
+        {
+          const displayName = changeCamelCaseToNormal(transformation.name);
+          const newHistory = [...history,{
+            image: img_path,
+            id: transformation.id,
+            name: displayName,
+            parameters: params,
+          }];
+          setHistory(newHistory);
+          setSnackPack((prev) => [...prev, {
+             message: `${displayName} with probability ${params['p']} added to timeline`, 
+             key: new Date().getTime() 
+            }]);          
+        }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  },[params, img, transformation, history]);
+
+  const resetHistory = useCallback(() => {
+    setHistory([]);
+    fetch(`${serverUrl}reset_images`,{
+      method: 'POST',
+      credentials: 'include'
+    })
+  },[])
+
+  const handleUndo = useCallback(()  => {
+    if(!history.length)
+      return;
+    const newHistory = history.filter((h,i) => i !== history.length-1);
+    setHistory(newHistory);
+  },[history])
 
   return (
     <div className={classes.root}>
@@ -110,6 +235,7 @@ const App = () => {
         handleDrawerOpen={handleDrawerOpen}
         handleDrawerClose={handleDrawerClose}
         theme={theme}
+        toggleTimelineDrawer={toggleTimelineOpen}
       />
       <Sidebar
         classes={classes}
@@ -118,8 +244,39 @@ const App = () => {
         theme={theme}
         img={img}
         handleImgChange={handleImgChange}
+        params={params}
+        setParams={setParams}     
+        transformation={transformation}
+        setTransformation={setTransformation}
+        addToHistory={addToHistory}
+        resetHistory={resetHistory}
+        history={history}
+        imgDimensions={history.length?historyDimensions:originalDimensions}      
       />
-      <Content classes={classes} open={open} img={img} />
+      <Content
+        classes={classes}
+        open={open}
+        img={img}
+        previewImg={previewImg}
+        params={params}
+        transformation={transformation}
+        originalDimensions={originalDimensions}
+        setOriginalDimensions={setOriginalDimensions}
+        previewDimensions={previewDimensions}
+        setPreviewDimensions={setPreviewDimensions}
+      />
+      <AugmentationsTimeline
+        isOpen={isTimelineOpen}
+        toggleDrawer={toggleTimelineOpen}
+        history={history}
+        setHistory={setHistory}
+        img={img}
+      />  
+      <CustomSnackbar
+        snackPack={snackPack}
+        setSnackPack={setSnackPack}
+        handleUndo={handleUndo}
+      />
     </div>
   );
 };

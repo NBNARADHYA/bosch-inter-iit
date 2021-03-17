@@ -8,19 +8,22 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import SelectTranformation from "./SelectTransformation";
 import { Grid, makeStyles, withStyles } from "@material-ui/core";
-import augmentations from "../../Constants/augmentations";
+import augmentations from "../../../Constants/augmentations";
 import UploadImage from "./UploadImage";
-import Params from "./Params";
+import Params from "../Params";
 import { Button } from "@material-ui/core";
 import { green, red } from '@material-ui/core/colors';
+import ResetDialog from "./ResetDialog";
 
 const useStyle = makeStyles(() => ({
   spacing: {
     margin: "20px",
     width: 280
   },
+  spacingUploadButton: {
+    margin: "5px"
+  },
   slider: {
-    padding: "0px",
   },
   buttonGrid: {
     margin: "10px",
@@ -54,27 +57,27 @@ const Sidebar = ({
   theme,
   img,
   handleImgChange,
+  params,
+  setParams,
+  transformation,
+  setTransformation,
+  addToHistory,
+  resetHistory,
+  history,
+  imgDimensions
 }) => {
-  const [params, setParams] = useState({});
-
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const handleParamsChange = useCallback((prop, val) => {
-    let newState = params;
+    let newState = {...params};
     newState[prop] = val;
     setParams(newState);
-  },[params]);
-
-  const [transformation, setTransformation] = useState(augmentations[0]);
+  },[params, setParams]);
 
   const handleTransformationChange = useCallback((e) => {
-    const selectedTransformation = augmentations.filter(({id}) => id==e.target.value)[0];
+    const selectedTransformation = augmentations.filter(({id}) => id===e.target.value)[0];
     setTransformation(selectedTransformation);
     setParams({});
-    // let { parameters } = transformation;
-    // parameters = JSON.parse(parameters);
-    // parameters.forEach((param) => {
-    //   handleParamsChange(param.name, param.default);
-    // });
-  },[]);
+  },[setParams, setTransformation]);
 
   const spacing = useStyle();
   return (
@@ -113,6 +116,7 @@ const Sidebar = ({
         transformation={transformation}
         params={params}
         handleParamsChange={handleParamsChange}
+        imgDimensions={imgDimensions}
       />
       <Divider />
       <br/>
@@ -120,17 +124,26 @@ const Sidebar = ({
           <DoneButton
             variant="contained"
             startIcon={<DoneIcon/>}
+            onClick={addToHistory}
+            disabled={!img || !img.img || !img.img.length}
           >
             Apply
           </DoneButton>
           <ResetButton
             variant="contained"
             startIcon={<ClearIcon/>}
+            onClick={()=> {setResetDialogOpen(true);}}
+            disabled={!history.length}
           >
             Reset
           </ResetButton>          
         </Grid>
       <br/>
+      <ResetDialog
+        handleClose={()=> {setResetDialogOpen(false);}}
+        handleReset={()=> {resetHistory(); setResetDialogOpen(false);}}
+        isOpen={resetDialogOpen}
+      />
     </Drawer>
   );
 };
