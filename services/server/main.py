@@ -30,10 +30,14 @@ app.mount("/img_dataset",
           StaticFiles(directory="img_dataset"),
           name="img_dataset")
 
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

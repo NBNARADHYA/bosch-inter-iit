@@ -23,3 +23,41 @@ export function removeQueryParams(url) {
   else
     return url.substr(0,indexQ);
 }
+
+export function generateTransformationRequestBody(transformation, history, params, img, originalDimensions, historyDimensions, preview)
+{
+  const data = new FormData();
+  if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='p').length && !params['p'])
+  {
+    params['p']=1.0;
+  }
+  data.append('transformation',transformation.id);
+  if(history.length===0) {
+    data.append('image',img.img[0]); 
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='width').length && !params['width'])
+    {
+      params['width']=originalDimensions.width;
+      params['height']=originalDimensions.height;        
+    }
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='x_max').length && !params['x_max'])
+    {
+      params['x_max']=originalDimensions.width;
+      params['y_max']=originalDimensions.height;        
+    }                
+  } else {
+    data.append('img_url',removeQueryParams(history[history.length-1].image));
+    data.append('transformation_step',history.length-1);
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='width').length && !params['width'])
+    {
+      params['width']=historyDimensions.width;
+      params['height']=historyDimensions.height;        
+    }       
+    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='x_max').length && !params['x_max'])
+    {
+      params['x_max']=historyDimensions.width;
+      params['y_max']=historyDimensions.height;        
+    }                               
+  }
+  data.append('parameters',JSON.stringify(JSON.stringify(params)));   
+  return data;  
+}

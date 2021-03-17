@@ -45,7 +45,14 @@ const Single = ({
     mn=0;
     mx=100;
   }
-
+  if(name==="width" || name==="x_max")
+  {
+    defaultVal=imgDimensions.width;
+  }
+  if(name==="height"|| name==="y_max")
+  {
+    defaultVal=imgDimensions.height;
+  }  
   return (
     <div className={classes.spacing}>
       <Tooltip title={description} placement="top" classes={tooltipStyles}>
