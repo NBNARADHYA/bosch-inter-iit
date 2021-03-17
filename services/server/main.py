@@ -14,6 +14,7 @@ from fastapi import Cookie
 from fastapi import FastAPI
 from fastapi import File
 from fastapi import Form
+from fastapi import HTTPException
 from fastapi import Response
 from fastapi import UploadFile
 from fastapi.staticfiles import StaticFiles
@@ -40,7 +41,7 @@ def hinted_tuple_hook(obj):
         return obj
 
 
-@app.post("/transform_image")
+@app.post("/transform_image", status_code=200)
 async def transform_image(
         response: Response,
         preview: bool = False,
@@ -54,6 +55,16 @@ async def transform_image(
         step_count: Optional[str] = Cookie(None),
 ):
     if id is None:
+        if image is None:
+            raise HTTPException(status_code=400,
+                                detail="Image has to be uploaded")
+        elif img_url is not None or preview_url is not None:
+            raise HTTPException(
+                status_code=400,
+                detail=
+                "Image has to be added to the history before refering it",
+            )
+
         id = str(uuid.uuid4())
         print(id)
         response.set_cookie(key="id", value=id)
@@ -80,7 +91,9 @@ async def transform_image(
         img_url_new = "images/" + str(id)
         if img_url is not None:
             if transformation_step is None:
-                return {"error": "transformation_step field required"}
+                raise HTTPException(
+                    status_code=400,
+                    detail="transformation_step field required")
 
             img_extension = "." + img_url.split(".")[1]
 
@@ -105,7 +118,8 @@ async def transform_image(
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     else:
-        return {"error": "img_url or preview_url required"}
+        raise HTTPException(status_code=400,
+                            detail="img_url or preview_url required")
 
     transformed_image = image
 
