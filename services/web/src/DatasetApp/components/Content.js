@@ -23,6 +23,7 @@ const Content = ({
   open,
   img,
   previewImg,
+  history,
   originalDimensions,
   setOriginalDimensions,
   previewDimensions,
@@ -103,6 +104,7 @@ const Content = ({
           <Button
             variant="contained"
             color="primary"
+            disabled={history && history.length > 0 ? false : true}
             onClick={handleClickOpen}
             className={styles.spacing}
           >
@@ -112,6 +114,8 @@ const Content = ({
             dialogOpen={dialogOpen}
             handleClickOpen={handleClickOpen}
             handleClose={handleClose}
+            history={history}
+            img={img}
           />
         </Grid>
       ) : (
