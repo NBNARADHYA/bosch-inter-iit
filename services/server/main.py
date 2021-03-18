@@ -10,6 +10,8 @@ import augmentations
 import cv2
 import folder_actions
 import numpy as np
+import pandas as pd
+from balance import Balance
 from fastapi import Cookie
 from fastapi import FastAPI
 from fastapi import File
@@ -17,9 +19,10 @@ from fastapi import Form
 from fastapi import HTTPException
 from fastapi import Response
 from fastapi import UploadFile
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
+from split import SplitDataset
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
@@ -35,6 +38,13 @@ origins = [
     "http://localhost:3000",
 ]
 
+app.mount("/image_previews",
+          StaticFiles(directory="image_previews"),
+          name="image_previews")
+app.mount("/train_val_csv",
+          StaticFiles(directory="train_val_csv"),
+          name="train_val_csv")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -42,6 +52,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 def load_image_into_numpy_array(data):
     return np.array(Image.open(BytesIO(data)))
@@ -79,7 +90,6 @@ async def transform_image(
             )
 
         id = str(uuid.uuid4())
-        print(id)
         response.set_cookie(key="id", value=id)
         folder_actions.mkdir_p("images/" + id)
         step_count = "0"
@@ -125,7 +135,8 @@ async def transform_image(
         elif preview_url is not None:
             img_extension = "." + preview_url.split(".")[1]
 
-            img_url_new += "/preview_img" + img_extension
+            img_url_new = "image_previews/" + str(id) + img_extension
+
         image = cv2.imread(img_url_new)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -148,7 +159,7 @@ async def transform_image(
     img_path = "images/" + str(id)
 
     if preview:
-        img_path += "/preview_img" + img_extension
+        img_path = "image_previews/" + str(id) + img_extension
     else:
         img_path += "/transformed_img_" + str(step_count) + img_extension
 
@@ -171,15 +182,12 @@ async def reset_images(response: Response, id: Optional[str] = Cookie(None)):
 @app.get("/transformed_images")
 async def get_transformed_images(id: Optional[str] = Cookie(None)):
 
-    if not id:
+    if id is None:
         return {"transformed_images": []}
 
     transformed_images = [
         SERVER_BASE_URL + "images/" + str(id) + "/" + filename
-        for filename in filter(
-            lambda filename: filename.split(".")[0] != "preview_img",
-            folder_actions.get_file_names("images/" + str(id)),
-        )
+        for filename in folder_actions.get_file_names("images/" + str(id))
     ]
 
     return {"transformed_images": list(transformed_images)}
@@ -187,6 +195,7 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
 
 @app.post("/transform_images")
 async def transform_images(
+        response: Response,
         parameters: str = Form(...),
         transformations: str = Form(...),
         num_iterations: int = Form(...),
@@ -194,6 +203,12 @@ async def transform_images(
         images: List[UploadFile] = File(...),
         id: Optional[str] = Cookie(None),
 ):
+
+    if id is None:
+        id = str(uuid.uuid4())
+        response.set_cookie(key="id", value=id)
+        folder_actions.mkdir_p("images/" + id)
+
     base_img_path = "img_dataset/" + str(class_id) + "/"
     folder_actions.mkdir_p(base_img_path)
 
@@ -221,16 +236,82 @@ async def transform_images(
             transformed = transform(image=images[i])
             images[i] = transformed["image"]
             transformed_images.append({
-                "image": images[i],
-                "name": str(idx) + img_names[i]
+                "image":
+                images[i],
+                "path":
+                base_img_path + str(idx) + img_names[i]
             })
-
-    img_path = base_img_path
 
     for i in range(len(transformed_images)):
         image = transformed_images[i]
         im = Image.fromarray(image["image"])
-        img_path = base_img_path + image["name"]
-        im.save(img_path)
+        im.save(image["path"])
 
-    return {"done": True}
+    return {
+        "done": True,
+        "images": [image["path"] for image in transformed_images]
+    }
+
+
+@app.post("/balance_dataset")
+async def balance_dataset(min_samples: Optional[int] = Form(None)):
+    img_df = pd.DataFrame(columns=["image", "label"])
+
+    done = False
+
+    for dirname, _, filenames in os.walk("img_dataset"):
+        for filename in filenames:
+            done = True
+            class_id = dirname.split("/")[1]
+            img_df.loc[len(
+                img_df.index)] = [os.path.join(dirname, filename), class_id]
+
+    if not done:
+        return {"done": done}
+
+    balance_obj = Balance(img_df, min_samples)
+    balanced_class_counts = balance_obj.balance()
+
+    return {"done": True, "balanced_class_counts": balanced_class_counts}
+
+
+@app.post("/split_dataset")
+async def split_dataset(
+        response: Response,
+        split_percentage: Optional[float] = Form(None),
+        id: Optional[str] = Cookie(None),
+):
+    if id is None:
+        id = str(uuid.uuid4())
+        response.set_cookie(key="id", value=id)
+        folder_actions.mkdir_p("images/" + id)
+
+    img_df = pd.DataFrame(columns=["image", "label"])
+
+    done = False
+
+    for dirname, _, filenames in os.walk("img_dataset"):
+        for filename in filenames:
+            done = True
+            class_id = dirname.split("/")[1]
+            img_df.loc[len(
+                img_df.index)] = [os.path.join(dirname, filename), class_id]
+
+    if not done:
+        return {"done": done}
+
+    split_obj = SplitDataset(img_df, split_percentage)
+    xtrain, xval = split_obj.split()
+
+    img_path = "train_val_csv/" + str(id)
+
+    xtrain.to_csv(img_path + "_train.csv")
+    xval.to_csv(img_path + "_val.csv")
+
+    img_path = SERVER_BASE_URL + img_path
+
+    return {
+        "done": True,
+        "train": img_path + "_train.csv",
+        "val": img_path + "_val.csv",
+    }
