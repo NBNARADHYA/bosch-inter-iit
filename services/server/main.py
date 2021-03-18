@@ -238,7 +238,7 @@ async def transform_images(
                 "image":
                 images[i],
                 "path":
-                base_img_path + str(idx) + img_names[i]
+                base_img_path +  str(idx) + "_" + str(uuid.uuid1()) + "_" + img_names[i]
             })
 
     for i in range(len(transformed_images)):
