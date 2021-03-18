@@ -3,7 +3,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Navbar from "./components/Navbar";
 import ApplyTransformations from './pages/ApplyTransformations';
-import { BrowserRouter as Router, Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import BalanceDatasetPage from "./pages/BalanceDataset";
 import SplitDatasetPage from "./pages/SplitDataset";
 
