@@ -7,7 +7,7 @@ import Content from "./components/Content";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import serverUrl from "../Constants/serverUrl";
-import { changeCamelCaseToNormal,removeQueryParams } from "../Utils";
+import { changeCamelCaseToNormal,generateTransformationRequestBody,removeQueryParams } from "../Utils";
 import CustomSnackbar from "../Common/CustomSnackbar";
 
 const drawerWidth = 360;
@@ -119,21 +119,12 @@ const App = () => {
     if(!img || !img.img || !img.img.length) {
       return;
     }
-    const data = new FormData();
-    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='p') && !params['p'])
-    {
-      params['p']=1.0;
-    }
-    data.append('parameters',JSON.stringify(JSON.stringify(params)));
-    data.append('transformation',transformation.id);
-    if(history.length===0) {
-      data.append('image',img.img[0]); 
-    } else {
-      if(parseInt(history[history.length-1].image.split("transformed_img_")[1])!==history.length-1)
-        return;
-      data.append('img_url',removeQueryParams(history[history.length-1].image));
-      data.append('transformation_step',history.length-1);      
-    }
+    if(history.length &&
+       parseInt(history[history.length-1].image.split("transformed_img_")[1])!==history.length-1)
+      return;      
+    const data = generateTransformationRequestBody(
+      transformation, history, params, img, originalDimensions, historyDimensions, true
+    );
     fetch(`${serverUrl}transform_image?preview=true`,{
       method: 'POST',
       credentials: 'include',
@@ -146,7 +137,7 @@ const App = () => {
     .catch((err) => {
       console.log(err.message || err);
     })
-  },[params, img, transformation, history])
+  },[params, img, transformation, history, historyDimensions, originalDimensions])
 
   useEffect(() => {
     if(!history.length)
@@ -162,26 +153,9 @@ const App = () => {
     if(!img || !img.img || !img.img.length) {
       return;
     }
-    const data = new FormData();
-    if(transformation.parameters && JSON.parse(transformation.parameters).filter((para)=> para.name==='p') && !params['p'])
-    {
-      params['p']=1.0;
-    }
-
-    // if(previewImg) {
-    //   data.append('preview_url',previewImg.substr(serverUrl.length));
-    // } else
-     if(history.length){
-      data.append('img_url',removeQueryParams(history[history.length-1].image));      
-      data.append('parameters',JSON.stringify(JSON.stringify(params)));
-      data.append('transformation',transformation.id);
-      data.append('transformation_step',history.length-1);      
-    } else {
-      data.append('image',img.img[0]); 
-      data.append('parameters',JSON.stringify(JSON.stringify(params)));
-      data.append('transformation',transformation.id);
-    }
-
+    const data = generateTransformationRequestBody(
+      transformation, history, params, img, originalDimensions, historyDimensions, false
+    );    
     fetch(`${serverUrl}transform_image?preview=false`,{
       method: 'POST',
       credentials: 'include',      
@@ -209,7 +183,7 @@ const App = () => {
     .catch((err) => {
       console.log(err);
     })
-  },[params, img, transformation, history]);
+  },[params, img, transformation, history, historyDimensions, originalDimensions]);
 
   const resetHistory = useCallback(() => {
     setHistory([]);

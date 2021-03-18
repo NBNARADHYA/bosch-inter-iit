@@ -32,6 +32,12 @@ app.mount("/images", StaticFiles(directory="images"), name="images")
 app.mount("/img_dataset",
           StaticFiles(directory="img_dataset"),
           name="img_dataset")
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
 app.mount("/image_previews",
           StaticFiles(directory="image_previews"),
           name="image_previews")
@@ -41,7 +47,7 @@ app.mount("/train_val_csv",
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

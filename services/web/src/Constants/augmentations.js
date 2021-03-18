@@ -90,14 +90,6 @@ const augmentations = [
     category: 0,
   },
   {
-    id: 13,
-    name: "FromFloat",
-    description:
-      "Take an input array where all values should lie in the range [0, 1.0], multiply them by max_value and then cast the resulted value to a type specified by dtype. If max_value is None the transform will try to infer the maximum value for the data type from the dtype argument.",
-    parameters: `[{"name":"max_value","type":"float","description":"maximum possible input value. Default: None."},{"name":"dtype","type":"string or numpy data type","description":"data type of the output. See the 'Data types' page from the NumPy docs_. Default: 'uint16'.","defaultVal":"'uint16'"},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.0.","defaultVal":1}]`,
-    category: 0,
-  },
-  {
     id: 14,
     name: "GaussianBlur",
     description:
@@ -187,14 +179,6 @@ const augmentations = [
     category: 0,
   },
   {
-    id: 26,
-    name: "MaskDropout",
-    description:
-      "Image & mask augmentation that zero out mask and image regions corresponding to randomly chosen object instance from mask.",
-    parameters: `[{"name":"max_objects","type":null,"description":"Maximum number of labels that can be zeroed out. Can be tuple, in this case it's [min, max]","defaultVal":1},{"name":"image_fill_value","type":null,"description":"Fill value to use when filling image. Can be 'inpaint' to apply inpaining (works only for 3-chahnel images)","defaultVal":0},{"name":"mask_fill_value","type":null,"description":"Fill value to use when filling mask.","defaultVal":0}]`,
-    category: 0,
-  },
-  {
     id: 27,
     name: "MedianBlur",
     description:
@@ -218,15 +202,6 @@ const augmentations = [
     description: "Multiply image to random number or array of numbers.",
     parameters:
       '[{"name":"multiplier","type":"float or tuple of floats","description":"If single float image will be multiplied to this number. If tuple of float multiplier will be in range [multiplier[0], multiplier[1]). Default: (0.9, 1.1).","defaultVal":"(0.9,1.1)"},{"name":"per_channel","type":"bool","description":"If False, same values for all channels will be used. If True use sample values for each channels. Default False.","defaultVal":"False"},{"name":"elementwise","type":"bool","description":"If False multiply multiply all pixels in an image with a random value sampled once. If True Multiply image pixels with values that are pixelwise randomly sampled. Defaule: False.","defaultVal":"False"}]',
-    category: 0,
-  },
-  {
-    id: 30,
-    name: "Normalize",
-    description:
-      "Divide pixel values by 255 = 2**8 - 1, subtract mean per channel and divide by std per channel.",
-    parameters:
-      '[{"name":"mean","type":"float, list of float","description":"mean values","defaultVal":"(0.485,0.456,0.406)"},{"name":"std","type":"(float, list of float","description":"std values","defaultVal":"(0.229,0.224,0.225)"},{"name":"max_pixel_value","type":"float","description":"maximum possible pixel value","defaultVal":255}]',
     category: 0,
   },
   {
@@ -331,7 +306,7 @@ const augmentations = [
     name: "RandomSunFlare",
     description: "Simulates Sun Flare for the image",
     parameters:
-      '[{"name":"angle_lower","type":"float","description":"should be in range [0, angle_upper].","defaultVal":0},{"name":"angle_upper","type":"float","description":"should be in range [angle_lower, 1].","defaultVal":1},{"name":"num_flare_circles_lower","type":"int","description":"lower limit for the number of flare circles. Should be in range [0, num_flare_circles_upper].","defaultVal":6},{"name":"num_flare_circles_upper","type":"int","description":"upper limit for the number of flare circles. Should be in range [num_flare_circles_lower, inf].","defaultVal":10},{"name":"src_radius","type":"int","description":null,"defaultVal":400},{"name":"src_color","type":"int, int, int","description":"color of the flare","defaultVal":"(255,255,255)"}]',
+      '[{"name":"angle_lower","type":"float","description":"should be in range [0, angle_upper].","defaultVal":0,"min":0,"max":1},{"name":"angle_upper","type":"float","description":"should be in range [angle_lower, 1].","defaultVal":1,"min":0,"max":1},{"name":"num_flare_circles_lower","type":"int","description":"lower limit for the number of flare circles. Should be in range [0, num_flare_circles_upper].","defaultVal":6},{"name":"num_flare_circles_upper","type":"int","description":"upper limit for the number of flare circles. Should be in range [num_flare_circles_lower, inf].","defaultVal":10},{"name":"src_radius","type":"int","description":null,"defaultVal":400}]',
     category: 0,
   },
   {
@@ -349,15 +324,6 @@ const augmentations = [
     description: "Invert all pixel values above a threshold.",
     parameters:
       '[{"name":"threshold","type":"[int, int] or int, or [float, float] or float","description":"range for solarizing threshold.","defaultVal":128},{"name":"If","type":"threshold is a single value, the range will be [threshold, threshold]. Default","description":"128.","defaultVal":null},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.0.","defaultVal":1.0}]',
-    category: 0,
-  },
-  {
-    id: 49,
-    name: "ToFloat",
-    description:
-      "Divide pixel values by max_value to get a float32 output array where all values lie in the range [0, 1.0]. If max_value is None the transform will try to infer the maximum value by inspecting the data type of the input image.",
-    parameters:
-      '[{"name":"max_value","type":"float","description":"maximum possible input value. Default: None."},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.0.","defaultVal":1}]',
     category: 0,
   },
   {
@@ -406,7 +372,7 @@ const augmentations = [
     name: "Crop",
     description: "Crop region from image.",
     parameters:
-      '[{"name":"x_min","type":"int","description":"Minimum upper left x coordinate.","defaultVal":0,"min":0,"max":"w"},{"name":"y_min","type":"int","description":"Minimum upper left y coordinate.","defaultVal":0,"min":0,"max":"h"},{"name":"x_max","type":"int","description":"Maximum lower right x coordinate.","defaultVal":1024,"min":1, "max": "w"},{"name":"y_max","type":"int","description":"Maximum lower right y coordinate.","defaultVal":1024,"min":1, "max": "h"}]',
+      '[{"name":"x_min","type":"int","description":"Minimum upper left x coordinate.","defaultVal":0,"min":0,"max":"w"},{"name":"y_min","type":"int","description":"Minimum upper left y coordinate.","defaultVal":0,"min":0,"max":"h"},{"name":"x_max","type":"int","description":"Maximum lower right x coordinate.","min":1, "max": "w"},{"name":"y_max","type":"int","description":"Maximum lower right y coordinate.","min":1, "max": "h"}]',
     category: 1,
   },
   {
@@ -418,29 +384,12 @@ const augmentations = [
     category: 1,
   },
   {
-    id: 60,
-    name: "RandomCropNearBBox",
-    description: "Crop bbox from image with random shift by x,y coordinates",
-    parameters:
-      '[{"name":"max_part_shift","type":"float","description":"float value in (0.0, 1.0) range. Default 0.3","defaultVal":0.3},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
-    category: 1,
-  },
-  {
     id: 61,
     name: "RandomResizedCrop",
     description:
       "Torchvision's variant of crop a random part of the input and rescale it to some size.",
     parameters:
       '[{"name":"height","type":"int","description":"height after crop and resize.","min":1, "max": "h"},{"name":"width","type":"int","description":"width after crop and resize.","min":1, "max": "w"},{"name":"scale","type":"[float, float]","description":"range of size of the origin size cropped","defaultVal":"(0.08,1.0)"},{"name":"ratio","type":"[float, float]","description":"range of aspect ratio of the origin aspect ratio cropped","defaultVal":"(0.75,1.3333333333333333)"},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
-    category: 1,
-  },
-  {
-    id: 62,
-    name: "RandomSizedBBoxSafeCrop",
-    description:
-      "Crop a random part of the input and rescale it to some size without loss of bboxes.",
-    parameters:
-      '[{"name":"height","type":"int","description":"height after crop and resize.","min":1, "max": "h"},{"name":"width","type":"int","description":"width after crop and resize.","min":1, "max": "w"},{"name":"erosion_rate","type":"float","description":"erosion rate applied on input image height before crop.","defaultVal":0},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.","defaultVal":1}]',
     category: 1,
   },
   {
