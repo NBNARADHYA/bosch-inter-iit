@@ -85,8 +85,7 @@ async def transform_image(
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
-                detail=
-                "Image has to be added to the history before refering it",
+                detail="Image has to be added to the history before refering it",
             )
 
         id = str(uuid.uuid4())
@@ -199,7 +198,7 @@ async def transform_images(
         parameters: str = Form(...),
         transformations: str = Form(...),
         num_iterations: int = Form(...),
-        class_id: int = Form(...),
+        class_id: str = Form(...),
         images: List[UploadFile] = File(...),
         id: Optional[str] = Cookie(None),
 ):
@@ -209,7 +208,7 @@ async def transform_images(
         response.set_cookie(key="id", value=id)
         folder_actions.mkdir_p("images/" + id)
 
-    base_img_path = "img_dataset/" + str(class_id) + "/"
+    base_img_path = "img_dataset/" + class_id + "/"
     folder_actions.mkdir_p(base_img_path)
 
     parameters = json.loads(json.loads(parameters),
@@ -251,6 +250,21 @@ async def transform_images(
         "done": True,
         "images": [image["path"] for image in transformed_images]
     }
+
+
+@app.get("/class_counts")
+async def get_class_counts():
+    img_df = pd.DataFrame(columns=["image", "label"])
+
+    for dirname, _, filenames in os.walk("img_dataset"):
+        for filename in filenames:
+            class_id = dirname.split("/")[1]
+            img_df.loc[len(
+                img_df.index)] = [os.path.join(dirname, filename), class_id]
+
+    img_df = img_df.groupby(["label"]).size().reset_index(name="counts")
+
+    return {"class_counts": img_df.set_index("label").T.to_dict()}
 
 
 @app.post("/balance_dataset")
@@ -303,6 +317,12 @@ async def split_dataset(
     split_obj = SplitDataset(img_df, split_percentage)
     xtrain, xval = split_obj.split()
 
+    xtrain_counts = xtrain.groupby(["label"]).size().reset_index(
+        name="counts").set_index("label").T.to_dict()
+
+    xval_counts = xval.groupby(["label"]).size().reset_index(
+        name="counts").set_index("label").T.to_dict()
+
     img_path = "train_val_csv/" + str(id)
 
     xtrain.to_csv(img_path + "_train.csv")
@@ -312,6 +332,12 @@ async def split_dataset(
 
     return {
         "done": True,
-        "train": img_path + "_train.csv",
-        "val": img_path + "_val.csv",
+        "csv": {
+            "train": img_path + "_train.csv",
+            "val": img_path + "_val.csv",
+        },
+        "class_counts": {
+            "train": xtrain_counts,
+            "val": xval_counts
+        }
     }
