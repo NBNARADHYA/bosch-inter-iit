@@ -9,11 +9,11 @@ import pandas as pd
 
 
 class Balance:
-    def __init__(self, img_df, min_samples=-1):
+    def __init__(self, img_df, min_samples=None):
         self.df = img_df
         self.df.columns = ["image", "label"]
 
-        if min_samples == -1:
+        if min_samples is None:
             self.min_samples = int(
                 (self.df.groupby(by="label").count().values.max()) * 0.8)
 

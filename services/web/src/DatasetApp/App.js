@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Navbar from "./components/Navbar";
 import ApplyTransformations from './pages/ApplyTransformations';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, useLocation } from "react-router-dom";
 import BalanceDatasetPage from "./pages/BalanceDataset";
 import SplitDatasetPage from "./pages/SplitDataset";
 
@@ -82,8 +82,9 @@ const App = () => {
   const classes = useStyles();
   const [isTimelineOpen, setTimelineOpen] = useState(false);
   const theme = useTheme();
-  const defaultDrawerOpen = window.location.pathname==='/';
-  const [open, setOpen] = useState(defaultDrawerOpen);
+  const { pathname } = useLocation()
+  
+  const [open, setOpen] = useState(pathname === "/");
 
   const toggleTimelineOpen = useCallback(()=> {
     setTimelineOpen(!isTimelineOpen);
@@ -97,6 +98,10 @@ const App = () => {
     setOpen(false);
   }, []);
 
+  useEffect(() => {
+    setOpen(pathname === "/")
+  }, [pathname])
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -108,7 +113,6 @@ const App = () => {
         theme={theme}
         toggleTimelineDrawer={toggleTimelineOpen}
       />
-    <Router>
       <Switch>      
         <Route path="/split" component={() => <SplitDatasetPage classes={classes} /> } />
         <Route path="/balance" component={() => <BalanceDatasetPage classes={classes} /> } />
@@ -120,7 +124,6 @@ const App = () => {
         toggleTimelineOpen={toggleTimelineOpen}        
       />} />
       </Switch>
-    </Router>
     </div>
   );
 };
