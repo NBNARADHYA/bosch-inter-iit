@@ -13,6 +13,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import serverUrl from '../../Constants/serverUrl';
 import classLabels from '../../Constants/classLabels';
+import colours from '../../Constants/colours';
 
 const options = {
   scales: {
@@ -38,8 +39,8 @@ function BalanceDataset(props) {
   let classes = useStyles()
   classes = { ...classes, ...props.classes }
 
-  const [beforeCountData, setBeforeCountData] = useState({ x: [], y: [] })
-  const [afterCountData, setAfterCountData] = useState({ x: [], y: [] })
+  const [beforeCountData, setBeforeCountData] = useState({ x: [], y: [], colors: [] })
+  const [afterCountData, setAfterCountData] = useState({ x: [], y: [], colors: [] })
 
   useEffect(() => {
     fetch(`${serverUrl}class_counts`)
@@ -49,8 +50,10 @@ function BalanceDataset(props) {
         const newCountData = {}
         newCountData.x = Object.keys(res.class_counts).map(label => classLabels[label])
         newCountData.y = Object.values(res.class_counts).map(({ counts }) => parseInt(counts))
+        newCountData.colors = newCountData.x.map((t,i) => colours[i%colours.length]);
         return newCountData
       })
+      setBeforeLoaded(true);
     }).catch(console.error)
   }, [])
 
@@ -60,6 +63,7 @@ function BalanceDataset(props) {
       {
         label: 'Frequency',
         data: beforeCountData.y,
+        backgroundColor: beforeCountData.colors
       },
     ],
   }
@@ -70,11 +74,12 @@ function BalanceDataset(props) {
       {
         label: 'Frequency',
         data: afterCountData.y,
+        backgroundColor: afterCountData.colors        
       },
     ],
   }
 
-  const beforeLoaded = Boolean(beforeCountData.x.length && beforeCountData.y.length)
+  const [beforeLoaded, setBeforeLoaded] = useState(false)
   const afterLoaded = Boolean(afterCountData.x.length && afterCountData.y.length)
 
   const [loading, setLoading] = useState(!beforeLoaded)
@@ -82,14 +87,13 @@ function BalanceDataset(props) {
 
   const [minSamples, setMinSamples] = useState(null)
 
-
   const handleClickOpen = useCallback(() => {
     setOpen(true);
-  });
+  },[]);
 
   const handleClose = useCallback(() => {
     setOpen(false);
-  });
+  },[]);
 
   useEffect(() => {
     setLoading(!beforeLoaded)
@@ -100,6 +104,17 @@ function BalanceDataset(props) {
       <Backdrop className={classes.backdrop} open={true}>
         <CircularProgress color="primary" />
       </Backdrop>
+    )
+  }
+  else if(!beforeCountData.x.length || !beforeCountData.y.length) {
+    return (
+      <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
+      <div className={classes.drawerHeader} />
+      <br/><br/><br/>
+      <Typography align="center" variant="h6">
+        Please upload some images to the dataset first.
+      </Typography>
+      </Grid>      
     )
   }
 
@@ -150,6 +165,7 @@ function BalanceDataset(props) {
                       const newCountData = {}
                       newCountData.x = Object.keys(res.balanced_class_counts).map(label => classLabels[label])
                       newCountData.y = Object.values(res.balanced_class_counts).map(({ counts }) => parseInt(counts))
+                      newCountData.colors = newCountData.x.map((t,i) => colours[i%colours.length]);                      
                       return newCountData
                     })
                     setLoading(false)
