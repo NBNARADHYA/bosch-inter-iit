@@ -61,3 +61,22 @@ export function generateTransformationRequestBody(transformation, history, param
   data.append('parameters',JSON.stringify(JSON.stringify(params)));   
   return data;  
 }
+
+export function downloadCSV (url,filename) {
+  const requestOptions = {
+    method: 'GET'
+  }
+  fetch(url, requestOptions)
+    .then((res) => res.text())
+    .then((res) => {
+      const element = document.createElement('a')
+      const file = new Blob([res], { type: 'text/plain' })
+      element.href = URL.createObjectURL(file)
+      element.download = filename
+      document.body.appendChild(element)
+      element.click()
+    })
+    .catch((error) => {
+      console.log(error.message)
+    })
+}

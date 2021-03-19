@@ -1,19 +1,12 @@
 import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import {
-  MenuItem,
-  InputLabel,
-  Select,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
+import { MenuItem, InputLabel, Select, makeStyles } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Preview from "./Preview";
 import classLabels from "../../../Constants/classLabels";
 import serverUrl from "../../../Constants/serverUrl";
 import Carousel from "react-material-ui-carousel";
@@ -31,7 +24,7 @@ const useStyles = makeStyles(() => ({
 
 const getClassString = (num) => {
   let key = `${num}`;
-  while (key.length < 4) key = `0${key}`;
+  while (key.length < 5) key = `0${key}`;
   return key;
 };
 
@@ -98,6 +91,7 @@ const Index = ({ img, dialogOpen, handleClickOpen, history, handleClose }) => {
         {classLabels[getClassString(option)]}
       </MenuItem>
     );
+    // console.log(getClassString(option), classLabels[getClassString(option)]);
     options.push(newOption);
   }
 

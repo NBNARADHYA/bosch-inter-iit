@@ -13,6 +13,7 @@ import Zoom from '@material-ui/core/Zoom';
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   timelineButton: {
@@ -91,9 +92,9 @@ const selectedOption = menuOptions.filter(({link}) => link===currentPath)[0].tex
           onClose={handleClose}
         >
           {menuOptions.map(({text,link},i) =>  <MenuItem
-                  component="a"
+                  component={Link}
                   data-no-link="true"
-                  href={link}
+                  to={link}
                   key={i.toString()}
                   selected={currentPath === link}
                   onClick={handleClose}

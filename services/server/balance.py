@@ -9,11 +9,11 @@ import pandas as pd
 
 
 class Balance:
-    def __init__(self, img_df, min_samples=-1):
+    def __init__(self, img_df, min_samples=None):
         self.df = img_df
         self.df.columns = ["image", "label"]
 
-        if min_samples == -1:
+        if min_samples is None:
             self.min_samples = int(
                 (self.df.groupby(by="label").count().values.max()) * 0.8)
 
@@ -27,10 +27,10 @@ class Balance:
                 brightness_limit=(-0.2, 0.2),
                 contrast_limit=(-0.2, 0.2),
             ),
-            A.CLAHE(always_apply=False,
-                    p=0.5,
-                    clip_limit=(1, 4),
-                    tile_grid_size=(8, 8)),
+            # A.CLAHE(always_apply=False,
+            #         p=0.5,
+            #         clip_limit=(1, 4),
+            #         tile_grid_size=(8, 8)),
             A.GaussNoise(always_apply=False, p=0.4, var_limit=(20, 40)),
             A.Downscale(
                 always_apply=False,
