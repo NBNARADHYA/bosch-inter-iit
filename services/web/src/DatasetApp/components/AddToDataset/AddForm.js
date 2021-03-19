@@ -14,8 +14,7 @@ import classLabels from "../../../Constants/classLabels";
 
 const getClassString = (num) => {
   let key = `${num}`;
-  while (key.length < 5)
-    key = `0${key}`;
+  while (key.length < 5) key = `0${key}`;
   return key;
 };
 
@@ -46,22 +45,29 @@ const AddForm = ({
               Class ID:
             </InputLabel>
             <Select
-  autoFocus
-  labelId = "demo-simple-select-placeholder-label-label"
-  id = "demo-simple-select-placeholder-label"
-  name = "classId"
-  onChange = {(e, val) => handleClassChange(e, val)} displayEmpty
-  fullWidth
-  required > {options}</Select>
-          </div><br />< TextField
-  margin = "dense"
-  id = "numOfIterations"
-  onChange = {(e) => handleIterationsChange(e)} InputLabelProps = {
-    { shrink: true }
-  } label = "Number of Iterations"
-  helperText = "Enter a positive number."
-  type = "number"
-  fullWidth
+              autoFocus
+              labelId="demo-simple-select-placeholder-label-label"
+              id="demo-simple-select-placeholder-label"
+              name="classId"
+              onChange={(e, val) => handleClassChange(e, val)}
+              displayEmpty
+              fullWidth
+              required
+            >
+              {" "}
+              {options}
+            </Select>
+          </div>
+          <br />
+          <TextField
+            margin="dense"
+            id="numOfIterations"
+            onChange={(e) => handleIterationsChange(e)}
+            InputLabelProps={{ shrink: true }}
+            label="Number of Iterations"
+            helperText="Enter a positive number."
+            type="number"
+            fullWidth
             required
           />
         </div>

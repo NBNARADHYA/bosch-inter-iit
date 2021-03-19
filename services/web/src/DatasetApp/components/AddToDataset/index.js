@@ -1,10 +1,10 @@
-import {IconButton, makeStyles, Snackbar} from "@material-ui/core";
+import { IconButton, makeStyles, Snackbar } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import CloseIcon from "@material-ui/icons/Close";
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 import serverUrl from "../../../Constants/serverUrl";
 
@@ -12,20 +12,20 @@ import AddForm from "./AddForm";
 import PreviewImages from "./PreviewImages";
 
 const useStyles = makeStyles((theme) => ({
-                               center : {
-                                 margin : "10px",
-                                 textAlign : "center",
-                                 marginLeft : "auto",
-                                 marginRight : "auto",
-                                 width : "552px",
-                                 height : "160px",
-                               },
-                               close : {
-                                 padding : theme.spacing(0.5),
-                               },
-                             }));
+  center: {
+    margin: "10px",
+    textAlign: "center",
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "552px",
+    height: "160px",
+  },
+  close: {
+    padding: theme.spacing(0.5),
+  },
+}));
 
-const Index = ({img, dialogOpen, history, handleClose}) => {
+const Index = ({ img, dialogOpen, history, handleClose }) => {
   const classes = useStyles();
   const [formData, setFormData] = useState({});
   const [previewOpen, setPreviewOpen] = useState(false);
