@@ -1,24 +1,24 @@
-import React from "react";
 import {
+  Button,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button,
   makeStyles,
 } from "@material-ui/core";
+import React from "react";
 import Carousel from "react-material-ui-carousel";
 
 const useStyles = makeStyles((theme) => ({
-  center: {
-    margin: "10px",
-    textAlign: "center",
-    marginLeft: "auto",
-    marginRight: "auto",
-    width: "552px",
-    height: "160px",
-  },
-}));
+                               center : {
+                                 margin : "10px",
+                                 textAlign : "center",
+                                 marginLeft : "auto",
+                                 marginRight : "auto",
+                                 width : "552px",
+                                 height : "160px",
+                               },
+                             }));
 
 const getTransformedImages = (transformedImages) => {
   let images = [];

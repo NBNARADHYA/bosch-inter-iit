@@ -1,22 +1,23 @@
-import React, { useState } from "react";
+import {Button, Grid, makeStyles} from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
-import { Grid, makeStyles, Button } from "@material-ui/core";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import React, {useState} from "react";
+
 import AddToDataset from "./AddToDataset";
 
 const useStyles = makeStyles(() => ({
-  spacing: {
-    margin: "70px 180px",
-  },
-  fixedWidthImg: {
-    textAlign: "center",
-    width: "300px",
-  },
-  originalImg: {
-    textAlign: "center",
-  },
-}));
+                               spacing : {
+                                 margin : "70px 180px",
+                               },
+                               fixedWidthImg : {
+                                 textAlign : "center",
+                                 width : "300px",
+                               },
+                               originalImg : {
+                                 textAlign : "center",
+                               },
+                             }));
 
 const Content = ({
   classes,
