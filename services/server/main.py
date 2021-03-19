@@ -85,7 +85,8 @@ async def transform_image(
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
-                detail="Image has to be added to the history before refering it",
+                detail=
+                "Image has to be added to the history before refering it",
             )
 
         id = str(uuid.uuid4())
@@ -238,7 +239,8 @@ async def transform_images(
                 "image":
                 images[i],
                 "path":
-                base_img_path +  str(idx) + "_" + str(uuid.uuid1()) + "_" + img_names[i]
+                base_img_path + str(idx) + "_" + str(uuid.uuid1()) + "_" +
+                img_names[i],
             })
 
     for i in range(len(transformed_images)):
@@ -247,8 +249,10 @@ async def transform_images(
         im.save(image["path"])
 
     return {
-        "done": True,
-        "images": [image["path"] for image in transformed_images]
+        "done":
+        True,
+        "images":
+        [SERVER_BASE_URL + image["path"] for image in transformed_images],
     }
 
 
@@ -284,9 +288,13 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
         return {"done": done}
 
     balance_obj = Balance(img_df, min_samples)
-    balanced_class_counts = balance_obj.balance()
+    balanced_class_counts, balanced_img_paths = balance_obj.balance()
 
-    return {"done": True, "balanced_class_counts": balanced_class_counts}
+    return {
+        "done": True,
+        "balanced_class_counts": balanced_class_counts,
+        "balanced_img_paths": balanced_img_paths,
+    }
 
 
 @app.post("/split_dataset")
@@ -308,8 +316,10 @@ async def split_dataset(
         for filename in filenames:
             done = True
             class_id = dirname.split("/")[1]
-            img_df.loc[len(
-                img_df.index)] = [os.path.join(dirname, filename), class_id]
+            img_df.loc[len(img_df.index)] = [
+                os.path.join(SERVER_BASE_URL, dirname, filename),
+                class_id,
+            ]
 
     if not done:
         return {"done": done}
@@ -317,11 +327,13 @@ async def split_dataset(
     split_obj = SplitDataset(img_df, split_percentage)
     xtrain, xval = split_obj.split()
 
-    xtrain_counts = xtrain.groupby(["label"]).size().reset_index(
-        name="counts").set_index("label").T.to_dict()
+    xtrain_counts = (xtrain.groupby([
+        "label"
+    ]).size().reset_index(name="counts").set_index("label").T.to_dict())
 
-    xval_counts = xval.groupby(["label"]).size().reset_index(
-        name="counts").set_index("label").T.to_dict()
+    xval_counts = (xval.groupby([
+        "label"
+    ]).size().reset_index(name="counts").set_index("label").T.to_dict())
 
     img_path = "train_val_csv/" + str(id)
 
@@ -339,5 +351,17 @@ async def split_dataset(
         "class_counts": {
             "train": xtrain_counts,
             "val": xval_counts
-        }
+        },
     }
+
+
+@app.delete("/dataset_images")
+async def delete_dataset_images(images: str = Form(...)):
+    images = json.loads(json.loads(images))
+
+    for i in range(len(images)):
+        img_path = images[i]
+        img_path = img_path.split(SERVER_BASE_URL)[1]
+        os.remove(img_path)
+
+    return {"done": True}
