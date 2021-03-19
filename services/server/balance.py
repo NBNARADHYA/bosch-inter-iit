@@ -7,6 +7,8 @@ import cv2
 import matplotlib.pyplot as plt
 import pandas as pd
 
+SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
+
 
 class Balance:
     def __init__(self, img_df, min_samples=None):
@@ -53,6 +55,8 @@ class Balance:
 
         group = self.df.groupby("label")["image"].apply(list)
 
+        balanced_img_paths = []
+
         for x in range(len(class_ids)):
             id = class_ids[x]
 
@@ -74,13 +78,14 @@ class Balance:
                 pathimg = path + "newsample_" + str(id) + str(
                     i) + imagepath[-4:]
                 plt.imsave(pathimg, transformed_image)
+                balanced_img_paths.append(SERVER_BASE_URL + pathimg)
                 self.df.loc[len(self.df.index)] = [pathimg, id]
 
         self.df = self.df.groupby(["label"]).size().reset_index(name="counts")
 
-        return self.df.set_index("label").T.to_dict()
+        return self.df.set_index("label").T.to_dict(), balanced_img_paths
 
 
 # How to use
 # balance_obj = Balance(img_df)
-# balanced_class_counts = balance_obj.balance()
+# balanced_class_counts, balanced_img_paths = balance_obj.balance()
