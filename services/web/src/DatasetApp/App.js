@@ -1,9 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import AugmentationsTimeline from "./components/AugmentationsTimeline";
-import augmentations from "../Constants/augmentations";
-import Content from "./components/Content";
 import Navbar from "./components/Navbar";
 import ApplyTransformations from "./pages/ApplyTransformations";
 import { Route, Switch, useLocation } from "react-router-dom";
