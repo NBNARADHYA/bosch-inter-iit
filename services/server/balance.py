@@ -7,8 +7,8 @@ import cv2
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
+
 
 class Balance:
     def __init__(self, img_df, min_samples=None):
