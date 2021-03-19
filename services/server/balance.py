@@ -7,7 +7,6 @@ import cv2
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
 
