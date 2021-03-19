@@ -238,7 +238,8 @@ async def transform_images(
                 "image":
                 images[i],
                 "path":
-                base_img_path +  str(idx) + "_" + str(uuid.uuid1()) + "_" + img_names[i]
+                base_img_path + str(idx) + "_" +
+                str(uuid.uuid1()) + "_" + img_names[i]
             })
 
     for i in range(len(transformed_images)):
@@ -248,7 +249,7 @@ async def transform_images(
 
     return {
         "done": True,
-        "images": [ SERVER_BASE_URL + image["path"] for image in transformed_images]
+        "images": [SERVER_BASE_URL + image["path"] for image in transformed_images]
     }
 
 
@@ -341,6 +342,7 @@ async def split_dataset(
             "val": xval_counts
         }
     }
+
 
 @app.delete("/dataset_images")
 async def delete_dataset_images(images: str = Form(...)):
