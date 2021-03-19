@@ -248,7 +248,7 @@ async def transform_images(
 
     return {
         "done": True,
-        "images": [image["path"] for image in transformed_images]
+        "images": [ SERVER_BASE_URL + image["path"] for image in transformed_images]
     }
 
 
@@ -284,9 +284,9 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
         return {"done": done}
 
     balance_obj = Balance(img_df, min_samples)
-    balanced_class_counts = balance_obj.balance()
+    balanced_class_counts, balanced_img_paths = balance_obj.balance()
 
-    return {"done": True, "balanced_class_counts": balanced_class_counts}
+    return {"done": True, "balanced_class_counts": balanced_class_counts, "balanced_img_paths": balanced_img_paths}
 
 
 @app.post("/split_dataset")
@@ -309,7 +309,7 @@ async def split_dataset(
             done = True
             class_id = dirname.split("/")[1]
             img_df.loc[len(
-                img_df.index)] = [os.path.join(dirname, filename), class_id]
+                img_df.index)] = [os.path.join(SERVER_BASE_URL, dirname, filename), class_id]
 
     if not done:
         return {"done": done}
@@ -341,3 +341,14 @@ async def split_dataset(
             "val": xval_counts
         }
     }
+
+@app.delete("/dataset_images")
+async def delete_dataset_images(images: str = Form(...)):
+    images = json.loads(json.loads(images))
+
+    for i in range(len(images)):
+        img_path = images[i]
+        img_path = img_path.split(SERVER_BASE_URL)[1]
+        os.remove(img_path)
+
+    return {"done": True}
