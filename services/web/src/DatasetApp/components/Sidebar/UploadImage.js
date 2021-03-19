@@ -10,11 +10,11 @@ const UploadImage = ({ classes, img, handleImgChange }) => {
         buttonText={
           noOfImg > 0 ? `${noOfImg} images selected` : "Choose images"
         }
-        withPreview={true} 
+        withPreview={false}
         onChange={(files, pictures) => handleImgChange(files, pictures)}
-        imgExtension={['.jpg', '.jpeg', '.png', '.ppm']}
-        maxFileSize={5242880*20}
-        label='Upload images of a particular class'
+        imgExtension={[".jpg", ".jpeg", ".png", ".ppm"]}
+        maxFileSize={5242880 * 20}
+        label="Upload images of a particular class"
       />
     </div>
   );

@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import { MenuItem, InputLabel, Select, makeStyles } from "@material-ui/core";
+import { makeStyles, Snackbar, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import classLabels from "../../../Constants/classLabels";
 import serverUrl from "../../../Constants/serverUrl";
-import Carousel from "react-material-ui-carousel";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import PreviewImages from "./PreviewImages";
+import AddForm from "./AddForm";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   center: {
     margin: "10px",
     textAlign: "center",
@@ -20,53 +18,31 @@ const useStyles = makeStyles(() => ({
     width: "552px",
     height: "160px",
   },
+  close: {
+    padding: theme.spacing(0.5),
+  },
 }));
 
-const getClassString = (num) => {
-  let key = `${num}`;
-  while (key.length < 5) key = `0${key}`;
-  return key;
-};
-
-const Index = ({ img, dialogOpen, handleClickOpen, history, handleClose }) => {
+const Index = ({ img, dialogOpen, history, handleClose }) => {
   const classes = useStyles();
+  const [formData, setFormData] = useState({});
   const [previewOpen, setPreviewOpen] = useState(false);
   const [transformedImages, setTransformedImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [snackBar, setSnackBar] = useState(false);
 
-  const handleTransformedImages = (data) => {
-    data = data.map((each) => {
-      return `${serverUrl}${each}`;
-    });
-    setTransformedImages(data);
-  };
+  const handleIsLoading = () => setIsLoading(true);
+  const stopLoading = () => setIsLoading(false);
 
-  const getTransformedImages = () => {
-    let images = [];
-    let count = 0;
-    for (let i = 0; i < transformedImages?.length - 3; i++) {
-      const image = (
-        <div key={count}>
-          <img src={transformedImages[i]} width="184px" height="160px" />
-          <img src={transformedImages[i + 1]} width="184px" height="160px" />
-          <img src={transformedImages[i + 2]} width="184px" height="160px" />
-        </div>
-      );
-      count++;
-
-      images.push(image);
-    }
-    return images;
-  };
-
-  const handlePreviewOpen = () => {
-    setPreviewOpen(true);
-  };
-
+  const handleSnackBarClose = () => setSnackBar(false);
+  const handleTransformedImages = (data) => setTransformedImages(data);
+  const handlePreviewOpen = () => setPreviewOpen(true);
   const handleDialogClose = () => {
+    stopLoading();
+    setTransformedImages([]);
     setPreviewOpen(false);
     handleClose();
   };
-  const [formData, setFormData] = useState({});
 
   const handleClassChange = (e, val) => {
     let newFormData = formData;
@@ -84,18 +60,8 @@ const Index = ({ img, dialogOpen, handleClickOpen, history, handleClose }) => {
     setFormData(newFormData);
   };
 
-  const options = [];
-  for (let option = 0; option < 48; option++) {
-    const newOption = (
-      <MenuItem key={option} value={getClassString(option)}>
-        {classLabels[getClassString(option)]}
-      </MenuItem>
-    );
-    // console.log(getClassString(option), classLabels[getClassString(option)]);
-    options.push(newOption);
-  }
-
   const handleSubmit = () => {
+    handleIsLoading();
     let parameters = history.map((each) => each.parameters);
     parameters = JSON.stringify(parameters);
     parameters = JSON.stringify(parameters);
@@ -104,8 +70,6 @@ const Index = ({ img, dialogOpen, handleClickOpen, history, handleClose }) => {
     transformations = JSON.stringify(transformations);
     const num_iterations = formData.numOfIterations;
     const class_id = formData.classId;
-    let images = img.img;
-    // images = JSON.stringify(images);
 
     const data = new FormData();
     data.append("transformations", transformations);
@@ -123,14 +87,39 @@ const Index = ({ img, dialogOpen, handleClickOpen, history, handleClose }) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        handleTransformedImages(res.images);
+        stopLoading();
         handlePreviewOpen();
+        handleTransformedImages(res.images);
       })
       .catch((err) => {
+        stopLoading();
         handleClose();
         console.log(err);
       });
   };
+
+  const deleteImages = () => {
+    handleDialogClose();
+    let images = JSON.stringify(transformedImages);
+    images = JSON.stringify(images);
+    const data = new FormData();
+    data.append("images", images);
+    console.log(data);
+    fetch(`${serverUrl}dataset_images`, {
+      method: "DELETE",
+      credentials: "include",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
+  const handleAddConfirmation = () => {
+    handleDialogClose();
+    setSnackBar(true);
+  };
+
   return (
     <div>
       <Dialog
@@ -139,75 +128,52 @@ const Index = ({ img, dialogOpen, handleClickOpen, history, handleClose }) => {
         aria-labelledby="form-dialog-title"
         fullWidth
       >
-        {!previewOpen ? (
-          <div>
-            <DialogTitle id="form-dialog-title">Add to Dataset</DialogTitle>
-            <DialogContent>
-              <div>
-                <div>
-                  <InputLabel id="demo-simple-select-placeholder-label-label">
-                    Class ID:
-                  </InputLabel>
-                  <Select
-                    autoFocus
-                    labelId="demo-simple-select-placeholder-label-label"
-                    id="demo-simple-select-placeholder-label"
-                    name="classId"
-                    onChange={(e, val) => handleClassChange(e, val)}
-                    displayEmpty
-                    fullWidth
-                    required
-                  >
-                    {options}
-                  </Select>
-                </div>
-                <br />
-                <TextField
-                  margin="dense"
-                  id="numOfIterations"
-                  onChange={(e) => handleIterationsChange(e)}
-                  InputLabelProps={{ shrink: true }}
-                  label="Number of Iterations"
-                  helperText="Enter a positive number."
-                  type="number"
-                  fullWidth
-                  required
-                />
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                color="primary"
-                variant="contained"
-              >
-                Add
-              </Button>
-            </DialogActions>
-          </div>
-        ) : (
+        {" "}
+        {isLoading && (
           <div>
             <DialogTitle id="form-dialog-title">Preview</DialogTitle>
             <DialogContent>
-              {/* <DialogContentText>Enter the following details :</DialogContentText> */}
-              <div>
-                <br />
-                <Carousel className={classes.center}>
-                  {getTransformedImages()}
-                </Carousel>
-              </div>
+              <CircularProgress className={classes.center} />
             </DialogContent>
-            <DialogActions>
-              <Button onClick={handleDialogClose} color="primary">
-                Close
-              </Button>
-            </DialogActions>
           </div>
         )}
+        {!isLoading && !previewOpen && (
+          <AddForm
+            handleClassChange={handleClassChange}
+            handleIterationsChange={handleIterationsChange}
+            handleSubmit={handleSubmit}
+            handleClose={handleClose}
+          />
+        )}
+        {!isLoading && previewOpen && (
+          <PreviewImages
+            transformedImages={transformedImages}
+            deleteImages={deleteImages}
+            handleAddConfirmation={handleAddConfirmation}
+          />
+        )}
       </Dialog>
+
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        open={snackBar}
+        autoHideDuration={6000}
+        onClose={handleSnackBarClose}
+        message="Added images to the dataset successfully"
+        action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            className={classes.close}
+            onClick={handleSnackBarClose}
+          >
+            <CloseIcon />
+          </IconButton>
+        }
+      />
     </div>
   );
 };
