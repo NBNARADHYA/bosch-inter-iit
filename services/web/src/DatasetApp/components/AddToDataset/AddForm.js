@@ -1,14 +1,15 @@
-import React from "react";
 import {
-  MenuItem,
-  DialogTitle,
-  DialogContent,
-  InputLabel,
-  Select,
-  TextField,
   Button,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
 } from "@material-ui/core";
+import React from "react";
+
 import classLabels from "../../../Constants/classLabels";
 
 const getClassString = (num) => {
@@ -53,6 +54,7 @@ const AddForm = ({
               fullWidth
               required
             >
+              {" "}
               {options}
             </Select>
           </div>

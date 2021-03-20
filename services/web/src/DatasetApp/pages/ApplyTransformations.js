@@ -1,15 +1,16 @@
-import React, { useState, useCallback, useEffect } from "react";
 import { useTheme } from "@material-ui/core/styles";
-import AugmentationsTimeline from "../components/AugmentationsTimeline";
+import React, { useCallback, useEffect, useState } from "react";
+
+import CustomSnackbar from "../../Common/CustomSnackbar";
 import augmentations from "../../Constants/augmentations";
-import Content from "../components/Content";
-import Sidebar from "../components/Sidebar";
 import serverUrl from "../../Constants/serverUrl";
 import {
   changeCamelCaseToNormal,
   generateTransformationRequestBody,
 } from "../../Utils";
-import CustomSnackbar from "../../Common/CustomSnackbar";
+import AugmentationsTimeline from "../components/AugmentationsTimeline";
+import Content from "../components/Content";
+import Sidebar from "../components/Sidebar";
 
 const ApplyTransformations = (props) => {
   const {

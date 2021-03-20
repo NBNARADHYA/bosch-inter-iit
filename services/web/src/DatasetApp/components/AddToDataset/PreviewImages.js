@@ -1,12 +1,12 @@
-import React from "react";
 import {
+  Button,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button,
   makeStyles,
 } from "@material-ui/core";
+import React from "react";
 import Carousel from "react-material-ui-carousel";
 
 const useStyles = makeStyles((theme) => ({
