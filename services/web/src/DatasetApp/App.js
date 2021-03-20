@@ -1,27 +1,28 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Navbar from "./components/Navbar";
-import ApplyTransformations from './pages/ApplyTransformations';
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import React, { useCallback, useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import ApplyTransformations from "./pages/ApplyTransformations";
 import BalanceDatasetPage from "./pages/BalanceDataset";
 import SplitDatasetPage from "./pages/SplitDataset";
 
 const drawerWidth = 360;
 
 const useStyles = makeStyles((theme) => ({
-    '@global': {
-      '*::-webkit-scrollbar': {
-        width: '0.5em'
-      },
-      '*::-webkit-scrollbar-track': {
-        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
-      },
-      '*::-webkit-scrollbar-thumb': {
-          backgroundColor: '#757575',
-          outline: '1px solid #757575'
-      },
-    },  
+  "@global": {
+    "*::-webkit-scrollbar": {
+      width: "0.5em",
+    },
+    "*::-webkit-scrollbar-track": {
+      "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.00)",
+    },
+    "*::-webkit-scrollbar-thumb": {
+      backgroundColor: "#757575",
+      outline: "1px solid #757575",
+    },
+  },
   root: {
     display: "flex",
   },
@@ -81,16 +82,18 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
   const classes = useStyles();
   const [isTimelineOpen, setTimelineOpen] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [previewImg, setPreviewImg] = useState("");
   const theme = useTheme();
-  const { pathname } = useLocation()
-  
+  const { pathname } = useLocation();
+
   const [open, setOpen] = useState(pathname === "/");
 
-  const toggleTimelineOpen = useCallback(()=> {
+  const toggleTimelineOpen = useCallback(() => {
     setTimelineOpen(!isTimelineOpen);
-  },[isTimelineOpen]);
+  }, [isTimelineOpen]);
 
-  const handleDrawerOpen =  useCallback(() => {
+  const handleDrawerOpen = useCallback(() => {
     setOpen(true);
   }, []);
 
@@ -99,8 +102,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    setOpen(pathname === "/")
-  }, [pathname])
+    setOpen(pathname === "/");
+  }, [pathname]);
 
   return (
     <div className={classes.root}>
@@ -113,16 +116,26 @@ const App = () => {
         theme={theme}
         toggleTimelineDrawer={toggleTimelineOpen}
       />
-      <Switch>      
-        <Route path="/split" component={() => <SplitDatasetPage classes={classes} /> } />
-        <Route path="/balance" component={() => <BalanceDatasetPage classes={classes} /> } />
-        <Route component={() => <ApplyTransformations
-        classes={classes}      
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        isTimelineOpen={isTimelineOpen}
-        toggleTimelineOpen={toggleTimelineOpen}        
-      />} />
+      <Switch>
+        <Route
+          path="/split"
+          component={() => <SplitDatasetPage classes={classes} />}
+        />
+        <Route
+          path="/balance"
+          component={() => <BalanceDatasetPage classes={classes} />}
+        />
+        <Route
+          component={() => (
+            <ApplyTransformations
+              classes={classes}
+              open={open}
+              handleDrawerClose={handleDrawerClose}
+              isTimelineOpen={isTimelineOpen}
+              toggleTimelineOpen={toggleTimelineOpen}
+            />
+          )}
+        />
       </Switch>
     </div>
   );
