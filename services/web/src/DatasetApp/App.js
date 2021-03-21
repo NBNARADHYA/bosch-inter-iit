@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import React, { useCallback, useEffect, useState } from "react";
+import { Route, Switch, useLocation } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import ApplyTransformations from "./pages/ApplyTransformations";
-import { Route, Switch, useLocation } from "react-router-dom";
 import BalanceDatasetPage from "./pages/BalanceDataset";
 import SplitDatasetPage from "./pages/SplitDataset";
 
