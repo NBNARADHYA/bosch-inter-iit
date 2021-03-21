@@ -1,6 +1,4 @@
-import { useTheme } from "@material-ui/core/styles";
 import React, { useCallback, useEffect, useState } from "react";
-
 import CustomSnackbar from "../../Common/CustomSnackbar";
 import augmentations from "../../Constants/augmentations";
 import serverUrl from "../../Constants/serverUrl";
@@ -11,18 +9,31 @@ import {
 import AugmentationsTimeline from "../components/AugmentationsTimeline";
 import Content from "../components/Content";
 import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 const ApplyTransformations = (props) => {
-  const {
-    classes,
-    open,
-    handleDrawerClose,
-    isTimelineOpen,
-    toggleTimelineOpen,
-  } = props;
+  const { classes, theme, pathname } = props;
+  const [isTimelineOpen, setTimelineOpen] = useState(false);
+  const [open, setOpen] = useState(pathname === "/");
+
+  useEffect(() => {
+    setOpen(pathname === "/");
+  }, [pathname]);  
+
+  const toggleTimelineOpen = useCallback(() => {
+    setTimelineOpen(!isTimelineOpen);
+  }, [isTimelineOpen]);
+
+  const handleDrawerOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const handleDrawerClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   const [history, setHistory] = useState([]);
   const [previewImg, setPreviewImg] = useState("");
-  const theme = useTheme();
   const [img, setImg] = useState({});
   const [originalDimensions, setOriginalDimensions] = useState({ width: 300 });
   const [previewDimensions, setPreviewDimensions] = useState({ width: 300 });
@@ -159,6 +170,14 @@ const ApplyTransformations = (props) => {
 
   return (
     <>
+      <Navbar
+        classes={classes}
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        theme={theme}
+        toggleTimelineDrawer={toggleTimelineOpen}
+      />    
       <Sidebar
         classes={classes}
         open={open}

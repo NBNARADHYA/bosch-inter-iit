@@ -1,5 +1,14 @@
 const augmentations = [
   {
+    id: 0,
+    name: "AddBird",
+    description: "Adds an occlusion in the image.",
+    parameters:
+      `[{"name":"frac","type":"float","description":"Fraction of image to be occluded. Should be in range [0,1]. Default: 0.5.","min": 0, "max": 1, "defaultVal":0.5},
+{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.0.","defaultVal":1.0}]`,
+    category: 5,
+  },  
+  {
     id: 1,
     name: "Blur",
     description: "Blur the input image using a random-sized kernel.",
@@ -470,6 +479,16 @@ const augmentations = [
       '[{"name":"shift_limit","type":"[float, float] or float","description":"shift factor range for both height and width. If shift_limit is a single float value, the range will be (-shift_limit, shift_limit). Absolute values for lower and upper bounds should lie in range [0, 1]. Default: (-0.0625, 0.0625).","defaultVal":0.0625,"min": 0, "max": 1},{"name":"scale_limit","type":"[float, float] or float","description":"scaling factor range. If scale_limit is a single float value, the range will be (-scale_limit, scale_limit). Default: (-0.1, 0.1).","defaultVal":0.1},{"name":"rotate_limit","type":"[int, int] or int","description":"rotation range. If rotate_limit is a single int value, the range will be (-rotate_limit, rotate_limit). Default: (-45, 45).","defaultVal":45},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"border_mode","type":"OpenCV flag","description":"flag that is used to specify the pixel extrapolation method. Should be one of: cv2.BORDER_CONSTANT, cv2.BORDER_REPLICATE, cv2.BORDER_REFLECT, cv2.BORDER_WRAP, cv2.BORDER_REFLECT_101. Default: cv2.BORDER_REFLECT_101","defaultVal":4},{"name":"value","type":"int, float, list of int, list of float","description":"padding value if border_mode is cv2.BORDER_CONSTANT."},{"name":"mask_value","type":"int, float, list of int, list of float","description":"padding value if border_mode is cv2.BORDER_CONSTANT applied for masks."},{"name":"shift_limit_x","type":"[float, float] or float","description":"shift factor range for width. If it is set then this value instead of shift_limit will be used for shifting width. If shift_limit_x is a single float value, the range will be (-shift_limit_x, shift_limit_x). Absolute values for lower and upper bounds should lie in the range [0, 1]. Default: None.","min": 0, "max": 1},{"name":"shift_limit_y","type":"[float, float] or float","description":"shift factor range for height. If it is set then this value instead of shift_limit will be used for shifting height. If shift_limit_y is a single float value, the range will be (-shift_limit_y, shift_limit_y). Absolute values for lower and upper bounds should lie in the range [0, 1]. Default: None.","min": 0, "max": 1},{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.0.","defaultVal":1.0}]',
     category: 4,
   },
+  {
+    id: 73,
+    name: "RandomTear",
+    description: "Randomly tears the image.",
+    parameters:
+      `[{"name":"apply_color","type":"int, [int, int,int]","description":"color with which to fill the teared part. Should be in range [0, 255]. Default: [135, 206,235].", "min": 0, "max": 255, "defaultVal": 206},{"name":"slider","type":"float","description":"fraction to tear . Default: 0.25.","min": 0, "max": 1},
+{"name":"smoothness","type":"float","description":"smoothness of the tear . Default: 0.4.","min": 0, "max": 1},
+{"name":"p","type":"float","description":"probability of applying the transform. Default: 1.0.","defaultVal":1.0}]`,
+    category: 5,
+  }    
 ];
 
 export default augmentations;

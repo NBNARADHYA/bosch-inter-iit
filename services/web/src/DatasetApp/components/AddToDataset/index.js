@@ -5,6 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import CloseIcon from "@material-ui/icons/Close";
 import React, { useState } from "react";
+import classLabels from "../../../Constants/classLabels";
 
 import serverUrl from "../../../Constants/serverUrl";
 
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Index = ({ img, dialogOpen, history, handleClose }) => {
   const classes = useStyles();
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({classId: Object.keys(classLabels)[0], numOfIterations: 1});
   const [previewOpen, setPreviewOpen] = useState(false);
   const [transformedImages, setTransformedImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,16 +47,16 @@ const Index = ({ img, dialogOpen, history, handleClose }) => {
     handleClose();
   };
 
-  const handleClassChange = (e, val) => {
-    let newFormData = formData;
+  const handleClassChange = (e) => {
+    let newFormData = {...formData};
     newFormData.classId = e.target.value;
     setFormData(newFormData);
   };
 
   const handleIterationsChange = (e) => {
-    let newFormData = formData;
+    let newFormData = {...formData};
     if (e.target.value < 0) {
-      e.target.value = 0;
+      e.target.value = 1;
       return;
     }
     newFormData.numOfIterations = e.target.value;
@@ -106,7 +107,6 @@ const Index = ({ img, dialogOpen, history, handleClose }) => {
     images = JSON.stringify(images);
     const data = new FormData();
     data.append("images", images);
-    console.log(data);
     fetch(`${serverUrl}dataset_images`, {
       method: "DELETE",
       credentials: "include",
@@ -145,6 +145,8 @@ const Index = ({ img, dialogOpen, history, handleClose }) => {
             handleIterationsChange={handleIterationsChange}
             handleSubmit={handleSubmit}
             handleClose={handleClose}
+            numOfIterations={formData.numOfIterations}
+            selectedLabel={formData.classId}
           />
         )}
         {!isLoading && previewOpen && (

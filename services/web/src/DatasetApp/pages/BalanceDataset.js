@@ -14,6 +14,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import serverUrl from '../../Constants/serverUrl';
 import classLabels from '../../Constants/classLabels';
 import colours from '../../Constants/colours';
+import Navbar from "../components/Navbar";
 
 const options = {
   scales: {
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function BalanceDataset(props) {
+  const { theme  } = props;
   let classes = useStyles()
   classes = { ...classes, ...props.classes }
 
@@ -101,24 +103,44 @@ function BalanceDataset(props) {
 
   if(!beforeLoaded) {
     return (
+      <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />          
       <Backdrop className={classes.backdrop} open={true}>
         <CircularProgress color="primary" />
       </Backdrop>
+      </>
     )
   }
   else if(!beforeCountData.x.length || !beforeCountData.y.length) {
     return (
+      <>
+        <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+       />          
       <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <br/><br/><br/>
       <Typography align="center" variant="h6">
         Please upload some images to the dataset first.
       </Typography>
-      </Grid>      
+      </Grid>
+      </>      
     )
   }
 
   return  (
+    <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />              
     <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <Grid item container justify="center" direction="column" alignItems="center" spacing={1}>
@@ -197,6 +219,7 @@ function BalanceDataset(props) {
         <CircularProgress color="primary" />
       </Backdrop>
     </Grid>
+    </>
   )
 }
 

@@ -15,6 +15,7 @@ import serverUrl from '../../Constants/serverUrl';
 import classLabels from '../../Constants/classLabels';
 import colours from '../../Constants/colours';
 import { downloadCSV } from '../../Utils';
+import Navbar from "../components/Navbar";
 
 const options = {
   scales: {
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SplitDataset(props) {
   let classes = useStyles()
+  const { theme } = props
   classes = { ...classes, ...props.classes }
 
   const [beforeCountData, setBeforeCountData] = useState({ x: [], y: [], colors: [] })
@@ -107,24 +109,44 @@ function SplitDataset(props) {
 
   if(!beforeLoaded) {
     return (
+      <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />                
       <Backdrop className={classes.backdrop} open={true}>
         <CircularProgress color="primary" />
       </Backdrop>
+      </>
     )
   }
   else if(!beforeCountData.x.length || !beforeCountData.y.length) {
     return (
+      <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />                
       <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <br/><br/><br/>
       <Typography align="center" variant="h6">
         Please upload some images to the dataset first.
       </Typography>
-      </Grid>      
+      </Grid>
+      </>      
     )
   }
 
   return  (
+    <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />              
     <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <Grid item container justify="center" direction="column" alignItems="center" spacing={1}>
@@ -206,6 +228,7 @@ function SplitDataset(props) {
         <CircularProgress color="primary" />
       </Backdrop>
     </Grid>
+    </>
   )
 }
 

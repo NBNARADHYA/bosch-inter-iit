@@ -7,7 +7,6 @@ from typing import Optional
 
 import albumentations as A
 import augmentations
-import cv2
 import folder_actions
 import numpy as np
 import pandas as pd
@@ -55,7 +54,7 @@ app.add_middleware(
 
 
 def load_image_into_numpy_array(data):
-    return np.array(Image.open(BytesIO(data)))
+    return np.array(Image.open(BytesIO(data)).convert("RGB"))
 
 
 def hinted_tuple_hook(obj):
@@ -137,8 +136,7 @@ async def transform_image(
 
             img_url_new = "image_previews/" + str(id) + img_extension
 
-        image = cv2.imread(img_url_new)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = np.array(Image.open(img_url_new).convert("RGB"))
 
     else:
         raise HTTPException(status_code=400,

@@ -26,9 +26,9 @@ const getTransformedImages = (transformedImages) => {
   for (let i = 0; i < transformedImages?.length - 3; i++) {
     const image = (
       <div key={count}>
-        <img src={transformedImages[i]} width="184px" height="160px" />
-        <img src={transformedImages[i + 1]} width="184px" height="160px" />
-        <img src={transformedImages[i + 2]} width="184px" height="160px" />
+        <img alt={'Loading..'} src={transformedImages[i]} width="184px" height="160px" />
+        <img alt={'Loading..'} src={transformedImages[i + 1]} width="184px" height="160px" />
+        <img alt={'Loading..'} src={transformedImages[i + 2]} width="184px" height="160px" />
       </div>
     );
     count++;
