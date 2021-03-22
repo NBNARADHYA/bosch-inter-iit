@@ -9,3 +9,5 @@ ENV SERVER_BASE_URL="http://localhost:5000/"
 
 RUN apt-get update
 RUN apt-get install -y libgl1-mesa-dev
+
+CMD /start-reload.sh
