@@ -402,7 +402,7 @@ class Model_output:
         out[1][0].get_figure().savefig(path)
         plt.clf()
         plt.close()
-        
+
         return path
 
     def test_model(self, img):
@@ -413,9 +413,9 @@ class Model_output:
             model = torch.load(self.model_path)
         model = model["model"]
         model.eval()
-        
+
         img_t = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        
+
         img = img_t
         augmented = get_transforms((0.485, 0.456, 0.406),
                                    (0.229, 0.224, 0.225))(image=img)
