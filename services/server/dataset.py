@@ -2,7 +2,7 @@ from torch.utils.data import DataLoader, Dataset, sampler
 import pandas as pd
 import os
 import cv2
-from albumentations import (Normalize, Resize, Compose)
+from albumentations import Normalize, Resize, Compose
 from albumentations.pytorch import ToTensor
 import numpy as np
 
@@ -31,12 +31,12 @@ class dataset(Dataset):
 
     def __getitem__(self, idx):
         image_id = self.df["image"].iloc[idx]
-        image_path = os.path.join(self.root,  image_id)
+        image_path = os.path.join(self.root, image_id)
         img = cv2.imread(image_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         label = self.df.iloc[idx].iloc[1].astype(np.uint8)
         augmented = self.transforms(image=img)
-        imgtf1 = augmented['image']
+        imgtf1 = augmented["image"]
         return imgtf1, label
 
     def __len__(self):
@@ -51,7 +51,7 @@ def provider(
     std=(0.229, 0.224, 0.225),
     num_workers=0,
 ):
-    '''Returns dataloader for the model training'''
+    """Returns dataloader for the model training"""
     data = pd.read_csv(df_path)
     image_dataset = dataset(data, data_folder, mean, std)
 

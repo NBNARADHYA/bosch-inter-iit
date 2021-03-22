@@ -1,4 +1,10 @@
-from sklearn.metrics import f1_score, balanced_accuracy_score, accuracy_score, precision_score, recall_score
+from sklearn.metrics import (
+    f1_score,
+    balanced_accuracy_score,
+    accuracy_score,
+    precision_score,
+    recall_score,
+)
 import pickle
 import shutil
 from dataset import provider, get_transforms
@@ -13,10 +19,19 @@ from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader, Dataset, sampler
 import pandas as pd
-from albumentations import (HorizontalFlip, VerticalFlip, ShiftScaleRotate,
-                            Normalize, Resize, Compose, GaussNoise,
-                            RandomRotate90, Transpose, RandomBrightnessContrast,
-                            RandomCrop)
+from albumentations import (
+    HorizontalFlip,
+    VerticalFlip,
+    ShiftScaleRotate,
+    Normalize,
+    Resize,
+    Compose,
+    GaussNoise,
+    RandomRotate90,
+    Transpose,
+    RandomBrightnessContrast,
+    RandomCrop,
+)
 from albumentations.pytorch import ToTensor
 import matplotlib.pyplot as plt
 import os
@@ -28,33 +43,43 @@ from torch import nn
 from torch import optim
 import torch.nn.functional as F
 from torchvision import datasets, transforms, models
-device = torch.device("cuda" if torch.cuda.is_available()
-                      else "cpu")
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def save_pickle(filename, obj):
-    with open(filename, 'wb') as handle:
+    with open(filename, "wb") as handle:
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def load_pickle(filename):
-    with open(filename, 'rb') as handle:
+    with open(filename, "rb") as handle:
         obj = pickle.load(handle)
     return obj
 
 
-class Model_output():
-    def __init__(self, model_path=None, first_time=False, is_plot=False, is_run=False, is_cpu=True, data_path='test_dataset/test.csv', data_root='test_dataset/', batch_size=64):
+class Model_output:
+    def __init__(
+        self,
+        model_path=None,
+        first_time=False,
+        is_plot=False,
+        is_run=False,
+        is_cpu=True,
+        data_path="test_dataset/test.csv",
+        data_root="test_dataset/",
+        batch_size=64,
+    ):
 
         # self.model = timm.create_model('resnet18',pretrained=True,num_classes=48)
         # self.model.to(device)
         # self.model.load_state_dict(torch.load('')['model_state_dict'])
 
-     #   if not is_plot and not first_time:
-     #      model = torch.load(model_path, map_location=torch.device('cpu'))
-     #      self.train_metrics = model['train_metrics']
-     #      self.model = model['model']
-     #      self.model_name = model['name']
+        #   if not is_plot and not first_time:
+        #      model = torch.load(model_path, map_location=torch.device('cpu'))
+        #      self.train_metrics = model['train_metrics']
+        #      self.model = model['model']
+        #      self.model_name = model['name']
 
         self.is_cpu = is_cpu
         self.model_path_name = model_path.split(".")[0]
@@ -66,14 +91,13 @@ class Model_output():
 
         if first_time:
             if self.is_cpu:
-                model = torch.load(
-                    self.model_path, map_location=torch.device('cpu'))
+                model = torch.load(self.model_path, map_location=torch.device("cpu"))
             else:
                 model = torch.load(self.model_path)
 
-            self.train_metrics = model['train_metrics']
-            self.model = model['model']
-            self.model_name = model['name']
+            self.train_metrics = model["train_metrics"]
+            self.model = model["model"]
+            self.model_name = model["name"]
             self.model.eval()
 
             self.df = pd.read_csv(data_path)
@@ -85,32 +109,31 @@ class Model_output():
             self.metrics = {}
             self.pred()
             self.conf_matrix = confusion_matrix(
-                self.labels, np.argmax(self.predictions, axis=1))
+                self.labels, np.argmax(self.predictions, axis=1)
+            )
 
             self.manage_pickles_dir()
         elif not is_run:
-            base_path = 'pickles/' + self.model_path_name
+            base_path = "pickles/" + self.model_path_name
 
-            self.labels = load_pickle(base_path + '_labels.pickle')
-            self.predictions = load_pickle(base_path + '_predictions.pickle')
+            self.labels = load_pickle(base_path + "_labels.pickle")
+            self.predictions = load_pickle(base_path + "_predictions.pickle")
 
             if not is_plot:
-                self.train_metrics = load_pickle(
-                    base_path + '_train_metrics.pickle')
-                self.metrics = load_pickle(base_path + '_metrics.pickle')
-                self.conf_matrix = load_pickle(
-                    base_path + '_conf_matrix.pickle')
+                self.train_metrics = load_pickle(base_path + "_train_metrics.pickle")
+                self.metrics = load_pickle(base_path + "_metrics.pickle")
+                self.conf_matrix = load_pickle(base_path + "_conf_matrix.pickle")
                 self.df = pd.read_csv(data_path)
                 self.sz = self.df.shape[0]
 
     def manage_pickles_dir(self):
-        base_path = 'pickles/' + self.model_path_name
+        base_path = "pickles/" + self.model_path_name
 
-        save_pickle(base_path + '_predictions.pickle', self.predictions)
-        save_pickle(base_path + '_labels.pickle', self.labels)
-        save_pickle(base_path + '_metrics.pickle', self.metrics)
-        save_pickle(base_path + '_train_metrics.pickle', self.train_metrics)
-        save_pickle(base_path + '_conf_matrix.pickle', self.conf_matrix)
+        save_pickle(base_path + "_predictions.pickle", self.predictions)
+        save_pickle(base_path + "_labels.pickle", self.labels)
+        save_pickle(base_path + "_metrics.pickle", self.metrics)
+        save_pickle(base_path + "_train_metrics.pickle", self.train_metrics)
+        save_pickle(base_path + "_conf_matrix.pickle", self.conf_matrix)
 
     def pred(self):
         # n -> test images
@@ -118,8 +141,7 @@ class Model_output():
 
         # return metrics **
 
-        data_loader = provider(self.root, self.path,
-                               batch_size=self.batch_size)
+        data_loader = provider(self.root, self.path, batch_size=self.batch_size)
         image_preds_all = []
         image_targets_all = []
 
@@ -128,34 +150,36 @@ class Model_output():
             image_preds = self.model(img.to(device))
             self.predictions.extend(image_preds.detach().cpu().numpy())
             self.labels.extend(target.detach().cpu().numpy())
-            image_preds_all += [torch.argmax(image_preds,
-                                             1).detach().cpu().numpy()]
+            image_preds_all += [torch.argmax(image_preds, 1).detach().cpu().numpy()]
             image_targets_all += [target.detach().cpu().numpy()]
 
         for i in range(len(self.predictions)):
             x = self.predictions[i]
-            self.predictions[i] = np.exp(x)/sum(np.exp(x))
+            self.predictions[i] = np.exp(x) / sum(np.exp(x))
 
         image_preds_all = np.concatenate(image_preds_all)
         image_targets_all = np.concatenate(image_targets_all)
 
         weighted_f1_score = f1_score(
-            image_targets_all, image_preds_all, average='weighted')
-        macro_f1_score = f1_score(
-            image_targets_all, image_preds_all, average='macro')
+            image_targets_all, image_preds_all, average="weighted"
+        )
+        macro_f1_score = f1_score(image_targets_all, image_preds_all, average="macro")
         balanced_accuracy_score1 = balanced_accuracy_score(
-            image_targets_all, image_preds_all)
+            image_targets_all, image_preds_all
+        )
         accuracy_score1 = accuracy_score(image_targets_all, image_preds_all)
         precision_score1 = precision_score(
-            image_targets_all, image_preds_all, average='macro')
+            image_targets_all, image_preds_all, average="macro"
+        )
         recall_score1 = recall_score(
-            image_targets_all, image_preds_all, average='macro')
+            image_targets_all, image_preds_all, average="macro"
+        )
 
-        self.metrics['weighted_f1_score'] = round(weighted_f1_score, 4)
-        self.metrics['macro_f1_score'] = round(macro_f1_score, 4)
-        self.metrics['accuracy_score'] = round(accuracy_score1, 4)
-        self.metrics['precision_score'] = round(precision_score1, 4)
-        self.metrics['recall_score'] = round(recall_score1, 4)
+        self.metrics["weighted_f1_score"] = round(weighted_f1_score, 4)
+        self.metrics["macro_f1_score"] = round(macro_f1_score, 4)
+        self.metrics["accuracy_score"] = round(accuracy_score1, 4)
+        self.metrics["precision_score"] = round(precision_score1, 4)
+        self.metrics["recall_score"] = round(recall_score1, 4)
 
     def get_metrics(self):
         return self.train_metrics, self.metrics
@@ -185,16 +209,18 @@ class Model_output():
                 row.append(round(self.predictions[itr][label], 5))
                 data.append(row)
 
-        df = pd.DataFrame(np.array(data),
-                          columns=['image', 'predicted', 'actual', 'confidence'])
-        df = df.sort_values(by=['confidence'], ascending=False)
+        df = pd.DataFrame(
+            np.array(data), columns=["image", "predicted", "actual", "confidence"]
+        )
+        df = df.sort_values(by=["confidence"], ascending=False)
 
-        return df.to_dict('records')
+        return df.to_dict("records")
 
     def confusion(self):
         fig, ax = plt.subplots(figsize=(50, 50))
         cm_display = ConfusionMatrixDisplay(
-            self.conf_matrix, np.unique(np.array(self.labels))).plot(ax=ax)
+            self.conf_matrix, np.unique(np.array(self.labels))
+        ).plot(ax=ax)
         matrix_path = "model_output/" + self.model_path_name + "_confusion_matrix.png"
         plt.savefig(matrix_path)
         plt.clf()
@@ -202,8 +228,10 @@ class Model_output():
         return matrix_path
 
     def wrost_acc_classes(self):
-        cm = (self.conf_matrix.astype('float') /
-              self.conf_matrix.sum(axis=1)[:, np.newaxis])*100
+        cm = (
+            self.conf_matrix.astype("float")
+            / self.conf_matrix.sum(axis=1)[:, np.newaxis]
+        ) * 100
         onx = list(np.argsort(cm.diagonal()))
         for i in range(len(onx)):
             onx[i] = int(onx[i])
@@ -215,7 +243,7 @@ class Model_output():
 
     def most_confused_classes(self, no_most=5):
         a = self.conf_matrix
-        a = (a.astype('float') / a.sum(axis=1)[:, np.newaxis])*100
+        a = (a.astype("float") / a.sum(axis=1)[:, np.newaxis]) * 100
         x = []
         y = []
         for i in range(len(a)):
@@ -249,25 +277,35 @@ class Model_output():
 
     def plot_precision_recall_curve(self, c):
         precision, recall, thresholds = self.precision_recall_curve(c)
-        plt.plot(thresholds, precision, label='Precision')
-        plt.plot(thresholds, recall, label='Recall')
-        plt.title('Precision and Recall for Class ' + str(c))
-        plt.xlabel('Confidence')
+        plt.plot(thresholds, precision, label="Precision")
+        plt.plot(thresholds, recall, label="Recall")
+        plt.title("Precision and Recall for Class " + str(c))
+        plt.xlabel("Confidence")
         plt.legend()
         plt.show()
-        path1 = "model_output/precision_recall_vs_confidence_" + \
-            self.model_path_name + "_class_" + str(c) + ".png"
+        path1 = (
+            "model_output/precision_recall_vs_confidence_"
+            + self.model_path_name
+            + "_class_"
+            + str(c)
+            + ".png"
+        )
         plt.savefig(path1)
         plt.clf()
         plt.close()
 
         plt.plot(recall, precision)
-        plt.title('Presicion Vs Recall for Class ' + str(c))
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
+        plt.title("Presicion Vs Recall for Class " + str(c))
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
         plt.show()
-        path2 = "model_output/precision_vs_recall_" + \
-            self.model_path_name + "_class_" + str(c) + ".png"
+        path2 = (
+            "model_output/precision_vs_recall_"
+            + self.model_path_name
+            + "_class_"
+            + str(c)
+            + ".png"
+        )
         plt.savefig(path2)
         plt.clf()
         plt.close()
@@ -287,12 +325,17 @@ class Model_output():
     def plot_roc_curve(self, c):
         fpr, tpr, thresholds = self.roc_curve(c=c)
         plt.plot(fpr, tpr)
-        plt.title('ROC Curve for Class ' + str(c))
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
+        plt.title("ROC Curve for Class " + str(c))
+        plt.xlabel("False Positive Rate")
+        plt.ylabel("True Positive Rate")
         plt.show()
-        path = "model_output/roc_curve_" + \
-            self.model_path_name + "_class_" + str(c) + ".png"
+        path = (
+            "model_output/roc_curve_"
+            + self.model_path_name
+            + "_class_"
+            + str(c)
+            + ".png"
+        )
         plt.savefig(path)
         plt.clf()
         plt.close()
@@ -306,21 +349,18 @@ class Model_output():
 
     def run_and_generate_heatmap(self, img):
         if self.is_cpu:
-            model = torch.load(
-                self.model_path, map_location=torch.device('cpu'))
+            model = torch.load(self.model_path, map_location=torch.device("cpu"))
         else:
             model = torch.load(self.model_path)
-        model = model['model']
+        model = model["model"]
         model.eval()
 
-        transform = transforms.Compose([
-            transforms.Resize((64, 64)),
-            transforms.ToTensor()
-        ])
+        transform = transforms.Compose(
+            [transforms.Resize((64, 64)), transforms.ToTensor()]
+        )
 
         transform_normalize = transforms.Normalize(
-            mean=[0.485, 0.456, 0.406],
-            std=[0.229, 0.224, 0.225]
+            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
         )
 
         img_t = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -336,27 +376,29 @@ class Model_output():
 
         pred_label_idx.squeeze_()
 
-        default_cmap = LinearSegmentedColormap.from_list('custom blue',
-                                                         [(0, '#ffffff'),
-                                                          (0.25, '#000000'),
-                                                             (1, '#000000')], N=256)
+        default_cmap = LinearSegmentedColormap.from_list(
+            "custom blue", [(0, "#ffffff"), (0.25, "#000000"), (1, "#000000")], N=256
+        )
 
         gradient_shap = GradientShap(model)
 
         rand_img_dist = torch.cat([input * 0, input * 1])
 
-        attributions_gs = gradient_shap.attribute(input,
-                                                  n_samples=50,
-                                                  stdevs=0.0001,
-                                                  baselines=rand_img_dist,
-                                                  target=pred_label_idx)
-        out = viz.visualize_image_attr_multiple(np.transpose(attributions_gs.squeeze().cpu().detach().numpy(), (1, 2, 0)),
-                                                np.transpose(transformed_img.squeeze(
-                                                ).cpu().detach().numpy(), (1, 2, 0)),
-                                                ["original_image", "heat_map"],
-                                                ["all", "absolute_value"],
-                                                cmap=default_cmap,
-                                                show_colorbar=True)
+        attributions_gs = gradient_shap.attribute(
+            input,
+            n_samples=50,
+            stdevs=0.0001,
+            baselines=rand_img_dist,
+            target=pred_label_idx,
+        )
+        out = viz.visualize_image_attr_multiple(
+            np.transpose(attributions_gs.squeeze().cpu().detach().numpy(), (1, 2, 0)),
+            np.transpose(transformed_img.squeeze().cpu().detach().numpy(), (1, 2, 0)),
+            ["original_image", "heat_map"],
+            ["all", "absolute_value"],
+            cmap=default_cmap,
+            show_colorbar=True,
+        )
 
         path = "model_output/" + self.model_path_name + "_heat_map.png"
         out[1][0].get_figure().savefig(path)
@@ -366,15 +408,16 @@ class Model_output():
         #######################
 
         img = img_t
-        augmented = get_transforms((0.485, 0.456, 0.406),
-                                   (0.229, 0.224, 0.225))(image=img)
-        imgtf1 = augmented['image']
+        augmented = get_transforms((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))(
+            image=img
+        )
+        imgtf1 = augmented["image"]
         x = imgtf1[np.newaxis, ...]
         x.shape
         x = x.to(device)
         pred = model(x)
         y = pred[0].detach().cpu().numpy()
-        y = np.exp(y)/sum(np.exp(y))
+        y = np.exp(y) / sum(np.exp(y))
 
         onx = list(np.argsort(y))
         onx = onx[::-1]
