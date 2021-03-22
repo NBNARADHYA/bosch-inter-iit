@@ -393,9 +393,9 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
             shutil.copyfileobj(model.file, buffer)
 
     model_op_obj = Model_output(model_name, first_time)
-    
+
     output = {}
-    
+
     if first_time:
         output = {"model_name": model_name}
 
@@ -403,7 +403,8 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
     output["train_metrics"] = train_metrics
     output["test_metrics"] = test_metrics
 
-    output["top_5_classes"] = model_op_obj.top_5_classes(SERVER_BASE_URL + "test_dataset/")
+    output["top_5_classes"] = model_op_obj.top_5_classes(SERVER_BASE_URL +
+                                                         "test_dataset/")
 
     output["wrong_pred"] = model_op_obj.wrong_pred()
 
