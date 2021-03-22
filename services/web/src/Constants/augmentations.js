@@ -465,7 +465,7 @@ const augmentations = [
     id: 70,
     name: "ElasticTransform",
     description:
-      "Elastic deformation of images as described in [Simard2003]_ (with modifications). Based on https://gist.github.com/erniejunior/601cdf56d2b424757de5",
+      "Elastic deformation of images as described in [Simard2003]_ (with modifications).",
     parameters:
       '[{"name":"alpha","type":"float","description":null,"defaultVal":1,"min":0,"max":10},{"name":"sigma","type":"float","description":"Gaussian filter parameter.","defaultVal":50},{"name":"alpha_affine","type":"float","description":"The range will be (-alpha_affine, alpha_affine)","defaultVal":50},{"name":"interpolation","type":"OpenCV flag","description":"flag that is used to specify the interpolation algorithm. Should be one of: cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_CUBIC, cv2.INTER_AREA, cv2.INTER_LANCZOS4. Default: cv2.INTER_LINEAR.","defaultVal":1},{"name":"border_mode","type":"OpenCV flag","description":"flag that is used to specify the pixel extrapolation method. Should be one of: cv2.BORDER_CONSTANT, cv2.BORDER_REPLICATE, cv2.BORDER_REFLECT, cv2.BORDER_WRAP, cv2.BORDER_REFLECT_101. Default: cv2.BORDER_REFLECT_101","defaultVal":4},{"name":"value","type":"int, float, list of ints, list of float","description":"padding value if border_mode is cv2.BORDER_CONSTANT.","min":0,"max":255},{"name":"mask_value","type":"int, float, list of ints, list of float","description":"padding value if border_mode is cv2.BORDER_CONSTANT applied for masks."},{"name":"approximate","type":"boolean","description":"Whether to smooth displacement map with fixed kernel size. Enabling this option gives ~2X speedup on large images.","defaultVal":"False"}]',
     category: 4,

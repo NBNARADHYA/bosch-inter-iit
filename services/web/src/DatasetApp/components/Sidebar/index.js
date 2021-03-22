@@ -15,7 +15,7 @@ import { Button } from "@material-ui/core";
 import { green, red } from '@material-ui/core/colors';
 import ResetDialog from "./ResetDialog";
 
-const useStyle = makeStyles(() => ({
+const useStyle = makeStyles((theme) => ({
   spacing: {
     margin: "20px",
     width: 280
@@ -27,7 +27,13 @@ const useStyle = makeStyles(() => ({
   },
   buttonGrid: {
     margin: "10px",
-  }
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },  
 }));
 
 const DoneButton = withStyles((theme) => ({

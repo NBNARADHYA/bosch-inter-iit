@@ -16,7 +16,7 @@ const steps = [
   },
   {
     selector: '#step4',
-    content: 'The real-time transformed image would be visible here. You can also download this preview here.',
+    content: 'The real-time transformed image for one of the uploaded images would be visible here. You can also download this preview here.',
   },
   {
     selector: '#step5',
@@ -28,7 +28,7 @@ const steps = [
   },
   {
     selector: '#step7',
-    content: 'Select this option to perform multiple iterations of the applied transformations and preview the generated images. You can also download these images in a .zip folder or directly add to the dataset present on server.'
+    content: 'Select this option to perform multiple iterations of the applied transformations and preview all the generated images. You can also download these images in a .zip folder or directly add to the dataset present on server.'
   },
   {
     selector: '#step8',
