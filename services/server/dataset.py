@@ -10,8 +10,8 @@ import numpy as np
 def get_transforms(mean, std):
     list_transforms = []
     list_transforms.extend(
-        [ 
-            Resize(64,64),
+        [
+            Resize(64, 64),
             Normalize(mean=mean, std=std, p=1),
             ToTensor(),
         ]
@@ -37,7 +37,7 @@ class dataset(Dataset):
         label = self.df.iloc[idx].iloc[1].astype(np.uint8)
         augmented = self.transforms(image=img)
         imgtf1 = augmented['image']
-        return imgtf1,label
+        return imgtf1, label
 
     def __len__(self):
         return len(self.fnames)
@@ -46,7 +46,7 @@ class dataset(Dataset):
 def provider(
     data_folder,
     df_path,
-    batch_size = 64,
+    batch_size=64,
     mean=(0.485, 0.456, 0.406),
     std=(0.229, 0.224, 0.225),
     num_workers=0,
@@ -60,7 +60,7 @@ def provider(
         batch_size=batch_size,
         num_workers=num_workers,
         pin_memory=False,
-        shuffle=False,   
+        shuffle=False,
     )
-    
+
     return dataloader
