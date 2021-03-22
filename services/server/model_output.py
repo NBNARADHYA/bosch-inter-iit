@@ -195,7 +195,7 @@ class Model_output:
     def get_metrics(self):
         return self.train_metrics, self.metrics
 
-    def top_5_classes(self):
+    def top_5_classes(self, base_path):
         # n * 5 // n-> no of images in test set
         data = {}
         for itr in range(self.sz):
@@ -204,7 +204,7 @@ class Model_output:
                 arr[i] = int(arr[i])
             arr = arr[43:]
             arr = arr[::-1]
-            data[self.df.image[itr]] = arr
+            data[base_path + self.df.image[itr]] = arr
         return data
 
     def wrong_pred(self):
@@ -341,7 +341,7 @@ class Model_output:
 
         return path1, path2, path3
 
-    def run_and_generate_heatmap(self, img):
+    def generate_heatmap(self, img):
         if self.is_cpu:
             model = torch.load(self.model_path,
                                map_location=torch.device("cpu"))
@@ -403,7 +403,18 @@ class Model_output:
         plt.clf()
         plt.close()
 
-        #######################
+        return path
+
+    def test_model(self, img):
+        if self.is_cpu:
+            model = torch.load(self.model_path,
+                               map_location=torch.device("cpu"))
+        else:
+            model = torch.load(self.model_path)
+        model = model["model"]
+        model.eval()
+
+        img_t = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         img = img_t
         augmented = get_transforms((0.485, 0.456, 0.406),
@@ -427,4 +438,4 @@ class Model_output:
         for i in range(len(ony)):
             ony[i] = float(ony[i])
 
-        return onx, ony, path
+        return onx, ony

@@ -4,7 +4,6 @@ COPY ./requirements.txt /app
 
 RUN pip3 install -r requirements.txt
 
-ENV GUNICORN_CMD_ARGS="--reload"
 ENV SERVER_BASE_URL="http://localhost:5000/"
 
 RUN apt-get update
