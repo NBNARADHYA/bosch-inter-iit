@@ -14,13 +14,11 @@ from torch.utils.data import sampler
 
 def get_transforms(mean, std):
     list_transforms = []
-    list_transforms.extend(
-        [
-            Resize(64, 64),
-            Normalize(mean=mean, std=std, p=1),
-            ToTensor(),
-        ]
-    )
+    list_transforms.extend([
+        Resize(64, 64),
+        Normalize(mean=mean, std=std, p=1),
+        ToTensor(),
+    ])
     list_trfms = Compose(list_transforms)
     return list_trfms
 
@@ -49,12 +47,12 @@ class dataset(Dataset):
 
 
 def provider(
-    data_folder,
-    df_path,
-    batch_size=64,
-    mean=(0.485, 0.456, 0.406),
-    std=(0.229, 0.224, 0.225),
-    num_workers=0,
+        data_folder,
+        df_path,
+        batch_size=64,
+        mean=(0.485, 0.456, 0.406),
+        std=(0.229, 0.224, 0.225),
+        num_workers=0,
 ):
     """Returns dataloader for the model training"""
     data = pd.read_csv(df_path)
