@@ -3,7 +3,7 @@ import Drawer from "@material-ui/core/Drawer";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import SelectTranformation from "./SelectTransformation";
@@ -15,7 +15,7 @@ import { Button } from "@material-ui/core";
 import { green, red } from '@material-ui/core/colors';
 import ResetDialog from "./ResetDialog";
 
-const useStyle = makeStyles(() => ({
+const useStyle = makeStyles((theme) => ({
   spacing: {
     margin: "20px",
     width: 280
@@ -27,7 +27,13 @@ const useStyle = makeStyles(() => ({
   },
   buttonGrid: {
     margin: "10px",
-  }
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },  
 }));
 
 const DoneButton = withStyles((theme) => ({
@@ -126,14 +132,16 @@ const Sidebar = ({
             startIcon={<DoneIcon/>}
             onClick={addToHistory}
             disabled={!img || !img.img || !img.img.length}
+            id="step5"
           >
             Apply
           </DoneButton>
           <ResetButton
             variant="contained"
-            startIcon={<ClearIcon/>}
+            startIcon={<RotateLeftIcon/>}
             onClick={()=> {setResetDialogOpen(true);}}
             disabled={!history.length}
+            id="step8"
           >
             Reset
           </ResetButton>          

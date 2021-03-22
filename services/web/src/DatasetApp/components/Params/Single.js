@@ -24,11 +24,11 @@ const Single = ({
     mx=max;
   else if(max==='h')
   {
-    mx=height;
+    mx=height||100;
   }
   else if(max==='w')
   {
-    mx=width;
+    mx=width||100;
   }
   else if(defaultVal >=0 && defaultVal <1)
   {
@@ -47,11 +47,11 @@ const Single = ({
   }
   if(name==="width" || name==="x_max")
   {
-    defaultVal=imgDimensions.width;
+    defaultVal=imgDimensions.width||100;
   }
   if(name==="height"|| name==="y_max")
   {
-    defaultVal=imgDimensions.height;
+    defaultVal=imgDimensions.height||100;
   }  
   return (
     <div className={classes.spacing}>

@@ -1,6 +1,10 @@
 import albumentations as A
+from albumentations.core.transforms_interface import DualTransform
+from augments.tearAug import TearAug
+from augments.addBird import AddBird
 
 augmentations_dict = {
+    0: AddBird,
     1: A.Blur,
     2: A.ChannelDropout,
     3: A.ChannelShuffle,
@@ -59,4 +63,5 @@ augmentations_dict = {
     69: A.Rotate,
     70: A.ElasticTransform,
     72: A.ShiftScaleRotate,
+    73: TearAug
 }

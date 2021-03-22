@@ -14,6 +14,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import serverUrl from '../../Constants/serverUrl';
 import classLabels from '../../Constants/classLabels';
 import colours from '../../Constants/colours';
+import Navbar from "../components/Navbar";
+import UndoIcon from '@material-ui/icons/Undo';
+import { useHistory } from "react-router-dom";
 
 const options = {
   scales: {
@@ -36,11 +39,15 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function BalanceDataset(props) {
+  const { theme  } = props;
+  const history = useHistory();  
+  const [balancedImgPaths, setBalancedImgPaths] = useState([])
   let classes = useStyles()
   classes = { ...classes, ...props.classes }
 
   const [beforeCountData, setBeforeCountData] = useState({ x: [], y: [], colors: [] })
   const [afterCountData, setAfterCountData] = useState({ x: [], y: [], colors: [] })
+  const [undoLoading,setUndoLoading] = useState(false)
 
   useEffect(() => {
     fetch(`${serverUrl}class_counts`)
@@ -101,24 +108,44 @@ function BalanceDataset(props) {
 
   if(!beforeLoaded) {
     return (
+      <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />          
       <Backdrop className={classes.backdrop} open={true}>
         <CircularProgress color="primary" />
       </Backdrop>
+      </>
     )
   }
   else if(!beforeCountData.x.length || !beforeCountData.y.length) {
     return (
+      <>
+        <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+       />          
       <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <br/><br/><br/>
       <Typography align="center" variant="h6">
         Please upload some images to the dataset first.
       </Typography>
-      </Grid>      
+      </Grid>
+      </>      
     )
   }
 
   return  (
+    <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />              
     <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <Grid item container justify="center" direction="column" alignItems="center" spacing={1}>
@@ -158,9 +185,12 @@ function BalanceDataset(props) {
                 <Button disabled={loading} color="primary" onClick={() => {
                   setLoading(true)
                   setOpen(false)
-                  fetch(`${serverUrl}balance_dataset`, { method: "POST", body: JSON.stringify({ min_samples: minSamples }) })
+                  let data = new FormData()
+                  data.append('min_samples',minSamples)
+                  fetch(`${serverUrl}balance_dataset`, { method: "POST", body: data })
                   .then(res => res.json())
                   .then(res => {
+                    setBalancedImgPaths(res.balanced_img_paths);
                     setAfterCountData(() => {
                       const newCountData = {}
                       newCountData.x = Object.keys(res.balanced_class_counts).map(label => classLabels[label])
@@ -190,6 +220,31 @@ function BalanceDataset(props) {
             <Grid item>
               <Bar data={afterData} options={options} width={1400} height={400} />  
             </Grid>
+            <br/>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={()=> {
+                setUndoLoading(true);
+                const data = new FormData();
+                data.append("images", JSON.stringify(JSON.stringify(balancedImgPaths)));
+                fetch(`${serverUrl}dataset_images`, {
+                  method: "DELETE",
+                  credentials: "include",
+                  body: data,
+                })
+                  .then((res) => res.json())
+                  .then(() => {
+                      setUndoLoading(false);
+                      history.push("/balance/");
+                  })
+                  .catch((err) => console.log(err));                
+              }}
+              startIcon={<UndoIcon/>}
+             disabled={undoLoading}
+            >
+              Undo
+            </Button>            
           </>
         }
       </Grid>
@@ -197,6 +252,7 @@ function BalanceDataset(props) {
         <CircularProgress color="primary" />
       </Backdrop>
     </Grid>
+    </>
   )
 }
 
