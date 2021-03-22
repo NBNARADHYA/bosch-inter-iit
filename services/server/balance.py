@@ -14,7 +14,7 @@ class Balance:
     def __init__(self, img_df, min_samples=None):
         self.df = img_df
         self.df.columns = ["image", "label"]
-
+        self.min_samples = min_samples
         if min_samples is None:
             self.min_samples = int(
                 (self.df.groupby(by="label").count().values.max()) * 0.8)
@@ -72,11 +72,11 @@ class Balance:
 
             for i in range(self.min_samples - len(images)):
                 imagepath = random.choice(images)
-                image = plt.imread(imagepath)
+                image = plt.imread(imagepath)[:,:,:3]
                 transformed = self.transform(image=image)
                 transformed_image = transformed["image"]
                 pathimg = path + "newsample_" + str(id) + str(
-                    i) + imagepath[-4:]
+                    i) + "." + imagepath.split(".")[-1]
                 plt.imsave(pathimg, transformed_image)
                 balanced_img_paths.append(SERVER_BASE_URL + pathimg)
                 self.df.loc[len(self.df.index)] = [pathimg, id]

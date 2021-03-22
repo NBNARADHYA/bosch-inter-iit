@@ -126,7 +126,7 @@ const Index = ({ img, dialogOpen, history, handleClose }) => {
     <div>
       <Dialog
         open={dialogOpen}
-        onClose={handleDialogClose}
+        onClose={() => {}}
         aria-labelledby="form-dialog-title"
         fullWidth
       >

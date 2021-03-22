@@ -23,7 +23,7 @@ const SelectTransformation = ({
     );
   });
   return (
-    <FormControl className={classes.spacing}>
+    <FormControl className={classes.spacing} id="step2">
       <InputLabel shrink id="demo-simple-select-placeholder-label-label">
         Select Transformation:
       </InputLabel>

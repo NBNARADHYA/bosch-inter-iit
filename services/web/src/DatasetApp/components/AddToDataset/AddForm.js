@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import React from "react";
-
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import classLabels from "../../../Constants/classLabels";
 
 const AddForm = ({
@@ -22,7 +22,7 @@ const AddForm = ({
 }) => {
   return (
     <div>
-      <DialogTitle id="form-dialog-title">Add to Dataset</DialogTitle>
+      <DialogTitle id="form-dialog-title">Preview</DialogTitle>
       <DialogContent>
         <div>
           <div>
@@ -65,8 +65,9 @@ const AddForm = ({
         <Button onClick={handleClose} color="secondary">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} color="primary" disabled={numOfIterations<=0}>
-          Add
+        <Button onClick={handleSubmit} color="primary" disabled={numOfIterations<=0}
+                startIcon={<VisibilityIcon/>}>
+          Preview
         </Button>
       </DialogActions>
     </div>

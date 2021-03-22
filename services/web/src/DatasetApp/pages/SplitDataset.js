@@ -44,6 +44,7 @@ function SplitDataset(props) {
 
   const [beforeCountData, setBeforeCountData] = useState({ x: [], y: [], colors: [] })
   const [afterCountData, setAfterCountData] = useState({ train_x: [], train_y: [], val_x: [], val_y: [] })
+  const [invalidSplitPercentage, setInvalidSplitPercentage] = useState(false)
 
   useEffect(() => {
     fetch(`${serverUrl}class_counts`)
@@ -106,6 +107,13 @@ function SplitDataset(props) {
   useEffect(() => {
     setLoading(!beforeLoaded)
   }, [beforeLoaded])
+
+  useEffect(() => {
+    if(!splitPercentage)
+      return
+    const isInvalid = beforeCountData.y.some(val => val<2 )
+    setInvalidSplitPercentage(isInvalid)
+  },[splitPercentage, beforeCountData.y])
 
   if(!beforeLoaded) {
     return (
@@ -176,17 +184,21 @@ function SplitDataset(props) {
                   id="name"
                   label="Split %"
                   fullWidth
-                  onChange={(e) => setSplitPercentage(e.target.value/100)}
+                  error={invalidSplitPercentage}
+                  onChange={(e) => setSplitPercentage(e.target.value/100.00)}
+                  helperText={invalidSplitPercentage?'The minimum number of groups for any class cannot be less than 2.':''}
                 />
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose} color="primary">
                   Cancel
                 </Button>
-                <Button disabled={loading} color="primary" onClick={() => {
+                <Button disabled={loading || invalidSplitPercentage} color="primary" onClick={() => {
                   setLoading(true)
                   setOpen(false)
-                  fetch(`${serverUrl}split_dataset`, { method: "POST", body: JSON.stringify({ split_percentage: splitPercentage }) })
+                  let data = new FormData()
+                  data.append('split_percentage',splitPercentage)                  
+                  fetch(`${serverUrl}split_dataset`, { method: "POST", data})
                   .then(res => res.json())
                   .then(res => {
                     downloadCSV(res.csv.train,'train.csv');

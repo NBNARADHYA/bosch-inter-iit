@@ -14,6 +14,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { Link } from "react-router-dom";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles(theme => ({
   timelineButton: {
@@ -43,7 +44,7 @@ const menuOptions = [{
 }
 ];
 
-export default function Navbar({ classes, open, handleDrawerOpen, toggleTimelineDrawer }) {
+export default function Navbar({ classes, open, handleDrawerOpen, toggleTimelineDrawer, openTour }) {
 const navbarClasses = useStyles();
 const [anchorEl, setAnchorEl] = React.useState(null);
 const isMenuOpen = Boolean(anchorEl);
@@ -76,7 +77,7 @@ const selectedOption = menuOptions.filter(({link}) => link===currentPath)[0].tex
         <Typography variant="h6" noWrap>
           Dataset Creation UI
         </Typography>
-        <Button color="inherit" onClick={handleMenu}  aria-haspopup="true" className={navbarClasses.menuOptions}>
+        <Button color="inherit" onClick={handleMenu}  aria-haspopup="true" className={navbarClasses.menuOptions} id="step9">
           <span className={navbarClasses.dropdownText}>
           {selectedOption}
           <ExpandMoreIcon fontSize="small" className={navbarClasses.dropdownIcon} />          
@@ -104,11 +105,18 @@ const selectedOption = menuOptions.filter(({link}) => link===currentPath)[0].tex
               }
         </Menu>
         {selectedOption==='Apply transformations' && 
+        <>
         <Tooltip TransitionComponent={Zoom} title="Timeline of applied augmentations">        
-          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Timeline" component="span" onClick={toggleTimelineDrawer}>
+          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Timeline" component="span" onClick={toggleTimelineDrawer} id="step6">
             <TimelineIcon/>
           </IconButton>
-        </Tooltip>}
+        </Tooltip>
+        <Tooltip TransitionComponent={Zoom} title="Tutorial">        
+          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Help" component="span" onClick={openTour}>
+            <HelpOutlineIcon/>
+          </IconButton>
+        </Tooltip>        
+        </>}
       </Toolbar>
     </AppBar>
   );

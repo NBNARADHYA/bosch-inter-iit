@@ -125,12 +125,12 @@ const Params = ({ classes, transformation, params, handleParamsChange, imgDimens
     if (arg) validArguments++;
   });
   return (
-    <Fragment>
+    <div id="step3">
       <Typography variant="h6" component="h6" className={classes.spacing}>
         <strong>Parameters</strong>
       </Typography>
       {validArguments > 0 ? args : def}
-    </Fragment>
+    </div>
   );
 };
 

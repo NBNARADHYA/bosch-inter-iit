@@ -4,7 +4,7 @@ import ImageUploader from "react-images-upload";
 const UploadImage = ({ classes, img, handleImgChange }) => {
   const noOfImg = img?.img?.length;
   return (
-    <div className={classes.spacingUploadButton}>
+    <div className={classes.spacingUploadButton} id="step1">
       <ImageUploader
         withIcon={true}
         buttonText={
