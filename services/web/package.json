@@ -13,6 +13,7 @@
     "chart.js": "^2.9.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-grid-gallery": "^0.5.5",
     "react-image-magnify": "^2.7.4",
     "react-images-upload": "^1.2.8",
     "react-material-ui-carousel": "^2.2.1",

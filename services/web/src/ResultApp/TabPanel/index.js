@@ -6,9 +6,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import ConfidenceClasses from "./ConfidenceClasses/index";
-import ConfusedClasses from "./ConfusedClasses";
-import ConfusionMatrix from "./ConfusionMatrix";
+import { tabs } from "./tabs";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -36,13 +34,6 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `wrapped-tab-${index}`,
-    "aria-controls": `wrapped-tabpanel-${index}`,
-  };
-}
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -54,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TabsWrappedLabel() {
   const classes = useStyles();
-  const [value, setValue] = React.useState("one");
+  const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -68,35 +59,16 @@ export default function TabsWrappedLabel() {
           onChange={handleChange}
           aria-label="wrapped label tabs example"
         >
-          <Tab
-            value="one"
-            label="Confidence classes"
-            wrapped
-            {...a11yProps("one")}
-          />
-          <Tab
-            value="two"
-            label="Confused classes"
-            wrapped
-            {...a11yProps("two")}
-          />
-          <Tab
-            value="three"
-            label="Confusion Matrix"
-            wrapped
-            {...a11yProps("three")}
-          />
+          {tabs.map(({ name },idx) => (
+            <Tab key={idx} value={idx} label={name} />
+          ))}
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index="one">
-        <ConfidenceClasses />
-      </TabPanel>
-      <TabPanel value={value} index="two">
-        <ConfusedClasses />
-      </TabPanel>
-      <TabPanel value={value} index="three">
-        <ConfusionMatrix />
-      </TabPanel>
+      {tabs.map(({ component }, idx) => (
+        <TabPanel key={idx} value={value} index={idx}>
+          {component()}
+        </TabPanel>
+      ))}
     </div>
   );
 }

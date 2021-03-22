@@ -382,25 +382,28 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
                             model_name: Optional[str] = Form(None)):
     first_time = model_name is None
 
-    if model_name is None:
+    if first_time:
         if model is None:
             raise HTTPException(status_code=400,
                                 detail="Model has to be uploaded or selected")
 
-        model_name = model.filename
+        model_name = str(uuid.uuid1()) + "_" + model.filename
 
         with open("models/" + model_name, "wb") as buffer:
             shutil.copyfileobj(model.file, buffer)
 
     model_op_obj = Model_output(model_name, first_time)
-
+    
     output = {}
+    
+    if first_time:
+        output = {"model_name": model_name}
 
     train_metrics, test_metrics = model_op_obj.get_metrics()
     output["train_metrics"] = train_metrics
     output["test_metrics"] = test_metrics
 
-    output["top_5_classes"] = model_op_obj.top_5_classes()
+    output["top_5_classes"] = model_op_obj.top_5_classes(SERVER_BASE_URL + "test_dataset/")
 
     output["wrong_pred"] = model_op_obj.wrong_pred()
 
@@ -411,9 +414,6 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
     output["wrost_acc_classes"] = {"x": x, "y": y}
 
     output["most_confused_classes"] = model_op_obj.most_confused_classes()
-
-    # output["generate_heatmap"] = model_op_obj.generate_heatmap("test_dataset/00189.ppm")
-    # output["test_single_image"] = model_op_obj.test_single_image("test_dataset/00319.ppm")
 
     return output
 
@@ -437,8 +437,8 @@ async def get_models():
     return {"models": folder_actions.get_file_names("models")}
 
 
-@app.post("/run_model")
-async def run_model(
+@app.post("/test_model")
+async def test_model(
         model_name: str = Form(...),
         image: Optional[UploadFile] = File(None),
         img_path: Optional[str] = Form(None),
@@ -453,9 +453,30 @@ async def run_model(
     else:
         image = load_image_into_numpy_array(await image.read())
 
-    onx, ony, path = model_op_obj.run_and_generate_heatmap(image)
+    onx, ony = model_op_obj.test_model(image)
 
-    return {"x": onx, "y": ony, "heatmap_path": SERVER_BASE_URL + path}
+    return {"x": onx, "y": ony}
+
+
+@app.post("/generate_hatmap")
+async def generate_hatmap(
+        model_name: str = Form(...),
+        image: Optional[UploadFile] = File(None),
+        img_path: Optional[str] = Form(None),
+):
+    model_op_obj = Model_output(model_path=model_name,
+                                first_time=False,
+                                is_plot=False,
+                                is_run=True)
+
+    if img_path:
+        image = cv2.imread(img_path.split(SERVER_BASE_URL)[1])
+    else:
+        image = load_image_into_numpy_array(await image.read())
+
+    path = model_op_obj.generate_heatmap(image)
+
+    return {"path": SERVER_BASE_URL + path}
 
 
 @app.get("/dataset_images")
