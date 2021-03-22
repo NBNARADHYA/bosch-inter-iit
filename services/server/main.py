@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import uuid
 from io import BytesIO
 from typing import List
@@ -21,19 +22,22 @@ from fastapi import Response
 from fastapi import UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from model_output import Model_output
 from PIL import Image
 from split import SplitDataset
-import shutil
-from model_output import Model_output
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
 app = FastAPI()
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
-app.mount("/test_dataset", StaticFiles(directory="test_dataset"), name="test_dataset")
+app.mount("/test_dataset",
+          StaticFiles(directory="test_dataset"),
+          name="test_dataset")
 app.mount("/models", StaticFiles(directory="models"), name="models")
-app.mount("/model_output", StaticFiles(directory="model_output"), name="model_output")
+app.mount("/model_output",
+          StaticFiles(directory="model_output"),
+          name="model_output")
 app.mount("/img_dataset",
           StaticFiles(directory="img_dataset"),
           name="img_dataset")
@@ -374,9 +378,10 @@ async def delete_dataset_images(images: str = Form(...)):
 
 
 @app.post("/model_output")
-async def pred_model_output(model: Optional[UploadFile] = File(None), model_name: Optional[str] = Form(None)):
+async def pred_model_output(model: Optional[UploadFile] = File(None),
+                            model_name: Optional[str] = Form(None)):
     first_time = model_name is None
-    
+
     if model_name is None:
         if model is None:
             raise HTTPException(status_code=400,
@@ -388,7 +393,7 @@ async def pred_model_output(model: Optional[UploadFile] = File(None), model_name
             shutil.copyfileobj(model.file, buffer)
 
     model_op_obj = Model_output(model_name, first_time)
-    
+
     output = {}
 
     train_metrics, test_metrics = model_op_obj.get_metrics()
@@ -398,10 +403,11 @@ async def pred_model_output(model: Optional[UploadFile] = File(None), model_name
     output["top_5_classes"] = model_op_obj.top_5_classes()
 
     output["wrong_pred"] = model_op_obj.wrong_pred()
-    
-    output["confusion_matrix_path"] = SERVER_BASE_URL + model_op_obj.confusion()
-    
-    x,y = model_op_obj.wrost_acc_classes()
+
+    output["confusion_matrix_path"] = SERVER_BASE_URL + model_op_obj.confusion(
+    )
+
+    x, y = model_op_obj.wrost_acc_classes()
     output["wrost_acc_classes"] = {"x": x, "y": y}
 
     output["most_confused_classes"] = model_op_obj.most_confused_classes()
@@ -414,13 +420,16 @@ async def pred_model_output(model: Optional[UploadFile] = File(None), model_name
 
 @app.post("/plot_curves")
 async def plot_curves(class_id: int = Form(...), model_name: str = Form(None)):
-    model_op_obj = Model_output(model_path=model_name, first_time=False, is_plot=True)
+    model_op_obj = Model_output(model_path=model_name,
+                                first_time=False,
+                                is_plot=True)
     path1, path2, path3 = model_op_obj.plot_curves(class_id)
 
-    return { "precision_vs_recall_path": SERVER_BASE_URL + path1, 
-            "precision_recall_vs_confidence_path": SERVER_BASE_URL + path2,
-            "roc_curve_path": SERVER_BASE_URL + path3
-            }
+    return {
+        "precision_vs_recall_path": SERVER_BASE_URL + path1,
+        "precision_recall_vs_confidence_path": SERVER_BASE_URL + path2,
+        "roc_curve_path": SERVER_BASE_URL + path3,
+    }
 
 
 @app.get("/models")
@@ -429,25 +438,32 @@ async def get_models():
 
 
 @app.post("/run_model")
-async def run_model(model_name: str = Form(...), image: Optional[UploadFile] = File(None), img_path: Optional[str] = Form(None)):
-    model_op_obj = Model_output(model_path=model_name, first_time=False, is_plot=False, is_run=True)
-    
+async def run_model(
+        model_name: str = Form(...),
+        image: Optional[UploadFile] = File(None),
+        img_path: Optional[str] = Form(None),
+):
+    model_op_obj = Model_output(model_path=model_name,
+                                first_time=False,
+                                is_plot=False,
+                                is_run=True)
+
     if img_path:
         image = cv2.imread(img_path.split(SERVER_BASE_URL)[1])
     else:
         image = load_image_into_numpy_array(await image.read())
-    
+
     onx, ony, path = model_op_obj.run_and_generate_heatmap(image)
-    
+
     return {"x": onx, "y": ony, "heatmap_path": SERVER_BASE_URL + path}
 
 
 @app.get("/dataset_images")
 async def get_dataset_images():
     images = []
-    
+
     for dirname, _, filenames in os.walk("img_dataset"):
         for filename in filenames:
             images.append(os.path.join(SERVER_BASE_URL, dirname, filename))
-            
+
     return {"images": images}
