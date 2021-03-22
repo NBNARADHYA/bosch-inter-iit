@@ -3,8 +3,7 @@ import os
 import shutil
 import uuid
 from io import BytesIO
-from typing import List
-from typing import Optional
+from typing import List, Optional
 
 import albumentations as A
 import augmentations
@@ -13,13 +12,8 @@ import folder_actions
 import numpy as np
 import pandas as pd
 from balance import Balance
-from fastapi import Cookie
-from fastapi import FastAPI
-from fastapi import File
-from fastapi import Form
-from fastapi import HTTPException
-from fastapi import Response
-from fastapi import UploadFile
+from fastapi import (Cookie, FastAPI, File, Form, HTTPException, Response,
+                     UploadFile)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from model_output import Model_output
