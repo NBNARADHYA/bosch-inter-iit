@@ -95,8 +95,7 @@ async def transform_image(
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
-                detail=
-                "Image has to be added to the history before refering it",
+                detail="Image has to be added to the history before refering it",
             )
 
         id = str(uuid.uuid4())
