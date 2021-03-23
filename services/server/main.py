@@ -5,7 +5,7 @@ import uuid
 from io import BytesIO
 from typing import List
 from typing import Optional
-
+import cv2
 import albumentations as A
 import augmentations
 import folder_actions

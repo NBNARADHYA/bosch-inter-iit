@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TabsWrappedLabel() {
+export default function TabsWrappedLabel(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -67,9 +67,20 @@ export default function TabsWrappedLabel() {
       </AppBar>{" "}
       {tabs.map(({ component }, idx) => (
         <TabPanel key={idx} value={value} index={idx}>
-          {component()}
+          {component(props)}
         </TabPanel>
       ))}
     </div>
   );
+}
+
+TabsWrappedLabel.propTypes = {
+  model_name: PropTypes.string.isRequired,
+  train_metrics: PropTypes.object.isRequired,
+  test_metrics: PropTypes.object.isRequired,
+  top_5_classes: PropTypes.object.isRequired,
+  wrong_pred: PropTypes.array.isRequired,
+  confusion_matrix_path: PropTypes.string.isRequired,
+  wrost_acc_classes: PropTypes.object.isRequired,
+  most_confused_classes: PropTypes.array.isRequired,
 }
