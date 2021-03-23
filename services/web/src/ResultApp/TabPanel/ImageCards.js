@@ -10,12 +10,18 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 300,
+    width: 300,
+    height: 420,
     margin: "10px",
   },
   media: {
     height: 150,
   },
+  spacing: {
+    display:"flex",
+    alignItems:"center",
+    height: 270
+  }
 });
 
 export default function ImageCards({ img, data }) {
@@ -25,7 +31,9 @@ export default function ImageCards({ img, data }) {
     <Card className={classes.root}>
       <CardActionArea>
         <CardMedia className={classes.media} image={img} />
-        <CardContent>{data}</CardContent>
+        <div className={classes.spacing}>
+          <CardContent>{data}</CardContent>
+        </div>
       </CardActionArea>
     </Card>
   );

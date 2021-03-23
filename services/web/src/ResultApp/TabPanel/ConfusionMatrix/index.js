@@ -6,7 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import { IconButton } from "@material-ui/core";
 import InfoButton from "@material-ui/icons/InfoOutlined";
 import DescriptionBox from "../DescriptionBox";
-import MagnifyImage from "./MagnifyImage";
+import MagnifyImage from "../MagnifyImage";
+import response from "../../response";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +40,8 @@ const ConfusionMatrix = () => {
         handleDescriptionClose={handleDescriptionClose}
         description="Description of Confusion Matrix"
       />
-      <MagnifyImage />
+      <br />
+      <MagnifyImage url = {response.confusion_matrix_path}/>
     </div>
   );
 };

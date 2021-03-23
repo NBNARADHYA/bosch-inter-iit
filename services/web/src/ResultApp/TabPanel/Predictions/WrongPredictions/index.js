@@ -5,7 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { IconButton } from "@material-ui/core";
 import InfoButton from "@material-ui/icons/InfoOutlined";
-import DescriptionBox from "../DescriptionBox";
+import DescriptionBox from "../../DescriptionBox";
 import CarouselData from "./CarouselData";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConfidenceClasses = () => {
+const WrongPredictions = () => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const handleDescriptionOpen = () => setDescriptionBox(true);
@@ -27,7 +27,7 @@ const ConfidenceClasses = () => {
       <AppBar position="static" color="transparent">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Top 5 Confidence classes for each image
+            Wrong Predictions
           </Typography>
           <IconButton color="inherit" onClick={handleDescriptionOpen}>
             <InfoButton />
@@ -37,11 +37,11 @@ const ConfidenceClasses = () => {
       <DescriptionBox
         descriptionBox={descriptionBox}
         handleDescriptionClose={handleDescriptionClose}
-        description="Description of Confidence Class"
+        description="Description of Confused Class"
       />
       <CarouselData />
     </div>
   );
 };
 
-export default ConfidenceClasses;
+export default WrongPredictions;

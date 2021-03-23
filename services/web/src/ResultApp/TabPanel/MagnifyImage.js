@@ -1,31 +1,42 @@
-import { Typography } from "@material-ui/core";
+import { Typography,  makeStyles } from "@material-ui/core";
 import React from "react";
 import ReactImageMagnify from "react-image-magnify";
+import response from "../response";
 
-const MagnifyImage = () => {
+
+const useStyles = makeStyles(() => ({
+  center:{
+    display:"flex",
+    justifyContent:"center",
+    alignItems: "center",
+    margin: "auto",
+  }
+}));
+
+const MagnifyImage = ({url}) => {
+  const classes = useStyles();
+  // url = response.confusion_matrix_path;
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", margin:"20px" }}>
       <ReactImageMagnify
         {...{
           smallImage: {
             alt: "Wristwatch by Ted Baker London",
             isFluidWidth: false,
-            width: 620,
+            width: 590,
             height: 500,
-            src:
-              "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+            src: `${url}`,
           },
           largeImage: {
-            src:
-              "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-            width: 1900,
-            height: 1900,
+            src: `${url}`,
+            width: 2600,
+            height: 2600,
           },
         }}
       />
-      <div>
+      <div className={classes.center}>
         <Typography
-          variant="h3"
+          variant="h6"
           style={{
             display: "flex",
             justifyContent: "center",
