@@ -413,6 +413,8 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
     output["wrost_acc_classes"] = {"x": x, "y": y}
 
     output["most_confused_classes"] = model_op_obj.most_confused_classes()
+    
+    output["conf_matrix"] = model_op_obj.get_conf_matrix()
 
     return output
 
@@ -482,8 +484,9 @@ async def generate_heatmap(
 async def get_dataset_images():
     images = []
 
-    for dirname, _, filenames in os.walk("img_dataset"):
+    for dirname, _, filenames in os.walk("test_dataset"):
         for filename in filenames:
-            images.append(os.path.join(SERVER_BASE_URL, dirname, filename))
+            if filename.split(".")[-1] != "csv":
+                images.append(os.path.join(SERVER_BASE_URL, dirname, filename))
 
     return {"images": images}

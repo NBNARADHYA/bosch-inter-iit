@@ -78,7 +78,6 @@ export default function TestModel({model_name: modelName}) {
     })
     .then(res => res.json())
     .then(res => {
-      console.log({...res})
       setClassScores({
         x: res.x.map(x => classLabels[x]),
         y: res.y,
@@ -92,7 +91,6 @@ export default function TestModel({model_name: modelName}) {
 
   const onImgUpload = useCallback(([image]) => {
     const formData = new FormData()
-    console.log(image)
     formData.append("model_name", modelName)
     formData.append("image", image)
 
@@ -139,12 +137,17 @@ export default function TestModel({model_name: modelName}) {
     ],
   }
 
+  if(loading) {
+    return (
+      <Backdrop className={classes.backdrop} open={true}>
+        <CircularProgress color="primary" />
+      </Backdrop>
+    )
+  }
+
 
   return (
     <>
-      <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="primary" />
-      </Backdrop>
       <Grid container justify="flex-end" direction="column" alignItems="center" spacing={1}>
         <Grid item>
           <Typography variant="h4" color="primary" >
