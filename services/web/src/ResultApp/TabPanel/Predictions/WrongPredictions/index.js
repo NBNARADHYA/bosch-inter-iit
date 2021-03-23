@@ -1,11 +1,13 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { IconButton } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
+import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import { IconButton } from "@material-ui/core";
 import InfoButton from "@material-ui/icons/InfoOutlined";
-import DescriptionBox from "../DescriptionBox";
+import React from "react";
+
+import DescriptionBox from "../../DescriptionBox";
+
 import CarouselData from "./CarouselData";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConfusedClasses = () => {
+const WrongPredictions = ({ wrong_pred }) => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const handleDescriptionOpen = () => setDescriptionBox(true);
@@ -27,7 +29,7 @@ const ConfusedClasses = () => {
       <AppBar position="static" color="transparent">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Top 5 Confused classes for each image
+            Wrong Predictions
           </Typography>
           <IconButton color="inherit" onClick={handleDescriptionOpen}>
             <InfoButton />
@@ -39,9 +41,9 @@ const ConfusedClasses = () => {
         handleDescriptionClose={handleDescriptionClose}
         description="Description of Confused Class"
       />
-      <CarouselData />
+      <CarouselData wrong_pred={wrong_pred} />
     </div>
   );
 };
 
-export default ConfusedClasses;
+export default WrongPredictions;
