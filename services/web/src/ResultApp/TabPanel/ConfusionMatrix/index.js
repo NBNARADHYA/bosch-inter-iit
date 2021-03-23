@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConfusionMatrix = ({response}) => {
+const ConfusionMatrix = ({confusion_matrix_path, most_confused_classes}) => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const handleDescriptionOpen = () => setDescriptionBox(true);
@@ -41,11 +41,11 @@ const ConfusionMatrix = ({response}) => {
         description="Description of Confusion Matrix"
       />
       <br />
-      <MagnifyImage url = {response.confusion_matrix_path}/>
+      <MagnifyImage url = {confusion_matrix_path}/>
       <br />
       <br />
       <br />
-      <MostConfusedClasses most_confused_classes = {response.most_confused_classes} />
+      <MostConfusedClasses most_confused_classes = {most_confused_classes} />
     </div>
   );
 };

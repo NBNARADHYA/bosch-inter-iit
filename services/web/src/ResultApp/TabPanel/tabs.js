@@ -1,15 +1,11 @@
 import ConfusionMatrix from "./ConfusionMatrix";
+import HeatMap from "./HeatMap";
 import TestModel from "./TestModel";
-import PlotCurves from "./PlotCurves";
 import Predictions from "./Predictions";
 
-export const getTabs = (props) => {
-  return (
-    [
-      { name: "Predictions", component: () => <Predictions response={props} /> },
-      { name: "Confusion Matrix", component: () => <ConfusionMatrix response = {props}/> },
-      { name: "Test Model", component: () => <TestModel response={props} /> },
-      { name: "Curves", component: () => <PlotCurves response={props}/>},
-    ]
-  )
-}
+export const tabs = [
+  { name: "Predictions", component: (props) => <Predictions {...props} /> },
+  { name: "Confusion Matrix", component: (props) => <ConfusionMatrix {...props} /> },
+  { name: "Test Model", component: (props) => <TestModel {...props} /> },
+  { name: "Generate Heat Map", component: (props) => <HeatMap {...props} /> },
+];

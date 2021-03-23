@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import React from "react";
 
-import { getTabs } from "./tabs";
+import { tabs } from "./tabs";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -38,7 +38,7 @@ TabPanel.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    maxWidth: 1300,
+    maxWidth: 1600,
     margin: "auto",
     backgroundColor: theme.palette.background.paper,
   },
@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TabsWrappedLabel(props) {
   const classes = useStyles();
-  const tabs = getTabs(props);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
