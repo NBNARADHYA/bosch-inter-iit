@@ -16,7 +16,7 @@ import serverUrl from "../../../../Constants/serverUrl";
 
 const useStyles = makeStyles(() => ({
   carousel: {
-    maxWidth: "1000px",
+    maxWidth: "1020px",
     margin: "40px auto 40px",
   },
   spacing: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
 function TableComponent(data) {
   return (
     <div>
-      <TableContainer component={Paper} style={{width:"260px"}}>
+      <TableContainer component={Paper} style={{width:"247px"}}>
         <Table size="small" aria-label="a dense table">
           <TableHead>
           </TableHead>
@@ -78,7 +78,7 @@ const CarouselData = ({wrong_pred}) => {
   let cardGroup = [];
   for (let i = 0; i < data.length - 3; i+=3) {
     const newGroup = (
-      <div style={{ display: "flex", margin:"auto" }}>
+      <div style={{ display: "flex", margin:"auto" ,paddingRight:"50px", paddingLeft:"50px" }}>
         <ImageCards
           key={i}
           img={data[i].img}
@@ -99,7 +99,7 @@ const CarouselData = ({wrong_pred}) => {
     cardGroup.push(newGroup);
   }
   const restImg = [];
-  for(let i=data.length -1;i>=0&&i>=data.length-3;i--){
+  for(let i=data.length-1;i>=0&&i>=data.length-3;i--){
     restImg.push(<ImageCards
       key={i}
       img={data[i].img}
@@ -107,7 +107,7 @@ const CarouselData = ({wrong_pred}) => {
     />);
   }
   const lastGrp = (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", margin:"auto" ,paddingRight:"50px", paddingLeft:"50px" }}>
       {restImg.map(each => each)}
     </div>
   )

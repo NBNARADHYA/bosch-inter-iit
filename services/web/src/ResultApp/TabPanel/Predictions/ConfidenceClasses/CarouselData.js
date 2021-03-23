@@ -41,7 +41,7 @@ function TableComponent(classes) {
   });
   return (
     <div>
-      <TableContainer component={Paper} style={{width:"260px"}} >
+      <TableContainer component={Paper} style={{width:"247px"}} >
         <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
@@ -70,7 +70,7 @@ const CarouselData = ({top_5_classes}) => {
   let cardGroup = [];
   for (let i = 0; i < data.length - 3; i+=3) {
     const newGroup = (
-      <div style={{ display: "flex", margin:"auto" }}>
+      <div style={{ display: "flex", margin:"auto" ,paddingRight:"50px", paddingLeft:"50px" }}>
         <ImageCards
           key={i}
           img={data[i].img}
@@ -99,7 +99,7 @@ const CarouselData = ({top_5_classes}) => {
     />);
   }
   const lastGrp = (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", margin:"auto" ,paddingRight:"50px", paddingLeft:"50px" }}>
       {restImg.map(each => each)}
     </div>
   )
