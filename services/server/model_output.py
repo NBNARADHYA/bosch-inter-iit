@@ -429,13 +429,14 @@ class Model_output:
 
         onx = list(np.argsort(y))
         onx = onx[::-1]
-        for i in range(len(onx)):
-            onx[i] = int(onx[i])
 
         ony = y[onx]
         ony = list(np.round(ony, 2))
-        ony = ony[::-1]
+        
         for i in range(len(ony)):
             ony[i] = float(ony[i])
+            
+        for i in range(len(onx)):
+            onx[i] = str(int(onx[i])).zfill(5)
 
         return onx, ony
