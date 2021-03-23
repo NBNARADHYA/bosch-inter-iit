@@ -15,6 +15,7 @@ import serverUrl from '../../Constants/serverUrl';
 import classLabels from '../../Constants/classLabels';
 import colours from '../../Constants/colours';
 import { downloadCSV } from '../../Utils';
+import Navbar from "../components/Navbar";
 
 const options = {
   scales: {
@@ -38,10 +39,12 @@ const useStyles = makeStyles((theme) => ({
 
 function SplitDataset(props) {
   let classes = useStyles()
+  const { theme } = props
   classes = { ...classes, ...props.classes }
 
   const [beforeCountData, setBeforeCountData] = useState({ x: [], y: [], colors: [] })
   const [afterCountData, setAfterCountData] = useState({ train_x: [], train_y: [], val_x: [], val_y: [] })
+  const [invalidSplitPercentage, setInvalidSplitPercentage] = useState(false)
 
   useEffect(() => {
     fetch(`${serverUrl}class_counts`)
@@ -105,26 +108,53 @@ function SplitDataset(props) {
     setLoading(!beforeLoaded)
   }, [beforeLoaded])
 
+  useEffect(() => {
+    if(!splitPercentage)
+      return
+    const isInvalid = beforeCountData.y.some(val => val<2 )
+    setInvalidSplitPercentage(isInvalid)
+  },[splitPercentage, beforeCountData.y])
+
   if(!beforeLoaded) {
     return (
+      <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />                
       <Backdrop className={classes.backdrop} open={true}>
         <CircularProgress color="primary" />
       </Backdrop>
+      </>
     )
   }
   else if(!beforeCountData.x.length || !beforeCountData.y.length) {
     return (
+      <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />                
       <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <br/><br/><br/>
       <Typography align="center" variant="h6">
         Please upload some images to the dataset first.
       </Typography>
-      </Grid>      
+      </Grid>
+      </>      
     )
   }
 
   return  (
+    <>
+      <Navbar
+        classes={classes}
+        open={false}
+        theme={theme}
+      />              
     <Grid container className={classes.contentShift} justify="center" direction="column" alignItems="center" spacing={1}>
       <div className={classes.drawerHeader} />
       <Grid item container justify="center" direction="column" alignItems="center" spacing={1}>
@@ -154,17 +184,21 @@ function SplitDataset(props) {
                   id="name"
                   label="Split %"
                   fullWidth
-                  onChange={(e) => setSplitPercentage(e.target.value/100)}
+                  error={invalidSplitPercentage}
+                  onChange={(e) => setSplitPercentage(e.target.value/100.00)}
+                  helperText={invalidSplitPercentage?'The minimum number of groups for any class cannot be less than 2.':''}
                 />
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose} color="primary">
                   Cancel
                 </Button>
-                <Button disabled={loading} color="primary" onClick={() => {
+                <Button disabled={loading || invalidSplitPercentage} color="primary" onClick={() => {
                   setLoading(true)
                   setOpen(false)
-                  fetch(`${serverUrl}split_dataset`, { method: "POST", body: JSON.stringify({ split_percentage: splitPercentage }) })
+                  let data = new FormData()
+                  data.append('split_percentage',splitPercentage)                  
+                  fetch(`${serverUrl}split_dataset`, { method: "POST", data})
                   .then(res => res.json())
                   .then(res => {
                     downloadCSV(res.csv.train,'train.csv');
@@ -206,6 +240,7 @@ function SplitDataset(props) {
         <CircularProgress color="primary" />
       </Backdrop>
     </Grid>
+    </>
   )
 }
 

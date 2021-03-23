@@ -9,35 +9,20 @@ import {
   TextField,
 } from "@material-ui/core";
 import React from "react";
-
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import classLabels from "../../../Constants/classLabels";
-
-const getClassString = (num) => {
-  let key = `${num}`;
-  while (key.length < 5) key = `0${key}`;
-  return key;
-};
-
-const options = [];
-for (let option = 0; option < 48; option++) {
-  const newOption = (
-    <MenuItem key={option} value={getClassString(option)}>
-      {classLabels[getClassString(option)]}
-    </MenuItem>
-  );
-  // console.log(getClassString(option), classLabels[getClassString(option)]);
-  options.push(newOption);
-}
 
 const AddForm = ({
   handleClassChange,
   handleIterationsChange,
   handleSubmit,
   handleClose,
+  selectedLabel,
+  numOfIterations
 }) => {
   return (
     <div>
-      <DialogTitle id="form-dialog-title">Add to Dataset</DialogTitle>
+      <DialogTitle id="form-dialog-title">Preview</DialogTitle>
       <DialogContent>
         <div>
           <div>
@@ -53,9 +38,12 @@ const AddForm = ({
               displayEmpty
               fullWidth
               required
+              value={selectedLabel}
             >
-              {" "}
-              {options}
+              {
+    Object.keys(classLabels).map((label) => <MenuItem key={label} value={label}>
+        {classLabels[label]}
+        </MenuItem>)}
             </Select>
           </div>
           <br />
@@ -69,6 +57,7 @@ const AddForm = ({
             type="number"
             fullWidth
             required
+            value={numOfIterations}
           />
         </div>
       </DialogContent>
@@ -76,8 +65,9 @@ const AddForm = ({
         <Button onClick={handleClose} color="secondary">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} color="primary" variant="contained">
-          Add
+        <Button onClick={handleSubmit} color="primary" disabled={numOfIterations<=0}
+                startIcon={<VisibilityIcon/>}>
+          Preview
         </Button>
       </DialogActions>
     </div>

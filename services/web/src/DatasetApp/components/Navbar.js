@@ -13,13 +13,17 @@ import Zoom from '@material-ui/core/Zoom';
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles(theme => ({
   timelineButton: {
   },
   menuOptions: {
     marginLeft: 'auto'
+  },
+  uiMenuOptions: {
+    float: "left"
   },  
   dropdownText: {
     margin: theme.spacing(0, 0.5, 0, 1)
@@ -43,19 +47,41 @@ const menuOptions = [{
 }
 ];
 
-export default function Navbar({ classes, open, handleDrawerOpen, toggleTimelineDrawer }) {
-const navbarClasses = useStyles();
-const [anchorEl, setAnchorEl] = React.useState(null);
-const isMenuOpen = Boolean(anchorEl);
-const handleMenu = (event) => {
-  setAnchorEl(event.currentTarget);
-};
-const currentPath = window.location.pathname;
-const handleClose = () => {
-  setAnchorEl(null);
-};
+const uiOptions = [
+  {
+    text: 'Dataset Creation UI',
+    links: menuOptions.map(({link}) => link),
+    link: "/"
+  },
+  {
+    text: 'Post Evaluation UI',
+    links: ['/evaluate'],
+    link: "/evaluate"
+  }
+]
 
-const selectedOption = menuOptions.filter(({link}) => link===currentPath)[0].text;
+export default function Navbar({ classes, open, handleDrawerOpen, toggleTimelineDrawer, openTour }) {
+  const navbarClasses = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const isMenuOpen = Boolean(anchorEl);
+  const [uiAnchorEl, setUIAnchorEl] = React.useState(null);
+  const isUIMenuOpen = Boolean(uiAnchorEl);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const currentPath = useLocation().pathname;
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
+  let selectedUIOption = uiOptions.filter(({links}) => links.some(link => currentPath === link))[0]
+  if(selectedUIOption) selectedUIOption = selectedUIOption.text;
+
+  let selectedOption = menuOptions.filter(({link}) => link===currentPath)[0]; 
+  if( selectedOption ) {
+    selectedOption = selectedOption.text;
+  }
+
   return (
     <AppBar
       position="fixed"
@@ -73,42 +99,79 @@ const selectedOption = menuOptions.filter(({link}) => link===currentPath)[0].tex
         >
           <MenuIcon />
         </IconButton>}
-        <Typography variant="h6" noWrap>
-          Dataset Creation UI
-        </Typography>
-        <Button color="inherit" onClick={handleMenu}  aria-haspopup="true" className={navbarClasses.menuOptions}>
+        <Button color="inherit" onClick={(e) => setUIAnchorEl(e.currentTarget)}  aria-haspopup="true" className={navbarClasses.uiMenuOptions} id="step9">
           <span className={navbarClasses.dropdownText}>
-          {selectedOption}
-          <ExpandMoreIcon fontSize="small" className={navbarClasses.dropdownIcon} />          
+            {selectedUIOption}
+            <ExpandMoreIcon fontSize="small" className={navbarClasses.dropdownIcon} />          
           </span>
-        </Button>        
+        </Button>
         <Menu
-          id="menu-appbar"
-          anchorEl={anchorEl}
+          anchorEl={uiAnchorEl}
           getContentAnchorEl={null}
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           transformOrigin={{ vertical: "top", horizontal: "center" }}
-          open={isMenuOpen}
-          onClose={handleClose}
+          open={isUIMenuOpen}
+          onClose={() => setUIAnchorEl(null)}
         >
-          {menuOptions.map(({text,link},i) =>  <MenuItem
+          {uiOptions.map(({text,link, links},i) =>  <MenuItem
                   component={Link}
                   data-no-link="true"
                   to={link}
                   key={i.toString()}
-                  selected={currentPath === link}
-                  onClick={handleClose}
+                  selected={links.some(link => currentPath === link)}
+                  onClick={() => setUIAnchorEl(null)}
                 >
                   {text}
                 </MenuItem>)
               }
         </Menu>
+        {/* <Typography variant="h6" noWrap>
+          Dataset Creation UI
+        </Typography> */}
+        {selectedUIOption === "Dataset Creation UI" &&
+          <>
+            <Button color="inherit" onClick={handleMenu}  aria-haspopup="true" className={navbarClasses.menuOptions} id="step9">
+              <span className={navbarClasses.dropdownText}>
+              {selectedOption}
+              <ExpandMoreIcon fontSize="small" className={navbarClasses.dropdownIcon} />          
+              </span>
+            </Button>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              getContentAnchorEl={null}
+              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              transformOrigin={{ vertical: "top", horizontal: "center" }}
+              open={isMenuOpen}
+              onClose={handleClose}
+            >
+              {menuOptions.map(({text,link},i) =>  <MenuItem
+                      component={Link}
+                      data-no-link="true"
+                      to={link}
+                      key={i.toString()}
+                      selected={currentPath === link}
+                      onClick={handleClose}
+                    >
+                      {text}
+                    </MenuItem>)
+                  }
+            </Menu>
+          </>
+        }     
         {selectedOption==='Apply transformations' && 
+        <>
         <Tooltip TransitionComponent={Zoom} title="Timeline of applied augmentations">        
-          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Timeline" component="span" onClick={toggleTimelineDrawer}>
+          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Timeline" component="span" onClick={toggleTimelineDrawer} id="step6">
             <TimelineIcon/>
           </IconButton>
-        </Tooltip>}
+        </Tooltip>
+        <Tooltip TransitionComponent={Zoom} title="Tutorial">        
+          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Help" component="span" onClick={openTour}>
+            <HelpOutlineIcon/>
+          </IconButton>
+        </Tooltip>        
+        </>}
       </Toolbar>
     </AppBar>
   );

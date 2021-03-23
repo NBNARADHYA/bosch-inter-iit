@@ -58,11 +58,11 @@ const Minmax = ({
     mx=max;
   } else if(max==='h')
   {
-    mx=height;
+    mx=height||100;
   }
   else if(max==='w')
   {
-    mx=width;
+    mx=width||100;
   }
 
   const marks = [{

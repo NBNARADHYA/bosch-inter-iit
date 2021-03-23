@@ -1,6 +1,4 @@
-import { useTheme } from "@material-ui/core/styles";
-import React, { useCallback, useEffect, useState } from "react";
-
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import CustomSnackbar from "../../Common/CustomSnackbar";
 import augmentations from "../../Constants/augmentations";
 import serverUrl from "../../Constants/serverUrl";
@@ -11,18 +9,43 @@ import {
 import AugmentationsTimeline from "../components/AugmentationsTimeline";
 import Content from "../components/Content";
 import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import { useHistory } from "react-router-dom";
+import DatasetUITour from "../components/DatasetUITour";
+
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
 const ApplyTransformations = (props) => {
-  const {
-    classes,
-    open,
-    handleDrawerClose,
-    isTimelineOpen,
-    toggleTimelineOpen,
-  } = props;
+  const { classes, theme, pathname } = props;
+  const [isTimelineOpen, setTimelineOpen] = useState(false);
+  const [open, setOpen] = useState(pathname === "/");
+
+  const routerHistory = useHistory();  
+
+  useEffect(() => {
+    setOpen(pathname === "/");
+  }, [pathname]);  
+
+  const toggleTimelineOpen = useCallback(() => {
+    setTimelineOpen(!isTimelineOpen);
+  }, [isTimelineOpen]);
+
+  const handleDrawerOpen = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const handleDrawerClose = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   const [history, setHistory] = useState([]);
   const [previewImg, setPreviewImg] = useState("");
-  const theme = useTheme();
   const [img, setImg] = useState({});
   const [originalDimensions, setOriginalDimensions] = useState({ width: 300 });
   const [previewDimensions, setPreviewDimensions] = useState({ width: 300 });
@@ -30,6 +53,8 @@ const ApplyTransformations = (props) => {
   const [params, setParams] = useState({});
   const [transformation, setTransformation] = useState(augmentations[0]);
   const [snackPack, setSnackPack] = React.useState([]);
+
+  const prevHistory = usePrevious(history);
 
   const handleImgChange = useCallback((img, pictures) => {
     let newState = {};
@@ -50,6 +75,8 @@ const ApplyTransformations = (props) => {
         history.length - 1
     )
       return;
+    if(history.length === prevHistory.length + 1)
+        return;
     const data = generateTransformationRequestBody(
       transformation,
       history,
@@ -78,6 +105,7 @@ const ApplyTransformations = (props) => {
     history,
     historyDimensions,
     originalDimensions,
+    prevHistory
   ]);
 
   useEffect(() => {
@@ -125,7 +153,7 @@ const ApplyTransformations = (props) => {
           setSnackPack((prev) => [
             ...prev,
             {
-              message: `${displayName} with probability ${params["p"]} added to timeline`,
+              message: `${displayName} with probability ${params["p"]||1.0} added to timeline`,
               key: new Date().getTime(),
             },
           ]);
@@ -149,16 +177,27 @@ const ApplyTransformations = (props) => {
       method: "POST",
       credentials: "include",
     });
-  }, []);
+    routerHistory.push('/')
+  }, [routerHistory]);
 
   const handleUndo = useCallback(() => {
     if (!history.length) return;
     const newHistory = history.filter((h, i) => i !== history.length - 1);
     setHistory(newHistory);
   }, [history]);
+  const [isTourOpen, setIsTourOpen] = useState(false);
 
   return (
     <>
+      <Navbar
+        classes={classes}
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        theme={theme}
+        toggleTimelineDrawer={toggleTimelineOpen}
+        openTour={() => setIsTourOpen(true)}
+      />    
       <Sidebar
         classes={classes}
         open={open}
@@ -200,6 +239,10 @@ const ApplyTransformations = (props) => {
         setSnackPack={setSnackPack}
         handleUndo={handleUndo}
       />
+      <DatasetUITour
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+      />      
     </>
   );
 };
