@@ -185,8 +185,11 @@ function BalanceDataset(props) {
                 <Button disabled={loading} color="primary" onClick={() => {
                   setLoading(true)
                   setOpen(false)
-                  let data = new FormData()
-                  data.append('min_samples',minSamples)
+                  let data
+                  if(minSamples !== null) {
+                    let data = new FormData()
+                    data.append('min_samples',minSamples)
+                  }
                   fetch(`${serverUrl}balance_dataset`, { method: "POST", body: data })
                   .then(res => res.json())
                   .then(res => {
