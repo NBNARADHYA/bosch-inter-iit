@@ -1,38 +1,38 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import {Tab} from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import {makeStyles} from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import { Tab } from "@material-ui/core";
-import classLabels from "../../../../Constants/classLabels";
-import ImageCards from "../../ImageCards";
+import React from "react";
 import Carousel from "react-material-ui-carousel";
-import { getClassString } from "../../../../Utils";
+
+import classLabels from "../../../../Constants/classLabels";
 import serverUrl from "../../../../Constants/serverUrl";
+import {getClassString} from "../../../../Utils";
+import ImageCards from "../../ImageCards";
 
 const useStyles = makeStyles(() => ({
-  carousel: {
-    maxWidth: "1020px",
-    margin: "40px auto 40px",
-  },
-  spacing: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: "auto",
-  },
-}));
-
-
+                               carousel : {
+                                 maxWidth : "1020px",
+                                 margin : "40px auto 40px",
+                               },
+                               spacing : {
+                                 display : "flex",
+                                 justifyContent : "center",
+                                 alignItems : "center",
+                                 marginLeft : "auto",
+                               },
+                             }));
 
 function TableComponent(data) {
   return (
     <div>
-      <TableContainer component={Paper} style={{width:"247px"}}>
+      <TableContainer component={Paper} style={{
+    width: "247px"}}>
         <Table size="small" aria-label="a dense table">
           <TableHead>
           </TableHead>
@@ -65,7 +65,8 @@ function TableComponent(data) {
 const CarouselData = ({wrong_pred}) => {
   let data = wrong_pred;
   data = data.map((each) => {
-    const url = `${serverUrl}test_dataset/${each.image.replace("ppm","png")}`;
+    const url = `${serverUrl}test_dataset/${
+    each.image.replace("ppm", "png")}`;
     return ({
       "img":url,
       "predicted":each.predicted,
