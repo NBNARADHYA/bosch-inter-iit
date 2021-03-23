@@ -457,8 +457,8 @@ async def test_model(
     return {"x": onx, "y": ony}
 
 
-@app.post("/generate_hatmap")
-async def generate_hatmap(
+@app.post("/generate_heatmap")
+async def generate_heatmap(
         model_name: str = Form(...),
         image: Optional[UploadFile] = File(None),
         img_path: Optional[str] = Form(None),

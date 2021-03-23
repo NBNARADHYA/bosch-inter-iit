@@ -38,7 +38,7 @@ TabPanel.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    maxWidth: 1300,
+    maxWidth: 1600,
     margin: "auto",
     backgroundColor: theme.palette.background.paper,
   },

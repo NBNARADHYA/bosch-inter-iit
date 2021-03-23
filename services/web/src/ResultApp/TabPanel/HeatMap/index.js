@@ -1,11 +1,7 @@
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Slide from "@material-ui/core/Slide";
 import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -17,10 +13,7 @@ import serverUrl from "../../../Constants/serverUrl";
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ImageUploader from "react-images-upload";
-import colours from "../../../Constants/colours";
-import { Bar } from '@reactchartjs/react-chart.js'
 import Grid from '@material-ui/core/Grid';
-import classLabels from "../../../Constants/classLabels"
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -36,30 +29,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const options = {
-  scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-    ],
-  }  ,
-  maintainAspectRatio: false  
-}
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function TestModel({model_name: modelName}) {
+export default function HeatMap({model_name: modelName}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [classScores, setClassScores] = useState({ x: [], y: [], colors: [] })
+  const [heatMapPath, setHeatMapPath] = useState(null)
 
   const handleClickOpen = useCallback(() => {
     setOpen(true);
@@ -69,35 +49,28 @@ export default function TestModel({model_name: modelName}) {
     setOpen(false);
   }, []);
 
-  const testModel = useCallback((formData) => {
+  const generateHeatMap = useCallback((formData) => {
     setLoading(true)
-
-    fetch(`${serverUrl}test_model`, {
+    setOpen(false)
+    fetch(`${serverUrl}generate_heatmap`, {
       method: "POST",
       body: formData
     })
     .then(res => res.json())
     .then(res => {
-      console.log({...res})
-      setClassScores({
-        x: res.x.map(x => classLabels[x]),
-        y: res.y,
-        colors: Array(res.x.length).fill(0).map((_, i) => colours[i%colours.length])
-      })
+      setHeatMapPath(`${res.path}?${new Date().getTime()}`)
       setLoading(false)
-      setOpen(false)
     })
     .catch(console.error)
   }, [])
 
   const onImgUpload = useCallback(([image]) => {
     const formData = new FormData()
-    console.log(image)
     formData.append("model_name", modelName)
     formData.append("image", image)
 
-    testModel(formData);
-  }, [testModel])
+    generateHeatMap(formData);
+  }, [generateHeatMap])
 
   const onSelectImage = useCallback((index) => {
     const formData = new FormData()
@@ -105,8 +78,8 @@ export default function TestModel({model_name: modelName}) {
     formData.append("model_name", modelName)
     formData.append("img_path", images[index].src)
 
-    testModel(formData);
-  }, [images, testModel]);
+    generateHeatMap(formData);
+  }, [images, generateHeatMap]);
   
 
   useEffect(() => {
@@ -128,18 +101,6 @@ export default function TestModel({model_name: modelName}) {
     .catch(console.error)
   }, [open])
 
-  const barData = {
-    labels: classScores.x,
-    datasets: [
-      {
-        label: 'Confidence Score',
-        data: classScores.y,
-        backgroundColor: classScores.colors
-      },
-    ],
-  }
-
-
   return (
     <>
       <Backdrop className={classes.backdrop} open={loading}>
@@ -148,7 +109,7 @@ export default function TestModel({model_name: modelName}) {
       <Grid container justify="flex-end" direction="column" alignItems="center" spacing={1}>
         <Grid item>
           <Typography variant="h4" color="primary" >
-            Test your model on an image to get class scores
+            Test your model on an image to generate heatmap
           </Typography>
         </Grid>
         <Grid item>
@@ -171,7 +132,7 @@ export default function TestModel({model_name: modelName}) {
         </Grid>
         <br />
         <Grid item style={{paddingBottom: "10px"}}>
-          {Boolean(classScores.x.length) && <Bar data={barData} options={options} width={1500} height={600} /> }
+          { Boolean(heatMapPath) && <img src={heatMapPath} /> }
         </Grid>
       </Grid>
       <Dialog
