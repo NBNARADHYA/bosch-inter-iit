@@ -196,15 +196,20 @@ class Model_output:
         return self.train_metrics, self.metrics
 
     def top_5_classes(self, base_path):
-        # n * 5 // n-> no of images in test set
         data = {}
-        for itr in range(self.sz):
+        for itr in range(len(self.predictions)):
             arr = list(np.argsort(self.predictions[itr]))
             for i in range(len(arr)):
                 arr[i] = int(arr[i])
             arr = arr[43:]
             arr = arr[::-1]
-            data[base_path + self.df.image[itr]] = arr
+            data[self.df.image[itr]] = []
+            data[self.df.image[itr]].append(arr)
+            confidence_scores = []
+            for index in arr:
+                confidence_scores.append(
+                    round(float(self.predictions[itr][index]), 4))
+            data[self.df.image[itr]].append(confidence_scores)
         return data
 
     def wrong_pred(self):
@@ -288,7 +293,7 @@ class Model_output:
         precision, recall, thresholds = self.precision_recall_curve(c)
         plt.plot(thresholds, precision, label="Precision")
         plt.plot(thresholds, recall, label="Recall")
-        plt.title("Precision and Recall for Class " + str(c))
+        plt.title("Precision and Recall")
         plt.xlabel("Confidence")
         plt.legend()
         plt.show()
@@ -299,7 +304,7 @@ class Model_output:
         plt.close()
 
         plt.plot(recall, precision)
-        plt.title("Presicion Vs Recall for Class " + str(c))
+        plt.title("Presicion Vs Recall")
         plt.xlabel("Recall")
         plt.ylabel("Precision")
         plt.show()
@@ -324,7 +329,7 @@ class Model_output:
     def plot_roc_curve(self, c):
         fpr, tpr, thresholds = self.roc_curve(c=c)
         plt.plot(fpr, tpr)
-        plt.title("ROC Curve for Class " + str(c))
+        plt.title("ROC Curve")
         plt.xlabel("False Positive Rate")
         plt.ylabel("True Positive Rate")
         plt.show()
@@ -432,11 +437,14 @@ class Model_output:
 
         ony = y[onx]
         ony = list(np.round(ony, 2))
-        
+
         for i in range(len(ony)):
             ony[i] = float(ony[i])
-            
+
         for i in range(len(onx)):
             onx[i] = str(int(onx[i])).zfill(5)
 
         return onx, ony
+
+    def get_conf_matrix(self, class_id=0):
+        return [[int(col) for col in row] for row in self.conf_matrix]
