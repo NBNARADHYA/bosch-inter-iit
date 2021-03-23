@@ -27,13 +27,12 @@ const MostConfusedClasses = ({most_confused_classes}) => {
             <ListItem>
                 <ListItemText>
                     {'>>'} {X}% images of <strong>{classA}</strong> are being predicted to be of <strong>{classB}</strong>.
-                    <br />
                     <div style={{display:"flex", justifyContent:"space-around"}}>
-                        <div style={{display:"flex", flexDirection:"column"}}>
+                        <div style={{display:"flex", flexDirection:"column", margin:"25px"}}>
                             <img src={urlA} width="100px" />
                             {classA}    
                         </div> 
-                        <div style={{display:"flex", flexDirection:"column"}}>
+                        <div style={{display:"flex", flexDirection:"column", margin:"25px"}}>
                             <img src={urlB} height="100px"/>
                             {classB}    
                         </div> 

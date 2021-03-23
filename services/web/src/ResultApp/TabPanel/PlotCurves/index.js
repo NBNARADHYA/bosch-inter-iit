@@ -1,6 +1,6 @@
 import React from "react";
 import classLabels from "../../../Constants/classLabels";
-import { MenuItem, InputLabel, Select, Typography } from "@material-ui/core";
+import { MenuItem, InputLabel, Select, Typography, Backdrop, CircularProgress } from "@material-ui/core";
 import serverUrl from "../../../Constants/serverUrl";
 import MagnifyImage from "../MagnifyImage";
 import { getClassString } from "../../../Utils";
@@ -28,17 +28,24 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
+
 
 const PlotCurves = ({model_name}) => {
     const currentModel = model_name;
-    const [classId, setClassId] = React.useState('');
-    const [curvePlots, setCurvePlots] = React.useState(null);
     const classes = useStyles();
+    const [classId, setClassId] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [curvePlots, setCurvePlots] = React.useState(null);
     const [descriptionBox, setDescriptionBox] = React.useState(false);
     const handleDescriptionOpen = () => setDescriptionBox(true);
     const handleDescriptionClose = () => setDescriptionBox(false);
     const handleClassChange = (e) => {
+        setLoading(true);
         setClassId(e.target.value);
         const data = new FormData();
         data.append("model_name", currentModel);
@@ -50,10 +57,12 @@ const PlotCurves = ({model_name}) => {
           })
             .then((res) => res.json())
             .then((res) => {
+              setLoading(false);
                 console.log(res);
               setCurvePlots(res);
             })
             .catch((err) => {
+              setLoading(false);
               console.log(err);
             });
     }
@@ -78,7 +87,7 @@ const PlotCurves = ({model_name}) => {
       <br />
       <br />
       <InputLabel id="demo-simple-select-placeholder-label-label">
-        Class ID:
+        Select Class Label:
       </InputLabel>
       <Select
         autoFocus
@@ -89,14 +98,19 @@ const PlotCurves = ({model_name}) => {
         displayEmpty
         fullWidth
         required
+        style={{maxWidth:"700px"}}
       >{options}
       </Select>
       <br /> 
       <br />
       <br />
-      <div>
+      <div style={{margin:"auto"}}>
+          {loading &&
+          <Backdrop className={classes.backdrop} open={true}>
+            <CircularProgress color="primary" />
+          </Backdrop>}
           {curvePlots && 
-          <div>
+          <div style={{margin:"auto"}}>
               <Typography variant="h6">Precision Recall vs Confidence Path</Typography>
               <MagnifyImage url={curvePlots.precision_recall_vs_confidence_path} />
 
