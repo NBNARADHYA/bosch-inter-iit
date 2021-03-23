@@ -30,24 +30,18 @@ SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 app = FastAPI()
 
 app.mount("/images", StaticFiles(directory="images"), name="images")
-app.mount("/test_dataset",
-          StaticFiles(directory="test_dataset"),
-          name="test_dataset")
+app.mount("/test_dataset", StaticFiles(directory="test_dataset"), name="test_dataset")
 app.mount("/models", StaticFiles(directory="models"), name="models")
-app.mount("/model_output",
-          StaticFiles(directory="model_output"),
-          name="model_output")
-app.mount("/img_dataset",
-          StaticFiles(directory="img_dataset"),
-          name="img_dataset")
+app.mount("/model_output", StaticFiles(directory="model_output"), name="model_output")
+app.mount("/img_dataset", StaticFiles(directory="img_dataset"), name="img_dataset")
 
-app.mount("/image_previews",
-          StaticFiles(directory="image_previews"),
-          name="image_previews")
+app.mount(
+    "/image_previews", StaticFiles(directory="image_previews"), name="image_previews"
+)
 
-app.mount("/train_val_csv",
-          StaticFiles(directory="train_val_csv"),
-          name="train_val_csv")
+app.mount(
+    "/train_val_csv", StaticFiles(directory="train_val_csv"), name="train_val_csv"
+)
 
 origins = [
     "http://localhost",
@@ -76,21 +70,20 @@ def hinted_tuple_hook(obj):
 
 @app.post("/transform_image", status_code=200)
 async def transform_image(
-        response: Response,
-        preview: bool = False,
-        parameters: Optional[str] = Form(None),
-        transformation: Optional[int] = Form(None),
-        transformation_step: Optional[int] = Form(None),
-        img_url: Optional[str] = Form(None),
-        preview_url: Optional[str] = Form(None),
-        image: Optional[UploadFile] = File(None),
-        id: Optional[str] = Cookie(None),
-        step_count: Optional[str] = Cookie(None),
+    response: Response,
+    preview: bool = False,
+    parameters: Optional[str] = Form(None),
+    transformation: Optional[int] = Form(None),
+    transformation_step: Optional[int] = Form(None),
+    img_url: Optional[str] = Form(None),
+    preview_url: Optional[str] = Form(None),
+    image: Optional[UploadFile] = File(None),
+    id: Optional[str] = Cookie(None),
+    step_count: Optional[str] = Cookie(None),
 ):
     if id is None:
         if image is None:
-            raise HTTPException(status_code=400,
-                                detail="Image has to be uploaded")
+            raise HTTPException(status_code=400, detail="Image has to be uploaded")
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
@@ -123,13 +116,14 @@ async def transform_image(
         if img_url is not None:
             if transformation_step is None:
                 raise HTTPException(
-                    status_code=400,
-                    detail="transformation_step field required")
+                    status_code=400, detail="transformation_step field required"
+                )
 
             img_extension = "." + img_url.split(".")[1]
 
-            img_url_new += ("/transformed_img_" + str(transformation_step) +
-                            img_extension)
+            img_url_new += (
+                "/transformed_img_" + str(transformation_step) + img_extension
+            )
 
             if not preview:
                 step_count = str(int(transformation_step) + 1)
@@ -148,16 +142,13 @@ async def transform_image(
         image = np.array(Image.open(img_url_new).convert("RGB"))
 
     else:
-        raise HTTPException(status_code=400,
-                            detail="img_url or preview_url required")
+        raise HTTPException(status_code=400, detail="img_url or preview_url required")
 
     transformed_image = image
 
     if img_url is not None or preview_url is None:
-        parameters = json.loads(json.loads(parameters),
-                                object_hook=hinted_tuple_hook)
-        transform = augmentations.augmentations_dict[transformation](
-            **parameters)
+        parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
+        transform = augmentations.augmentations_dict[transformation](**parameters)
 
         transformed = transform(image=image)
         transformed_image = transformed["image"]
@@ -202,13 +193,13 @@ async def get_transformed_images(id: Optional[str] = Cookie(None)):
 
 @app.post("/transform_images")
 async def transform_images(
-        response: Response,
-        parameters: str = Form(...),
-        transformations: str = Form(...),
-        num_iterations: int = Form(...),
-        class_id: str = Form(...),
-        images: List[UploadFile] = File(...),
-        id: Optional[str] = Cookie(None),
+    response: Response,
+    parameters: str = Form(...),
+    transformations: str = Form(...),
+    num_iterations: int = Form(...),
+    class_id: str = Form(...),
+    images: List[UploadFile] = File(...),
+    id: Optional[str] = Cookie(None),
 ):
 
     if id is None:
@@ -219,20 +210,20 @@ async def transform_images(
     base_img_path = "img_dataset/" + class_id + "/"
     folder_actions.mkdir_p(base_img_path)
 
-    parameters = json.loads(json.loads(parameters),
-                            object_hook=hinted_tuple_hook)
-    transformations = json.loads(json.loads(transformations),
-                                 object_hook=hinted_tuple_hook)
+    parameters = json.loads(json.loads(parameters), object_hook=hinted_tuple_hook)
+    transformations = json.loads(
+        json.loads(transformations), object_hook=hinted_tuple_hook
+    )
 
-    transform = A.Compose([
-        augmentations.augmentations_dict[transformation](**parameters[idx])
-        for idx, transformation in enumerate(transformations)
-    ])
+    transform = A.Compose(
+        [
+            augmentations.augmentations_dict[transformation](**parameters[idx])
+            for idx, transformation in enumerate(transformations)
+        ]
+    )
 
     img_names = [image.filename for image in images]
-    images = [
-        load_image_into_numpy_array(await image.read()) for image in images
-    ]
+    images = [load_image_into_numpy_array(await image.read()) for image in images]
 
     base_img_path += str(id)
 
@@ -242,13 +233,17 @@ async def transform_images(
         for i in range(len(images)):
             transformed = transform(image=images[i])
             images[i] = transformed["image"]
-            transformed_images.append({
-                "image":
-                images[i],
-                "path":
-                base_img_path + str(idx) + "_" + str(uuid.uuid1()) + "_" +
-                img_names[i],
-            })
+            transformed_images.append(
+                {
+                    "image": images[i],
+                    "path": base_img_path
+                    + str(idx)
+                    + "_"
+                    + str(uuid.uuid1())
+                    + "_"
+                    + img_names[i],
+                }
+            )
 
     for i in range(len(transformed_images)):
         image = transformed_images[i]
@@ -256,10 +251,8 @@ async def transform_images(
         im.save(image["path"])
 
     return {
-        "done":
-        True,
-        "images":
-        [SERVER_BASE_URL + image["path"] for image in transformed_images],
+        "done": True,
+        "images": [SERVER_BASE_URL + image["path"] for image in transformed_images],
     }
 
 
@@ -270,8 +263,7 @@ async def get_class_counts():
     for dirname, _, filenames in os.walk("img_dataset"):
         for filename in filenames:
             class_id = dirname.split("/")[1]
-            img_df.loc[len(
-                img_df.index)] = [os.path.join(dirname, filename), class_id]
+            img_df.loc[len(img_df.index)] = [os.path.join(dirname, filename), class_id]
 
     img_df = img_df.groupby(["label"]).size().reset_index(name="counts")
 
@@ -288,8 +280,7 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
         for filename in filenames:
             done = True
             class_id = dirname.split("/")[1]
-            img_df.loc[len(
-                img_df.index)] = [os.path.join(dirname, filename), class_id]
+            img_df.loc[len(img_df.index)] = [os.path.join(dirname, filename), class_id]
 
     if not done:
         return {"done": done}
@@ -306,9 +297,9 @@ async def balance_dataset(min_samples: Optional[int] = Form(None)):
 
 @app.post("/split_dataset")
 async def split_dataset(
-        response: Response,
-        split_percentage: Optional[float] = Form(None),
-        id: Optional[str] = Cookie(None),
+    response: Response,
+    split_percentage: Optional[float] = Form(None),
+    id: Optional[str] = Cookie(None),
 ):
     if id is None:
         id = str(uuid.uuid4())
@@ -334,13 +325,21 @@ async def split_dataset(
     split_obj = SplitDataset(img_df, split_percentage)
     xtrain, xval = split_obj.split()
 
-    xtrain_counts = (xtrain.groupby([
-        "label"
-    ]).size().reset_index(name="counts").set_index("label").T.to_dict())
+    xtrain_counts = (
+        xtrain.groupby(["label"])
+        .size()
+        .reset_index(name="counts")
+        .set_index("label")
+        .T.to_dict()
+    )
 
-    xval_counts = (xval.groupby([
-        "label"
-    ]).size().reset_index(name="counts").set_index("label").T.to_dict())
+    xval_counts = (
+        xval.groupby(["label"])
+        .size()
+        .reset_index(name="counts")
+        .set_index("label")
+        .T.to_dict()
+    )
 
     img_path = "train_val_csv/" + str(id)
 
@@ -355,10 +354,7 @@ async def split_dataset(
             "train": img_path + "_train.csv",
             "val": img_path + "_val.csv",
         },
-        "class_counts": {
-            "train": xtrain_counts,
-            "val": xval_counts
-        },
+        "class_counts": {"train": xtrain_counts, "val": xval_counts},
     }
 
 
@@ -375,14 +371,16 @@ async def delete_dataset_images(images: str = Form(...)):
 
 
 @app.post("/model_output")
-async def pred_model_output(model: Optional[UploadFile] = File(None),
-                            model_name: Optional[str] = Form(None)):
+async def pred_model_output(
+    model: Optional[UploadFile] = File(None), model_name: Optional[str] = Form(None)
+):
     first_time = model_name is None
 
     if first_time:
         if model is None:
-            raise HTTPException(status_code=400,
-                                detail="Model has to be uploaded or selected")
+            raise HTTPException(
+                status_code=400, detail="Model has to be uploaded or selected"
+            )
 
         model_name = str(uuid.uuid1()) + "_" + model.filename
 
@@ -400,13 +398,13 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
     output["train_metrics"] = train_metrics
     output["test_metrics"] = test_metrics
 
-    output["top_5_classes"] = model_op_obj.top_5_classes(SERVER_BASE_URL +
-                                                         "test_dataset/")
+    output["top_5_classes"] = model_op_obj.top_5_classes(
+        SERVER_BASE_URL + "test_dataset/"
+    )
 
     output["wrong_pred"] = model_op_obj.wrong_pred()
 
-    output["confusion_matrix_path"] = SERVER_BASE_URL + model_op_obj.confusion(
-    )
+    output["confusion_matrix_path"] = SERVER_BASE_URL + model_op_obj.confusion()
 
     x, y = model_op_obj.wrost_acc_classes()
     output["wrost_acc_classes"] = {"x": x, "y": y}
@@ -420,9 +418,7 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
 
 @app.post("/plot_curves")
 async def plot_curves(class_id: int = Form(...), model_name: str = Form(None)):
-    model_op_obj = Model_output(model_path=model_name,
-                                first_time=False,
-                                is_plot=True)
+    model_op_obj = Model_output(model_path=model_name, first_time=False, is_plot=True)
     path1, path2, path3 = model_op_obj.plot_curves(class_id)
 
     return {
@@ -439,14 +435,13 @@ async def get_models():
 
 @app.post("/test_model")
 async def test_model(
-        model_name: str = Form(...),
-        image: Optional[UploadFile] = File(None),
-        img_path: Optional[str] = Form(None),
+    model_name: str = Form(...),
+    image: Optional[UploadFile] = File(None),
+    img_path: Optional[str] = Form(None),
 ):
-    model_op_obj = Model_output(model_path=model_name,
-                                first_time=False,
-                                is_plot=False,
-                                is_run=True)
+    model_op_obj = Model_output(
+        model_path=model_name, first_time=False, is_plot=False, is_run=True
+    )
 
     if img_path:
         image = cv2.imread(img_path.split(SERVER_BASE_URL)[1])
@@ -460,14 +455,13 @@ async def test_model(
 
 @app.post("/generate_heatmap")
 async def generate_heatmap(
-        model_name: str = Form(...),
-        image: Optional[UploadFile] = File(None),
-        img_path: Optional[str] = Form(None),
+    model_name: str = Form(...),
+    image: Optional[UploadFile] = File(None),
+    img_path: Optional[str] = Form(None),
 ):
-    model_op_obj = Model_output(model_path=model_name,
-                                first_time=False,
-                                is_plot=False,
-                                is_run=True)
+    model_op_obj = Model_output(
+        model_path=model_name, first_time=False, is_plot=False, is_run=True
+    )
 
     if img_path:
         image = cv2.imread(img_path.split(SERVER_BASE_URL)[1])
