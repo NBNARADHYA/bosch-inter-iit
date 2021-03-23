@@ -1,5 +1,4 @@
-import { Tab } from "@material-ui/core";
-import Paper from "@material-ui/core/Paper";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -7,12 +6,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import React from "react";
-import Carousel from "react-material-ui-carousel";
-
+import Paper from "@material-ui/core/Paper";
+import { Tab } from "@material-ui/core";
 import classLabels from "../../../../Constants/classLabels";
-import { getClassString } from "../../../../Utils";
 import ImageCards from "../../ImageCards";
+import Carousel from "react-material-ui-carousel";
+import { getClassString } from "../../../../Utils";
 
 const useStyles = makeStyles(() => ({
   carousel: {
@@ -27,6 +26,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+
+
 function TableComponent(classes) {
   const rows = classes.data.map((each, i) => {
     return (
@@ -40,13 +41,11 @@ function TableComponent(classes) {
   });
   return (
     <div>
-      <TableContainer component={Paper} style={{ width: "260px" }}>
+      <TableContainer component={Paper} style={{width:"247px"}} >
         <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell>
-                <strong>Most Confidence Classes</strong>
-              </TableCell>
+              <TableCell><strong>Most Confidence Classes</strong></TableCell>
               {/* <TableCell align="right">CONFIDENCE</TableCell> */}
             </TableRow>
           </TableHead>
@@ -57,21 +56,21 @@ function TableComponent(classes) {
   );
 }
 
-const CarouselData = ({ top_5_classes }) => {
+const CarouselData = ({top_5_classes}) => {
   let data = top_5_classes;
   data = Object.keys(data).map((img) => {
-    const url = img.replace("ppm", "png");
-    return {
-      img: url,
-      classes: top_5_classes[img],
-    };
-  });
+    const url = img.replace("ppm","png");
+    return ({
+      "img":url,
+      "classes":top_5_classes[img]
+    });
+  })
   const classes = useStyles();
 
   let cardGroup = [];
-  for (let i = 0; i < data.length - 3; i += 3) {
+  for (let i = 0; i < data.length - 3; i+=3) {
     const newGroup = (
-      <div style={{ display: "flex", margin: "auto" }}>
+      <div style={{ display: "flex", margin:"auto" ,paddingRight:"50px", paddingLeft:"50px" }}>
         <ImageCards
           key={i}
           img={data[i].img}
@@ -92,24 +91,20 @@ const CarouselData = ({ top_5_classes }) => {
     cardGroup.push(newGroup);
   }
   const restImg = [];
-  for (let i = data.length - 1; i >= 0 && i >= data.length - 3; i--) {
-    restImg.push(
-      <ImageCards
-        key={i}
-        img={data[i].img}
-        data={<TableComponent data={data[i].classes} />}
-      />
-    );
+  for(let i=data.length -1;i>=0&&i>=data.length-3;i--){
+    restImg.push(<ImageCards
+      key={i}
+      img={data[i].img}
+      data={<TableComponent data={data[i].classes} />}
+    />);
   }
   const lastGrp = (
-    <div style={{ display: "flex" }}>{restImg.map((each) => each)}</div>
-  );
+    <div style={{ display: "flex", margin:"auto" ,paddingRight:"50px", paddingLeft:"50px" }}>
+      {restImg.map(each => each)}
+    </div>
+  )
   cardGroup.push(lastGrp);
-  return (
-    <Carousel className={classes.carousel} indicators={false} autoPlay={false}>
-      {cardGroup}
-    </Carousel>
-  );
+  return <Carousel className={classes.carousel} indicators={false} autoPlay={false} >{cardGroup}</Carousel>;
 };
 
 export default CarouselData;
