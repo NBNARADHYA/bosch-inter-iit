@@ -92,10 +92,8 @@ export default function TestModel({model_name: modelName}) {
 
   const onImgUpload = useCallback(([image]) => {
     const formData = new FormData()
-    console.log(image)
     formData.append("model_name", modelName)
     formData.append("image", image)
-
     testModel(formData);
   }, [testModel])
 
@@ -143,7 +141,11 @@ export default function TestModel({model_name: modelName}) {
   return (
     <>
       <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="primary" />
+        <CircularProgress color="inherit" />
+        &nbsp; &nbsp;
+        <Typography variant="h6" color="inherit">
+          Running the model on selected image
+        </Typography>      
       </Backdrop>
       <Grid container justify="flex-end" direction="column" alignItems="center" spacing={1}>
         <Grid item>
@@ -153,7 +155,7 @@ export default function TestModel({model_name: modelName}) {
         </Grid>
         <Grid item>
           <ImageUploader
-            label="Test model on an uploaded image"
+            label=""
             buttonText="Upload image"
             withIcon={true}
             onChange={onImgUpload}
