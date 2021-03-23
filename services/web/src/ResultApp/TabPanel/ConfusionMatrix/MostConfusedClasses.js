@@ -1,18 +1,20 @@
-import { Typography } from '@material-ui/core'
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {Typography} from '@material-ui/core'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import classLabels from '../../../Constants/classLabels';
-import { getClassString } from '../../../Utils';
+import {makeStyles} from '@material-ui/core/styles';
+import React from 'react';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100%',
-      backgroundColor: theme.palette.background.paper,
-    },
-  }));
+import classLabels from '../../../Constants/classLabels';
+import {getClassString} from '../../../Utils';
+
+const useStyles =
+    makeStyles((theme) => ({
+                 root : {
+                   width : '100%',
+                   backgroundColor : theme.palette.background.paper,
+                 },
+               }));
 
 const MostConfusedClasses = ({most_confused_classes}) => {
     const classes = useStyles();
