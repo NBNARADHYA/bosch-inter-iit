@@ -94,8 +94,7 @@ async def transform_image(
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
-                detail=
-                "Image has to be added to the history before refering it",
+                detail="Image has to be added to the history before refering it",
             )
 
         id = str(uuid.uuid4())
@@ -413,7 +412,7 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
     output["wrost_acc_classes"] = {"x": x, "y": y}
 
     output["most_confused_classes"] = model_op_obj.most_confused_classes()
-    
+
     output["conf_matrix"] = model_op_obj.get_conf_matrix()
 
     return output

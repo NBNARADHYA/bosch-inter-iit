@@ -198,17 +198,18 @@ class Model_output:
     def top_5_classes(self, base_path):
         data = {}
         for itr in range(len(self.predictions)):
-           arr = list(np.argsort(self.predictions[itr]))
-           for i in range(len(arr)):
-              arr[i] = int(arr[i])
-           arr = arr[43:]
-           arr = arr[::-1]
-           data[self.df.image[itr]] = []
-           data[self.df.image[itr]].append(arr)
-           confidence_scores = []
-           for index in arr:
-              confidence_scores.append(round(float(self.predictions[itr][index]), 4))
-           data[self.df.image[itr]].append(confidence_scores)
+            arr = list(np.argsort(self.predictions[itr]))
+            for i in range(len(arr)):
+                arr[i] = int(arr[i])
+            arr = arr[43:]
+            arr = arr[::-1]
+            data[self.df.image[itr]] = []
+            data[self.df.image[itr]].append(arr)
+            confidence_scores = []
+            for index in arr:
+                confidence_scores.append(
+                    round(float(self.predictions[itr][index]), 4))
+            data[self.df.image[itr]].append(confidence_scores)
         return data
 
     def wrong_pred(self):
@@ -436,14 +437,14 @@ class Model_output:
 
         ony = y[onx]
         ony = list(np.round(ony, 2))
-        
+
         for i in range(len(ony)):
             ony[i] = float(ony[i])
-            
+
         for i in range(len(onx)):
             onx[i] = str(int(onx[i])).zfill(5)
 
         return onx, ony
 
     def get_conf_matrix(self, class_id=0):
-        return [ [ int(col) for col in row ] for row in self.conf_matrix ]
+        return [[int(col) for col in row] for row in self.conf_matrix]
