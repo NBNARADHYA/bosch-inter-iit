@@ -5,9 +5,10 @@ import uuid
 from io import BytesIO
 from typing import List
 from typing import Optional
-import cv2
+
 import albumentations as A
 import augmentations
+import cv2
 import folder_actions
 import numpy as np
 import pandas as pd
@@ -413,7 +414,7 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
     output["wrost_acc_classes"] = {"x": x, "y": y}
 
     output["most_confused_classes"] = model_op_obj.most_confused_classes()
-    
+
     output["conf_matrix"] = model_op_obj.get_conf_matrix()
 
     return output
