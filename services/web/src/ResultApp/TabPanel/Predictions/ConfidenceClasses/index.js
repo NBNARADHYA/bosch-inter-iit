@@ -29,7 +29,7 @@ const ConfidenceClasses = ({ top_5_classes }) => {
       <AppBar position="static" color="transparent">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Top 5 Confidence classes for each image
+            Top 5 Confidence Classes
           </Typography>
           <IconButton color="inherit" onClick={handleDescriptionOpen}>
             <InfoButton />

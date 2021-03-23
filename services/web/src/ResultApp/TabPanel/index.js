@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function TabsWrappedLabel(props) {
+  console.log(props);
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
