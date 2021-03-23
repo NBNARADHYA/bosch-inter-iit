@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PlotCurves = ({currentModel, modelOutput}) => {
-    currentModel = "3951da40-8b28-11eb-8f74-0242ac120002_resnet18metrics.pth";
+const PlotCurves = ({response}) => {
+    const currentModel = response.model_name;
     const [classId, setClassId] = React.useState('');
     const [curvePlots, setCurvePlots] = React.useState(null);
     const classes = useStyles();

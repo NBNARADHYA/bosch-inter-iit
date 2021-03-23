@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConfidenceClasses = (props) => {
+const ConfidenceClasses = ({top_5_classes}) => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const handleDescriptionOpen = () => setDescriptionBox(true);
@@ -39,7 +39,7 @@ const ConfidenceClasses = (props) => {
         handleDescriptionClose={handleDescriptionClose}
         description="Description of Confidence Class"
       />
-      <CarouselData />
+      <CarouselData top_5_classes = {top_5_classes} />
     </div>
   );
 };

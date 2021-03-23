@@ -2,11 +2,12 @@ import React from 'react'
 import ConfidenceClasses from './ConfidenceClasses'
 import WrongPredictions from './WrongPredictions'
 
-const Predictions = () => {
+const Predictions = ({response}) => {
+  // console.log(response,response.top_5_classes,response.wrong_pred);
   return (
     <div>
-      <ConfidenceClasses />
-      <WrongPredictions />
+      <ConfidenceClasses top_5_classes={response.top_5_classes} />
+      <WrongPredictions wrong_pred={response.wrong_pred}/>
     </div>
   )
 }

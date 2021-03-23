@@ -1,7 +1,6 @@
 import { Typography,  makeStyles } from "@material-ui/core";
 import React from "react";
 import ReactImageMagnify from "react-image-magnify";
-import response from "../response";
 
 
 const useStyles = makeStyles(() => ({
@@ -15,7 +14,6 @@ const useStyles = makeStyles(() => ({
 
 const MagnifyImage = ({url}) => {
   const classes = useStyles();
-  // url = response.confusion_matrix_path;
   return (
     <div style={{ display: "flex", margin:"20px" }}>
       <ReactImageMagnify

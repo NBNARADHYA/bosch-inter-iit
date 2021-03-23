@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WrongPredictions = () => {
+const WrongPredictions = ({wrong_pred}) => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const handleDescriptionOpen = () => setDescriptionBox(true);
@@ -39,7 +39,7 @@ const WrongPredictions = () => {
         handleDescriptionClose={handleDescriptionClose}
         description="Description of Confused Class"
       />
-      <CarouselData />
+      <CarouselData wrong_pred = {wrong_pred}/>
     </div>
   );
 };

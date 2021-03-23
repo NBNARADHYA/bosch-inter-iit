@@ -11,7 +11,6 @@ import { Tab } from "@material-ui/core";
 import classLabels from "../../../../Constants/classLabels";
 import ImageCards from "../../ImageCards";
 import Carousel from "react-material-ui-carousel";
-import response from "../../../response";
 import { getClassString } from "../../../../Utils";
 
 const useStyles = makeStyles(() => ({
@@ -27,14 +26,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-let data = response.top_5_classes;
-data = Object.keys(data).map((img) => {
-  const url = img.replace("ppm","png");
-  return ({
-    "img":url,
-    "classes":response.top_5_classes[img]
-  });
-})
 
 
 function TableComponent(classes) {
@@ -65,7 +56,15 @@ function TableComponent(classes) {
   );
 }
 
-const CarouselData = () => {
+const CarouselData = ({top_5_classes}) => {
+  let data = top_5_classes;
+  data = Object.keys(data).map((img) => {
+    const url = img.replace("ppm","png");
+    return ({
+      "img":url,
+      "classes":top_5_classes[img]
+    });
+  })
   const classes = useStyles();
 
   let cardGroup = [];
@@ -104,7 +103,6 @@ const CarouselData = () => {
       {restImg.map(each => each)}
     </div>
   )
-  console.log(lastGrp);
   cardGroup.push(lastGrp);
   return <Carousel className={classes.carousel} indicators={false} autoPlay={false} >{cardGroup}</Carousel>;
 };

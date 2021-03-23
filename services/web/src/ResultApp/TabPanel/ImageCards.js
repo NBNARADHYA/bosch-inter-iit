@@ -26,7 +26,6 @@ const useStyles = makeStyles({
 
 export default function ImageCards({ img, data }) {
   const classes = useStyles();
-  console.log(img, data);
   return (
     <Card className={classes.root}>
       <CardActionArea>

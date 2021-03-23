@@ -85,6 +85,9 @@ export function getClassString(num) {
   let key = `${num}`;
   while (key.length < 5) key = `0${key}`;
   return key;
+}
+
+
 export function downloadImage (url) {
   fetch(url, {
     method: "GET"

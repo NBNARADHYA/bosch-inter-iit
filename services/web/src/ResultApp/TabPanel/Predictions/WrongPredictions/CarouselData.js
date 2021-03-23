@@ -11,7 +11,6 @@ import { Tab } from "@material-ui/core";
 import classLabels from "../../../../Constants/classLabels";
 import ImageCards from "../../ImageCards";
 import Carousel from "react-material-ui-carousel";
-import response from "../../../response";
 import { getClassString } from "../../../../Utils";
 import serverUrl from "../../../../Constants/serverUrl";
 
@@ -28,16 +27,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-let data = response.wrong_pred;
-data = data.map((each) => {
-  const url = `${serverUrl}test_dataset/${each.image.replace("ppm","png")}`;
-  return ({
-    "img":url,
-    "predicted":each.predicted,
-    "actual": each.actual,
-    "confidence":each.confidence
-  });
-})
 
 
 function TableComponent(data) {
@@ -73,7 +62,17 @@ function TableComponent(data) {
   );
 }
 
-const CarouselData = () => {
+const CarouselData = ({wrong_pred}) => {
+  let data = wrong_pred;
+  data = data.map((each) => {
+    const url = `${serverUrl}test_dataset/${each.image.replace("ppm","png")}`;
+    return ({
+      "img":url,
+      "predicted":each.predicted,
+      "actual": each.actual,
+      "confidence":each.confidence
+    });
+  })
   const classes = useStyles();
 
   let cardGroup = [];
@@ -112,7 +111,6 @@ const CarouselData = () => {
       {restImg.map(each => each)}
     </div>
   )
-  console.log(lastGrp);
   cardGroup.push(lastGrp);
   return <Carousel className={classes.carousel} indicators={false} autoPlay={false} >{cardGroup}</Carousel>;
 };
