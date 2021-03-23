@@ -1,6 +1,6 @@
-import {IconButton} from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import InfoButton from "@material-ui/icons/InfoOutlined";
@@ -11,15 +11,15 @@ import DescriptionBox from "../../DescriptionBox";
 import CarouselData from "./CarouselData";
 
 const useStyles = makeStyles((theme) => ({
-                               root : {
-                                 flexGrow : 1,
-                               },
-                               title : {
-                                 flexGrow : 1,
-                               },
-                             }));
+  root: {
+    flexGrow: 1,
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
 
-const ConfidenceClasses = ({top_5_classes}) => {
+const ConfidenceClasses = ({ top_5_classes }) => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const handleDescriptionOpen = () => setDescriptionBox(true);
@@ -41,8 +41,7 @@ const ConfidenceClasses = ({top_5_classes}) => {
         handleDescriptionClose={handleDescriptionClose}
         description="Description of Confidence Class"
       />
-      <CarouselData top_5_classes = {
-    top_5_classes} />
+      <CarouselData top_5_classes={top_5_classes} />
     </div>
   );
 };
