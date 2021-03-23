@@ -432,10 +432,10 @@ class Model_output:
 
         ony = y[onx]
         ony = list(np.round(ony, 2))
-        
+
         for i in range(len(ony)):
             ony[i] = float(ony[i])
-            
+
         for i in range(len(onx)):
             onx[i] = str(int(onx[i])).zfill(5)
 
