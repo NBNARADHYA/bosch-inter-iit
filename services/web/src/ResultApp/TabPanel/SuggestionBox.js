@@ -43,6 +43,7 @@ export default function SuggestionBox({
       &nbsp;{title}
       </Typography>
       </Grid>
+      <br/>
       <Grid container>
         {children}
       </Grid>

@@ -156,7 +156,7 @@ function BalanceDataset(props) {
         <Grid item>
           <br/>
           <Typography align="center" variant="h5" color="primary">
-            {afterLoaded ? "Before" : "Current class counts"}
+            {afterLoaded ? "Before balancing" : "Current class counts"}
           </Typography>      
         </Grid>
         <br/>
@@ -220,7 +220,7 @@ function BalanceDataset(props) {
             <Grid item>
               <br/>
               <Typography align="center" variant="h5" color="primary">
-                After
+                After balancing
               </Typography>      
             </Grid>
             <br/>
