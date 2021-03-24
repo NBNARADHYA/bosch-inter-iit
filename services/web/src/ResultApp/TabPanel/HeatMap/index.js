@@ -16,6 +16,7 @@ import ImageUploader from "react-images-upload";
 import Grid from '@material-ui/core/Grid';
 import InfoButton from "@material-ui/icons/InfoOutlined";
 import DescriptionBox from "../DescriptionBox";
+import Description from "./Description";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -108,6 +109,10 @@ export default function HeatMap({model_name: modelName}) {
     <>
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color="primary" />
+        &nbsp; &nbsp;
+        <Typography variant="h6" color="inherit">
+          Heat map being generated
+        </Typography>
       </Backdrop>
       <AppBar position="static" color="transparent">
         <Toolbar>
@@ -122,8 +127,10 @@ export default function HeatMap({model_name: modelName}) {
       <DescriptionBox
         descriptionBox={descriptionBox}
         handleDescriptionClose={() => setDescriptionBox(false)}
-        description="Generate Heat Map"
-      />
+        title="Model Interpretation Using Captum"
+      >
+        <Description />
+      </DescriptionBox>
       <Grid container justify="flex-end" direction="column" alignItems="center" spacing={1}>
         <Grid item>
           <ImageUploader

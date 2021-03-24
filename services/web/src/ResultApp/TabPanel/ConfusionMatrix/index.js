@@ -8,9 +8,9 @@ import React from "react";
 
 import DescriptionBox from "../DescriptionBox";
 import MagnifyImage from "../MagnifyImage";
-import Histogram from "./Histogram";
-
-import MostConfusedClasses from "./MostConfusedClasses";
+import Description from "./Description";
+import Histogram from "./Histogram/";
+import MostConfusedClasses from "./MostConfusedClasses/";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,8 +41,10 @@ const ConfusionMatrix = ({ confusion_matrix_path, most_confused_classes, conf_ma
       <DescriptionBox
         descriptionBox={descriptionBox}
         handleDescriptionClose={handleDescriptionClose}
-        description="Description of Confusion Matrix"
-      />
+        title="Confusion Matrix"
+      >
+        <Description />
+      </DescriptionBox>
       <br />
       <MagnifyImage url={confusion_matrix_path} />
       <br />

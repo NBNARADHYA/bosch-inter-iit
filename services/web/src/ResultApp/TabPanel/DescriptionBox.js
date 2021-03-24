@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Typography from "@material-ui/core/Typography";
 
 export default function DescriptionBox({
   descriptionBox,
@@ -19,7 +20,9 @@ export default function DescriptionBox({
       onClose={handleDescriptionClose}
       aria-labelledby="max-width-dialog-title"
     >
-      <DialogTitle id="max-width-dialog-title">{title}</DialogTitle>
+      <DialogTitle id="max-width-dialog-title">
+        <Typography color="primary">{title}</Typography>
+      </DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
         <Button onClick={handleDescriptionClose} color="primary">
