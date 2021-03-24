@@ -1,4 +1,3 @@
-import { Tab } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -11,7 +10,6 @@ import React from "react";
 import Carousel from "react-material-ui-carousel";
 
 import classLabels from "../../../../Constants/classLabels";
-import serverUrl from "../../../../Constants/serverUrl";
 import { getClassString } from "../../../../Utils";
 import ImageCards from "../../ImageCards";
 
@@ -59,9 +57,8 @@ function TableComponent(data) {
 const CarouselData = ({ top_5_classes }) => {
   let data = top_5_classes;
   data = Object.keys(data).map((img) => {
-    const url = `${serverUrl}test_dataset/${img.replace("ppm", "png")}`;
     return {
-      img: url,
+      img,
       classes: top_5_classes[img][0],
       scores: top_5_classes[img][1],
     };

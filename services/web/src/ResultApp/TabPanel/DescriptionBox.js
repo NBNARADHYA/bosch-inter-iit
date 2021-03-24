@@ -8,7 +8,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 export default function DescriptionBox({
   descriptionBox,
   handleDescriptionClose,
-  description,
+  title,
+  children
 }) {
   return (
     <Dialog
@@ -18,8 +19,8 @@ export default function DescriptionBox({
       onClose={handleDescriptionClose}
       aria-labelledby="max-width-dialog-title"
     >
-      <DialogTitle id="max-width-dialog-title">Description Box</DialogTitle>
-      <DialogContent>{description}</DialogContent>
+      <DialogTitle id="max-width-dialog-title">{title}</DialogTitle>
+      <DialogContent>{children}</DialogContent>
       <DialogActions>
         <Button onClick={handleDescriptionClose} color="primary">
           Close
