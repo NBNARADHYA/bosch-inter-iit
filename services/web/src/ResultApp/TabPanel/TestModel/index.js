@@ -19,6 +19,7 @@ import classLabels from "../../../Constants/classLabels";
 import colours from "../../../Constants/colours";
 import serverUrl from "../../../Constants/serverUrl";
 import DescriptionBox from "../DescriptionBox";
+import Description from "./Description";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -56,6 +57,7 @@ export default function TestModel({ model_name: modelName }) {
   const [open, setOpen] = React.useState(false);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [imgLoading, setImgLoading] = useState(false);
   const [descriptionBox, setDescriptionBox] = React.useState(false);
 
   const [classScores, setClassScores] = useState({ x: [], y: [], colors: [] });
@@ -98,7 +100,7 @@ export default function TestModel({ model_name: modelName }) {
 
       testModel(formData);
     },
-    [testModel]
+    [testModel, modelName]
   );
 
   const onSelectImage = useCallback(
@@ -110,13 +112,13 @@ export default function TestModel({ model_name: modelName }) {
 
       testModel(formData);
     },
-    [images, testModel]
+    [images, testModel, modelName]
   );
 
   useEffect(() => {
     if (!open || images.length) return;
 
-    setLoading(true);
+    setImgLoading(true);
 
     fetch(`${serverUrl}dataset_images`)
       .then((res) => res.json())
@@ -129,10 +131,10 @@ export default function TestModel({ model_name: modelName }) {
             thumbnailHeight: 212,
           }))
         );
-        setLoading(false);
+        setImgLoading(false);
       })
       .catch(console.error);
-  }, [open]);
+  }, [open, images.length]);
 
   const barData = {
     labels: classScores.x,
@@ -145,13 +147,13 @@ export default function TestModel({ model_name: modelName }) {
     ],
   };
 
-  if (loading) {
+  if (loading || imgLoading) {
     return (
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color="inherit" />
         &nbsp; &nbsp;
         <Typography variant="h6" color="inherit">
-          Running the model on selected image
+          {imgLoading ? "Dataset images are being loaded": "Testing the model on selected image"}
         </Typography>
       </Backdrop>
     );
@@ -174,8 +176,7 @@ export default function TestModel({ model_name: modelName }) {
         handleDescriptionClose={() => setDescriptionBox(false)}
         title="Test your model"
       >
-        <h1>asdfasdf</h1>
-        <h3><b>asdfasdf</b></h3>
+        <Description />
       </DescriptionBox>
       <Grid
         container
