@@ -3,7 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import DatasetApp from "./DatasetApp/App";
 import ResultApp from "./ResultApp/App";
+import {
+  ThemeProvider as MuiThemeProvider,
+  createMuiTheme
+} from '@material-ui/core/styles';
+import { blue } from '@material-ui/core/colors';
 
+export const themeColor = blue[700];
 
 const drawerWidth = 360;
 
@@ -77,16 +83,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
-  const theme = useTheme();
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: blue[700],
+      },
+    },
+  });
+  
   const classes = useStyles();
-
   return (
+  <MuiThemeProvider theme={theme}>    
     <Router>
       <Switch>
         <Route path="/evaluate" component={() => <ResultApp classes={classes} theme={theme} />} />
         <Route component={() => <DatasetApp classes={classes} theme={theme} />}/>        
       </Switch>
     </Router>
+  </MuiThemeProvider>    
   );
 }
 
