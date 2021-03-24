@@ -21,7 +21,7 @@ export default function DescriptionBox({
       aria-labelledby="max-width-dialog-title"
     >
       <DialogTitle id="max-width-dialog-title">
-        <Typography color="primary">{title}</Typography>
+        <Typography color="primary" variant="h6">{title}</Typography>
       </DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>

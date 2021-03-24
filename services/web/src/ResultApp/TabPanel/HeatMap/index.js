@@ -117,7 +117,7 @@ export default function HeatMap({model_name: modelName}) {
       <AppBar position="static" color="transparent">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Heat Map
+          Gradient-based attribution
           </Typography>
           <IconButton color="inherit" onClick={() => setDescriptionBox(true)}>
             <InfoButton />
@@ -127,7 +127,7 @@ export default function HeatMap({model_name: modelName}) {
       <DescriptionBox
         descriptionBox={descriptionBox}
         handleDescriptionClose={() => setDescriptionBox(false)}
-        title="Model Interpretation Using Captum"
+        title="Model Interpretation"
       >
         <Description />
       </DescriptionBox>

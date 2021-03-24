@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import Drawer from "@material-ui/core/Drawer";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import DoneIcon from '@material-ui/icons/Done';
+import AddIcon from '@material-ui/icons/Add';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -129,12 +129,12 @@ const Sidebar = ({
         <Grid container justify="space-around" className={classes.buttonGrid}>
           <DoneButton
             variant="contained"
-            startIcon={<DoneIcon/>}
+            startIcon={<AddIcon/>}
             onClick={addToHistory}
             disabled={!img || !img.img || !img.img.length}
             id="step5"
           >
-            Apply
+            Add
           </DoneButton>
           <ResetButton
             variant="contained"

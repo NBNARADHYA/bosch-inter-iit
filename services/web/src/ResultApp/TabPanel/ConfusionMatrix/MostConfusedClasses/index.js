@@ -15,7 +15,7 @@ import serverUrl from "../../../../Constants/serverUrl";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Backdrop from "@material-ui/core/Backdrop";
 import InfiniteScroll from "react-infinite-scroll-component";
-import SuggestionBox from "../SuggestionBox";
+import SuggestionBox from "../../SuggestionBox";
 import Description from "./Description";
 
 const useStyles = makeStyles((theme) => ({
@@ -77,7 +77,7 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
         "{classLabels[getClassString(mostConfusedClasses[0][1])]}" is classified as "{classLabels[getClassString(mostConfusedClasses[0][2])]}" the
         most number of times. The following can be done to remove the confusion :
         <ul>
-        <li>Increasing number of training Image of "{classLabels[getClassString(mostConfusedClasses[0][1])]}" by surveying or by augmentation.</li>
+        <li>Increasing number of training images of "{classLabels[getClassString(mostConfusedClasses[0][1])]}" by surveying or by augmentation.</li>
         <li>Penalizing misclassifying "{classLabels[getClassString(mostConfusedClasses[0][1])]}" image in the loss function.</li>
       </ul>
       </SuggestionBox>}
@@ -97,11 +97,10 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
             const classB = classLabels[getClassString(each[2])];
             const urlA = `class_images\\${each[1]}.png`;
             const urlB = `class_images\\${each[2]}.png`;
-
             return (
               <ListItem key={idx}>
                 <ListItemText>
-                  {">>"} {X}% images of <strong>{classA}</strong> are being predicted to
+                  {"●"} {X}% images of <strong>{classA}</strong> are being predicted to
                   be of <strong>{classB}</strong>.
                   <div style={{ display: "flex", justifyContent: "space-around" }}>
                     <div
@@ -125,8 +124,6 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
                       {classB}
                     </div>
                   </div>
-                  <br />
-                  <br />
                 </ListItemText>
               </ListItem>
             );

@@ -13,9 +13,8 @@ Lists out all the images in the dataset that have been wrongly classified.
 Post-Evaluation :
 </Typography>
 <Typography variant="body2" paragraph>
-This can be an effective visual tool for the data scientist for pointing out the reasons behind the images being classified wrongly:
+This can be an effective visual tool for the data scientist for pointing out the reasons behind the images being classified wrongly due to unrepresentative data samples like :
 <ul>
-  <li>Unrepresentative data samples</li>
   <li>Unseen augmentation</li>
   <li>‘New’ images of the class not present in the training set</li>
   <li>Adversarial attacks</li>
