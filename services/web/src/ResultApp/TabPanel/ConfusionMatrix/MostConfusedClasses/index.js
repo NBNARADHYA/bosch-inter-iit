@@ -4,17 +4,18 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useCallback } from "react";
-import DescriptionBox from "../DescriptionBox";
-import classLabels from "../../../Constants/classLabels";
-import { getClassString } from "../../../Utils";
+import DescriptionBox from "../../DescriptionBox";
+import classLabels from "../../../../Constants/classLabels";
+import { getClassString } from "../../../../Utils";
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
 import { IconButton } from "@material-ui/core";
 import InfoButton from "@material-ui/icons/InfoOutlined";
-import serverUrl from "../../../Constants/serverUrl";
+import serverUrl from "../../../../Constants/serverUrl";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Backdrop from "@material-ui/core/Backdrop";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Description from "./Description";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +36,7 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const [mostConfusedClasses, setMostConfusedClasses] = React.useState(most_confused_classes);
 
+  const handleDescriptionClose = () => setDescriptionBox(false);
   const fetchMore = useCallback(() => {
     const data = new FormData()
     data.append("model_name", modelName)
@@ -63,10 +65,12 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
         </Toolbar>
       </AppBar>
       <DescriptionBox
-        descriptionBox={descriptionBox}
-        handleDescriptionClose={() => setDescriptionBox(false)}
-        description="Description of Most Confused Classes"
-      />
+          descriptionBox={descriptionBox}
+          handleDescriptionClose={handleDescriptionClose}
+          title="Most K confused classes"
+      >
+          <Description />
+      </DescriptionBox>
       <br />
       <List className={classes.root}>
         <InfiniteScroll

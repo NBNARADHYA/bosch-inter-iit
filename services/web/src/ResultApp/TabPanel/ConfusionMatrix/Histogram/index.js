@@ -5,14 +5,15 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import InfoButton from "@material-ui/icons/InfoOutlined";
 import React, { useState } from "react";
-import classLabels from "../../../Constants/classLabels";
-import DescriptionBox from "../DescriptionBox";
+import classLabels from "../../../../Constants/classLabels";
+import DescriptionBox from "../../DescriptionBox";
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import colours from "../../../Constants/colours";
+import colours from "../../../../Constants/colours";
 import { Bar } from "@reactchartjs/react-chart.js";
+import Description from "./Description";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: "20px",
         flexGrow: 1,
     },
+    formControl: {
+        minWidth: 120
+    }
 }));
 
 const options = {
@@ -68,9 +72,10 @@ export default function Histogram({ conf_matrix }) {
                     Histogram
                 </Typography>
                 <span className={classes.dropDown}>
-                    <FormControl variant="filled" size="small">
+                    <FormControl variant="filled" size="small" className={classes.formControl}>
                         <InputLabel>Select Class</InputLabel>
                         <Select
+                            autoWidth
                             value={currClass}
                             onChange={(e) => setCurrClass(+e.target.value)}
                         >
@@ -88,8 +93,10 @@ export default function Histogram({ conf_matrix }) {
             <DescriptionBox
                 descriptionBox={descriptionBox}
                 handleDescriptionClose={handleDescriptionClose}
-                description="Description of Histogram"
-            />
+                title="Confusion of selected class vs all classes"
+            >
+                <Description />
+            </DescriptionBox>
             <br />
             <Bar data={barData} options={options} width={1500} height={600} />
         </>
