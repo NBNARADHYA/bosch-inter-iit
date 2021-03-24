@@ -54,7 +54,7 @@ export default function TabsWrappedLabel(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed" style={{top: "64px"}} color="primary">
         <Tabs
           value={value}
           onChange={handleChange}
@@ -65,6 +65,7 @@ export default function TabsWrappedLabel(props) {
           ))}
         </Tabs>
       </AppBar>{" "}
+      <br/><br/>
       {tabs.map(({ component }, idx) => (
         <TabPanel key={idx} value={value} index={idx}>
           {component(props)}

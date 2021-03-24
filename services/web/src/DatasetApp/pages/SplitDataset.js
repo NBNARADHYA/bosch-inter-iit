@@ -16,6 +16,8 @@ import classLabels from '../../Constants/classLabels';
 import colours from '../../Constants/colours';
 import { downloadCSV } from '../../Utils';
 import Navbar from "../components/Navbar";
+import UndoIcon from '@material-ui/icons/Undo';
+import { useHistory } from "react-router-dom";
 
 const options = {
   scales: {
@@ -41,7 +43,8 @@ function SplitDataset(props) {
   let classes = useStyles()
   const { theme } = props
   classes = { ...classes, ...props.classes }
-
+  const history = useHistory();  
+  
   const [beforeCountData, setBeforeCountData] = useState({ x: [], y: [], colors: [] })
   const [afterCountData, setAfterCountData] = useState({ train_x: [], train_y: [], val_x: [], val_y: [] })
   const [invalidSplitPercentage, setInvalidSplitPercentage] = useState(false)
@@ -124,7 +127,11 @@ function SplitDataset(props) {
         theme={theme}
       />                
       <Backdrop className={classes.backdrop} open={true}>
-        <CircularProgress color="primary" />
+        <CircularProgress color="inherit" />
+        &nbsp; &nbsp; 
+        <Typography variant="h6" color="inherit">
+        Loading dataset
+        </Typography>        
       </Backdrop>
       </>
     )
@@ -197,8 +204,8 @@ function SplitDataset(props) {
                   setLoading(true)
                   setOpen(false)
                   let data = new FormData()
-                  data.append('split_percentage',splitPercentage)                  
-                  fetch(`${serverUrl}split_dataset`, { method: "POST", data})
+                  data.append('split_percentage',splitPercentage)              
+                  fetch(`${serverUrl}split_dataset`, { method: "POST", body: data})
                   .then(res => res.json())
                   .then(res => {
                     downloadCSV(res.csv.train,'train.csv');
@@ -233,11 +240,26 @@ function SplitDataset(props) {
             <Grid item>
               <Bar data={afterData} options={options} width={1400} height={400} />  
             </Grid>
+            <br/>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={()=> {
+                    history.push("/split/");
+              }}
+              startIcon={<UndoIcon/>}
+            >
+              Undo
+            </Button>            
           </>
         }
       </Grid>
       <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="primary" />
+        <CircularProgress color="inherit" />
+        &nbsp; &nbsp; 
+        <Typography variant="h6" color="inherit">
+        Splitting dataset into training and validation
+        </Typography>        
       </Backdrop>
     </Grid>
     </>

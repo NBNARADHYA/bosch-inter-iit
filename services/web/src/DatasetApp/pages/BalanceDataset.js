@@ -115,7 +115,11 @@ function BalanceDataset(props) {
         theme={theme}
       />          
       <Backdrop className={classes.backdrop} open={true}>
-        <CircularProgress color="primary" />
+        <CircularProgress color="inherit" />
+        &nbsp; &nbsp; 
+        <Typography variant="h6" color="inherit">
+        Loading dataset
+        </Typography>        
       </Backdrop>
       </>
     )
@@ -187,7 +191,7 @@ function BalanceDataset(props) {
                   setOpen(false)
                   let data
                   if(minSamples !== null) {
-                    let data = new FormData()
+                    data = new FormData()
                     data.append('min_samples',minSamples)
                   }
                   fetch(`${serverUrl}balance_dataset`, { method: "POST", body: data })
@@ -252,7 +256,11 @@ function BalanceDataset(props) {
         }
       </Grid>
       <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="primary" />
+        <CircularProgress color="inherit" />
+        &nbsp; &nbsp; 
+        <Typography variant="h6" color="inherit">
+        Performing oversampling to balance the dataset 
+        </Typography>
       </Backdrop>
     </Grid>
     </>
