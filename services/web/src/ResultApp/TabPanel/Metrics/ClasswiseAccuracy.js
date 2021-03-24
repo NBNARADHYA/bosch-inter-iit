@@ -20,7 +20,7 @@ const options = {
       },
     ],
   }  ,
-  maintainAspectRatio: false  
+  maintainAspectRatio: true
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -67,6 +67,7 @@ const ClasswiseAccuracy = ({ worst_acc_classes }) => {
         handleDescriptionClose={handleDescriptionClose}
         description="Description of Confidence Class"
       />
+      <br/>
     <Bar data={data} options={options} width={1400} height={400} />  
       <br/>      
     </div>
