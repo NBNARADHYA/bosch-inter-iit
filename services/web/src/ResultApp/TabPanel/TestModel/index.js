@@ -172,8 +172,11 @@ export default function TestModel({ model_name: modelName }) {
       <DescriptionBox
         descriptionBox={descriptionBox}
         handleDescriptionClose={() => setDescriptionBox(false)}
-        description="Description of Test model"
-      />
+        title="Test your model"
+      >
+        <h1>asdfasdf</h1>
+        <h3><b>asdfasdf</b></h3>
+      </DescriptionBox>
       <Grid
         container
         justify="flex-end"
