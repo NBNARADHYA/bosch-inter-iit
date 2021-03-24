@@ -18,6 +18,7 @@
     "react-grid-gallery": "^0.5.5",
     "react-image-magnify": "^2.7.4",
     "react-images-upload": "^1.2.8",
+    "react-infinite-scroll-component": "^6.0.0",
     "react-material-ui-carousel": "^2.2.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",

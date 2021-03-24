@@ -14,10 +14,11 @@ import { Bar } from "@reactchartjs/react-chart.js";
 import React, { useCallback, useEffect, useState } from "react";
 import Gallery from "react-grid-gallery";
 import ImageUploader from "react-images-upload";
-
+import InfoButton from "@material-ui/icons/InfoOutlined";
 import classLabels from "../../../Constants/classLabels";
 import colours from "../../../Constants/colours";
 import serverUrl from "../../../Constants/serverUrl";
+import DescriptionBox from "../DescriptionBox";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -55,6 +56,7 @@ export default function TestModel({ model_name: modelName }) {
   const [open, setOpen] = React.useState(false);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [descriptionBox, setDescriptionBox] = React.useState(false);
 
   const [classScores, setClassScores] = useState({ x: [], y: [], colors: [] });
 
@@ -145,14 +147,6 @@ export default function TestModel({ model_name: modelName }) {
 
   if (loading) {
     return (
-      <Backdrop className={classes.backdrop} open={true}>
-        <CircularProgress color="primary" />
-      </Backdrop>
-    );
-  }
-
-  return (
-    <>
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color="inherit" />
         &nbsp; &nbsp;
@@ -160,6 +154,26 @@ export default function TestModel({ model_name: modelName }) {
           Running the model on selected image
         </Typography>
       </Backdrop>
+    );
+  }
+
+  return (
+    <>
+      <AppBar position="static" color="transparent">
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            Test your model on an image
+          </Typography>
+          <IconButton color="inherit" onClick={() => setDescriptionBox(true)}>
+            <InfoButton />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <DescriptionBox
+        descriptionBox={descriptionBox}
+        handleDescriptionClose={() => setDescriptionBox(false)}
+        description="Description of Test model"
+      />
       <Grid
         container
         justify="flex-end"
@@ -167,11 +181,6 @@ export default function TestModel({ model_name: modelName }) {
         alignItems="center"
         spacing={1}
       >
-        <Grid item>
-          <Typography variant="h4" color="primary">
-            Test your model on an image to get class scores
-          </Typography>
-        </Grid>
         <Grid item>
           <ImageUploader
             label=""

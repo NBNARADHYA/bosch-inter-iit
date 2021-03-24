@@ -410,7 +410,7 @@ async def pred_model_output(model: Optional[UploadFile] = File(None),
     output["confusion_matrix_path"] = SERVER_BASE_URL + model_op_obj.confusion(
     )
 
-    x, y = model_op_obj.wrost_acc_classes()
+    x, y = model_op_obj.worst_acc_classes()
     output["wrost_acc_classes"] = {"x": x, "y": y}
 
     output["most_confused_classes"] = model_op_obj.most_confused_classes()
@@ -480,6 +480,13 @@ async def generate_heatmap(
 
     return {"path": SERVER_BASE_URL + path}
 
+
+@app.post("/most_confused_classes")
+async def get_most_confused_classes(model_name: str = Form(...), no_most: Optional[int] = Form(None)):
+    model_op_obj = Model_output(model_path=model_name, first_time=False, is_plot=False, is_run=False, is_most_conf_classes=True)
+
+    return {"most_confused_classes": model_op_obj.most_confused_classes(no_most=no_most)}
+    
 
 @app.get("/dataset_images")
 async def get_dataset_images():

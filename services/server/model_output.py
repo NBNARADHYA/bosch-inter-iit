@@ -69,6 +69,7 @@ class Model_output:
         first_time=False,
         is_plot=False,
         is_run=False,
+        is_most_conf_classes=False,
         is_cpu=True,
         data_path="test_dataset/test.csv",
         data_root="test_dataset/",
@@ -92,6 +93,7 @@ class Model_output:
         self.path = data_path
         self.root = data_root
         self.batch_size = batch_size
+        self.is_most_conf_classes = is_most_conf_classes
 
         if first_time:
             if self.is_cpu:
@@ -117,7 +119,7 @@ class Model_output:
                 self.labels, np.argmax(self.predictions, axis=1))
 
             self.manage_pickles_dir()
-        elif not is_run:
+        elif not is_run and not is_most_conf_classes:
             base_path = "pickles/" + self.model_path_name
 
             self.labels = load_pickle(base_path + "_labels.pickle")
@@ -203,13 +205,14 @@ class Model_output:
                 arr[i] = int(arr[i])
             arr = arr[43:]
             arr = arr[::-1]
-            data[self.df.image[itr]] = []
-            data[self.df.image[itr]].append(arr)
+            path = base_path + self.df.image[itr]
+            data[path] = []
+            data[path].append(arr)
             confidence_scores = []
             for index in arr:
                 confidence_scores.append(
                     round(float(self.predictions[itr][index]), 4))
-            data[self.df.image[itr]].append(confidence_scores)
+            data[path].append(confidence_scores)
         return data
 
     def wrong_pred(self):
@@ -243,7 +246,7 @@ class Model_output:
         plt.close()
         return matrix_path
 
-    def wrost_acc_classes(self):
+    def worst_acc_classes(self):
         cm = (self.conf_matrix.astype("float") /
               self.conf_matrix.sum(axis=1)[:, np.newaxis]) * 100
         onx = list(np.argsort(cm.diagonal()))
@@ -258,7 +261,16 @@ class Model_output:
         return onx, ony
 
     def most_confused_classes(self, no_most=5):
+        if not no_most:
+            no_most = 5
+        
+        base_path = "pickles/" + self.model_path_name
+        
+        if self.is_most_conf_classes:
+            self.conf_matrix = load_pickle(base_path + "_conf_matrix.pickle")
+            
         a = self.conf_matrix
+        
         a = (a.astype("float") / a.sum(axis=1)[:, np.newaxis]) * 100
         x = []
         y = []

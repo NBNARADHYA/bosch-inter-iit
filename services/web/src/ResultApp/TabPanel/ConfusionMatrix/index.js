@@ -8,6 +8,7 @@ import React from "react";
 
 import DescriptionBox from "../DescriptionBox";
 import MagnifyImage from "../MagnifyImage";
+import Histogram from "./Histogram";
 
 import MostConfusedClasses from "./MostConfusedClasses";
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ConfusionMatrix = ({ confusion_matrix_path, most_confused_classes }) => {
+const ConfusionMatrix = ({ confusion_matrix_path, most_confused_classes, conf_matrix, model_name }) => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const handleDescriptionOpen = () => setDescriptionBox(true);
@@ -45,9 +46,9 @@ const ConfusionMatrix = ({ confusion_matrix_path, most_confused_classes }) => {
       <br />
       <MagnifyImage url={confusion_matrix_path} />
       <br />
+      <Histogram conf_matrix={conf_matrix} />
       <br />
-      <br />
-      <MostConfusedClasses most_confused_classes={most_confused_classes} />
+      <MostConfusedClasses most_confused_classes={most_confused_classes} model_name={model_name} />
     </div>
   );
 };

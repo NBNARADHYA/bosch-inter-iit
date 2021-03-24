@@ -14,6 +14,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ImageUploader from "react-images-upload";
 import Grid from '@material-ui/core/Grid';
+import InfoButton from "@material-ui/icons/InfoOutlined";
+import DescriptionBox from "../DescriptionBox";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -38,6 +40,7 @@ export default function HeatMap({model_name: modelName}) {
   const [open, setOpen] = React.useState(false);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [descriptionBox, setDescriptionBox] = React.useState(false);
 
   const [heatMapPath, setHeatMapPath] = useState(null)
 
@@ -106,12 +109,22 @@ export default function HeatMap({model_name: modelName}) {
       <Backdrop className={classes.backdrop} open={loading}>
         <CircularProgress color="primary" />
       </Backdrop>
-      <Grid container justify="flex-end" direction="column" alignItems="center" spacing={1}>
-        <Grid item>
-          <Typography variant="h4" color="primary" >
-            Test your model on an image to generate heatmap
+      <AppBar position="static" color="transparent">
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            Heat Map
           </Typography>
-        </Grid>
+          <IconButton color="inherit" onClick={() => setDescriptionBox(true)}>
+            <InfoButton />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <DescriptionBox
+        descriptionBox={descriptionBox}
+        handleDescriptionClose={() => setDescriptionBox(false)}
+        description="Generate Heat Map"
+      />
+      <Grid container justify="flex-end" direction="column" alignItems="center" spacing={1}>
         <Grid item>
           <ImageUploader
             label=""
