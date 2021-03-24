@@ -15,6 +15,7 @@ import serverUrl from "../../../Constants/serverUrl";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Backdrop from "@material-ui/core/Backdrop";
 import InfiniteScroll from "react-infinite-scroll-component";
+import SuggestionBox from "../SuggestionBox";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,6 +69,15 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
         description="Description of Most Confused Classes"
       />
       <br />
+      {!!mostConfusedClasses.length &&  <SuggestionBox title="Suggestion">
+        "{classLabels[getClassString(mostConfusedClasses[0][1])]}" is classified as "{classLabels[getClassString(mostConfusedClasses[0][2])]}" the
+        most number of times. The following can be done to remove the confusion :
+        <ul>
+        <li>Increasing number of training Image of "{classLabels[getClassString(mostConfusedClasses[0][1])]}" by surveying or by augmentation.</li>
+        <li>Penalizing misclassifying "{classLabels[getClassString(mostConfusedClasses[0][1])]}" image in the loss function.</li>
+      </ul>
+      </SuggestionBox>}
+      <br/>
       <List className={classes.root}>
         <InfiniteScroll
           dataLength={mostConfusedClasses.length}

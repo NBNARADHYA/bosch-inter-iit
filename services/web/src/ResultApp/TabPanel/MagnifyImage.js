@@ -33,7 +33,7 @@ const MagnifyImage = ({ url }) => {
       />
       <div className={classes.center}>
         <Typography
-          variant="h6"
+          variant="subtitle1"
           style={{
             display: "flex",
             justifyContent: "center",
