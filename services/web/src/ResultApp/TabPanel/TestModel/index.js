@@ -158,7 +158,7 @@ export default function TestModel({ model_name: modelName }) {
         &nbsp; &nbsp;
         <Typography variant="h6" color="inherit">
           Running the model on selected image
-        </Typography>      0
+        </Typography>
       </Backdrop>
       <Grid
         container
