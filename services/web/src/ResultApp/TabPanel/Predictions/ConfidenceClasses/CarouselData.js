@@ -11,6 +11,7 @@ import React from "react";
 import Carousel from "react-material-ui-carousel";
 
 import classLabels from "../../../../Constants/classLabels";
+import serverUrl from "../../../../Constants/serverUrl";
 import { getClassString } from "../../../../Utils";
 import ImageCards from "../../ImageCards";
 
@@ -27,26 +28,24 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function TableComponent(classes) {
-  const rows = classes.data.map((each, i) => {
+function TableComponent(data) {
+  const rows = data.data.classes.map((each, i) => {
     return (
       <TableRow key={i}>
         <TableCell component="th" scope="row">
           {classLabels[getClassString(each)]}
         </TableCell>
-        {/* <TableCell align="right">{each.score}</TableCell> */}
+        <TableCell align="right">{data.data.scores[i]}</TableCell>
       </TableRow>
     );
   });
   return (
     <div>
-      <TableContainer component={Paper} style={{ width: "260px" }}>
+      <TableContainer component={Paper} style={{ width: "247px" }}>
         <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell>
-                <strong>Most Confidence Classes</strong>
-              </TableCell>
+              {/* <TableCell><strong>Most Confidence Classes</strong></TableCell> */}
               {/* <TableCell align="right">CONFIDENCE</TableCell> */}
             </TableRow>
           </TableHead>
@@ -60,10 +59,11 @@ function TableComponent(classes) {
 const CarouselData = ({ top_5_classes }) => {
   let data = top_5_classes;
   data = Object.keys(data).map((img) => {
-    const url = img.replace("ppm", "png");
+    const url = `${serverUrl}test_dataset/${img.replace("ppm", "png")}`;
     return {
       img: url,
-      classes: top_5_classes[img],
+      classes: top_5_classes[img][0],
+      scores: top_5_classes[img][1],
     };
   });
   const classes = useStyles();
@@ -71,21 +71,28 @@ const CarouselData = ({ top_5_classes }) => {
   let cardGroup = [];
   for (let i = 0; i < data.length - 3; i += 3) {
     const newGroup = (
-      <div style={{ display: "flex", margin: "auto" }}>
+      <div
+        style={{
+          display: "flex",
+          margin: "auto",
+          paddingRight: "50px",
+          paddingLeft: "50px",
+        }}
+      >
         <ImageCards
           key={i}
           img={data[i].img}
-          data={<TableComponent data={data[i].classes} />}
+          data={<TableComponent data={data[i]} />}
         />
         <ImageCards
           key={i}
           img={data[i + 1].img}
-          data={<TableComponent data={data[i + 1].classes} />}
+          data={<TableComponent data={data[i + 1]} />}
         />
         <ImageCards
           key={i}
           img={data[i + 2].img}
-          data={<TableComponent data={data[i + 2].classes} />}
+          data={<TableComponent data={data[i + 2]} />}
         />
       </div>
     );
@@ -97,12 +104,21 @@ const CarouselData = ({ top_5_classes }) => {
       <ImageCards
         key={i}
         img={data[i].img}
-        data={<TableComponent data={data[i].classes} />}
+        data={<TableComponent data={data[i]} />}
       />
     );
   }
   const lastGrp = (
-    <div style={{ display: "flex" }}>{restImg.map((each) => each)}</div>
+    <div
+      style={{
+        display: "flex",
+        margin: "auto",
+        paddingRight: "50px",
+        paddingLeft: "50px",
+      }}
+    >
+      {restImg.map((each) => each)}
+    </div>
   );
   cardGroup.push(lastGrp);
   return (

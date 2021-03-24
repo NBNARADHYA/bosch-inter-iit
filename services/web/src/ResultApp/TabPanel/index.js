@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function TabsWrappedLabel(props) {
+  console.log(props);
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -84,4 +85,4 @@ TabsWrappedLabel.propTypes = {
   confusion_matrix_path: PropTypes.string.isRequired,
   wrost_acc_classes: PropTypes.object.isRequired,
   most_confused_classes: PropTypes.array.isRequired,
-}
+};

@@ -5,7 +5,6 @@ import AppBar from "@material-ui/core/AppBar";
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import TimelineIcon from '@material-ui/icons/Timeline';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -13,8 +12,9 @@ import Zoom from '@material-ui/core/Zoom';
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 const useStyles = makeStyles(theme => ({
   timelineButton: {
@@ -60,7 +60,7 @@ const uiOptions = [
   }
 ]
 
-export default function Navbar({ classes, open, handleDrawerOpen, toggleTimelineDrawer, openTour }) {
+export default function Navbar({ classes, open, handleDrawerOpen, toggleTimelineDrawer, openTour, showReset }) {
   const navbarClasses = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -81,6 +81,8 @@ export default function Navbar({ classes, open, handleDrawerOpen, toggleTimeline
   if( selectedOption ) {
     selectedOption = selectedOption.text;
   }
+  
+  const routerHistory = useHistory();  
 
   return (
     <AppBar
@@ -125,9 +127,13 @@ export default function Navbar({ classes, open, handleDrawerOpen, toggleTimeline
                 </MenuItem>)
               }
         </Menu>
-        {/* <Typography variant="h6" noWrap>
-          Dataset Creation UI
-        </Typography> */}
+        {showReset && <Tooltip TransitionComponent={Zoom} title="Test another model">        
+          <IconButton color="inherit" className={navbarClasses.menuOptions} aria-label="Reset" component="span" onClick={()=>{
+    routerHistory.go(0)            
+          }} id="step6">
+            <RotateLeftIcon/>
+          </IconButton>
+        </Tooltip>}
         {selectedUIOption === "Dataset Creation UI" &&
           <>
             <Button color="inherit" onClick={handleMenu}  aria-haspopup="true" className={navbarClasses.menuOptions} id="step9">

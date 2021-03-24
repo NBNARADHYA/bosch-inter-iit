@@ -114,7 +114,7 @@ export default function HeatMap({model_name: modelName}) {
         </Grid>
         <Grid item>
           <ImageUploader
-            label="Test model on an uploaded image"
+            label=""
             buttonText="Upload image"
             withIcon={true}
             onChange={onImgUpload}

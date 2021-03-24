@@ -3,12 +3,8 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Dialog from "@material-ui/core/Dialog";
-import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Slide from "@material-ui/core/Slide";
 import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -157,6 +153,13 @@ export default function TestModel({ model_name: modelName }) {
 
   return (
     <>
+      <Backdrop className={classes.backdrop} open={loading}>
+        <CircularProgress color="inherit" />
+        &nbsp; &nbsp;
+        <Typography variant="h6" color="inherit">
+          Running the model on selected image
+        </Typography>
+      </Backdrop>
       <Grid
         container
         justify="flex-end"
@@ -171,7 +174,7 @@ export default function TestModel({ model_name: modelName }) {
         </Grid>
         <Grid item>
           <ImageUploader
-            label="Test model on an uploaded image"
+            label=""
             buttonText="Upload image"
             withIcon={true}
             onChange={onImgUpload}
