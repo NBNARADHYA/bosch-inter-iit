@@ -1,0 +1,16 @@
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
+
+COPY ./requirements.txt /app
+
+RUN pip3 install -r requirements.txt
+
+ENV SERVER_BASE_URL="http://localhost:5000/"
+
+RUN apt-get update
+RUN apt-get install -y libgl1-mesa-dev
+
+COPY ./train-dataset/. /app/img_dataset
+COPY ./test-dataset/images/. /app/test_dataset
+COPY ./test-dataset/test.csv /app/test_dataset
+
+CMD /start-reload.sh

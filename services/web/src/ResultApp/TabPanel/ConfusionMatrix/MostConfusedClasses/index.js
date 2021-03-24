@@ -3,7 +3,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import DescriptionBox from "../../DescriptionBox";
 import classLabels from "../../../../Constants/classLabels";
 import { getClassString } from "../../../../Utils";
@@ -36,6 +36,7 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
   const [mostConfusedClasses, setMostConfusedClasses] = React.useState(most_confused_classes);
+  const [hasMore, setHasMore] = useState(true);
 
   const handleDescriptionClose = () => setDescriptionBox(false);
   const fetchMore = useCallback(() => {
@@ -48,7 +49,10 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
       body: data
     })
     .then(res => res.json())
-    .then(res => setMostConfusedClasses(res.most_confused_classes))
+    .then(res => {
+      setMostConfusedClasses(res.most_confused_classes);
+      setHasMore(res.has_more);
+    })
     .catch(console.error)
 
   }, [mostConfusedClasses.length]);
@@ -86,7 +90,7 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
         <InfiniteScroll
           dataLength={mostConfusedClasses.length}
           next={fetchMore}
-          hasMore={true}
+          hasMore={hasMore}
           loader={<Backdrop className={classes.backdrop} open={true}>
                     <CircularProgress color="primary" />
                   </Backdrop>}

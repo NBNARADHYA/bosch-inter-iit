@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MagnifyImage = ({ url }) => {
+const MagnifyImage = ({ url, width, height }) => {
   const classes = useStyles();
   return (
     <div style={{ display: "flex", margin: "20px" }}>
@@ -26,8 +26,8 @@ const MagnifyImage = ({ url }) => {
           },
           largeImage: {
             src: `${url}`,
-            width: 2600,
-            height: 2600,
+            width,
+            height,
           },
         }}
       />

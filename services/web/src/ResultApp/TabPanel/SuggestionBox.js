@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
 import { Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -10,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '13px',
     padding: '10px',
     color: '#ffffff',
-    width: '80%'
+    width: '75%'
   },
   text: {
     color: '#ffffff',

@@ -135,11 +135,13 @@ const PlotCurves = ({ model_name }) => {
             </Typography>
             <MagnifyImage
               url={curvePlots.precision_recall_vs_confidence_path}
+              width={1500}
+              height={1500}
             />
             <Typography variant="h6">Precision Recall vs Confidence Curve</Typography>
-            <MagnifyImage url={curvePlots.precision_vs_recall_path} />
+            <MagnifyImage url={curvePlots.precision_vs_recall_path} width={1500} height={1500}/>
             <Typography variant="h6">ROC Curve</Typography>
-            <MagnifyImage url={curvePlots.roc_curve_path} />
+            <MagnifyImage url={curvePlots.roc_curve_path}  width={1500} height={1500}/>
           </div>
         )}
       </div>

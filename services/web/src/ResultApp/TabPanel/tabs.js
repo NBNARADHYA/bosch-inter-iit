@@ -9,13 +9,13 @@ export const tabs = [
   { name: "Metrics", component: (props) => <Metrics {...props} /> },  
   { name: "Predictions", component: (props) => <Predictions {...props} /> },
   {
-    name: "Confusion Matrix",
-    component: (props) => <ConfusionMatrix {...props} />,
-  },
-  { name: "Test Model", component: (props) => <TestModel {...props} /> },
-  { name: "Generate Heat Map", component: (props) => <HeatMap {...props} /> },
-  {
     name: "Curves",
     component: (props) => <PlotCurves {...props} />,
   },
+  {
+    name: "Confusion Matrix",
+    component: (props) => <ConfusionMatrix {...props} />,
+  },
+  { name: "Generate Heat Map", component: (props) => <HeatMap {...props} /> },
+  { name: "Test Model", component: (props) => <TestModel {...props} /> },
 ];

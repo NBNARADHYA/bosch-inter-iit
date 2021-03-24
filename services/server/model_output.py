@@ -70,23 +70,11 @@ class Model_output:
         is_plot=False,
         is_run=False,
         is_most_conf_classes=False,
-        is_cpu=True,
         data_path="test_dataset/test.csv",
         data_root="test_dataset/",
         batch_size=64,
     ):
 
-        # self.model = timm.create_model('resnet18',pretrained=True,num_classes=48)
-        # self.model.to(device)
-        # self.model.load_state_dict(torch.load('')['model_state_dict'])
-
-        #   if not is_plot and not first_time:
-        #      model = torch.load(model_path, map_location=torch.device('cpu'))
-        #      self.train_metrics = model['train_metrics']
-        #      self.model = model['model']
-        #      self.model_name = model['name']
-
-        self.is_cpu = is_cpu
         self.model_path_name = model_path.split(".")[0]
         self.model_path = os.path.join("models", model_path)
         self.data_path = data_path
@@ -96,11 +84,7 @@ class Model_output:
         self.is_most_conf_classes = is_most_conf_classes
 
         if first_time:
-            if self.is_cpu:
-                model = torch.load(self.model_path,
-                                   map_location=torch.device("cpu"))
-            else:
-                model = torch.load(self.model_path)
+            model = torch.load(self.model_path, map_location=device)
 
             self.train_metrics = model["train_metrics"]
             self.model = model["model"]
@@ -288,9 +272,13 @@ class Model_output:
         y = y[::-1]
         y = y[:no_most]
         strs = []
+        has_more = True
         for i in range(no_most):
+            if round(x[i], 2) == 0.00:
+                has_more = False
+                break
             strs.append([str(round(x[i], 2)), str(y[i][0]), str(y[i][1])])
-        return strs
+        return strs, has_more
 
     def precision_recall_curve(self, c):
         preds = torch.tensor(self.predictions)
@@ -361,11 +349,7 @@ class Model_output:
         return path1, path2, path3
 
     def generate_heatmap(self, img):
-        if self.is_cpu:
-            model = torch.load(self.model_path,
-                               map_location=torch.device("cpu"))
-        else:
-            model = torch.load(self.model_path)
+        model = torch.load(self.model_path, map_location=device)
         model = model["model"]
         model.eval()
 
@@ -425,11 +409,8 @@ class Model_output:
         return path
 
     def test_model(self, img):
-        if self.is_cpu:
-            model = torch.load(self.model_path,
-                               map_location=torch.device("cpu"))
-        else:
-            model = torch.load(self.model_path)
+        model = torch.load(self.model_path, map_location=device)
+        
         model = model["model"]
         model.eval()
 

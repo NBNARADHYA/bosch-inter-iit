@@ -243,10 +243,11 @@ async def transform_images(
     for idx in range(num_iterations):
         for i in range(len(images)):
             transformed = transform(image=images[i])
-            images[i] = transformed["image"]
+            temp = transformed["image"]
+            
             transformed_images.append({
                 "image":
-                images[i],
+                temp,
                 "path":
                 base_img_path + str(idx) + "_" + str(uuid.uuid1()) + "_" +
                 img_names[i],
@@ -484,8 +485,8 @@ async def generate_heatmap(
 @app.post("/most_confused_classes")
 async def get_most_confused_classes(model_name: str = Form(...), no_most: Optional[int] = Form(None)):
     model_op_obj = Model_output(model_path=model_name, first_time=False, is_plot=False, is_run=False, is_most_conf_classes=True)
-
-    return {"most_confused_classes": model_op_obj.most_confused_classes(no_most=no_most)}
+    most_confused_classes, has_more = model_op_obj.most_confused_classes(no_most=no_most)
+    return {"most_confused_classes": most_confused_classes, "has_more": has_more}
     
 
 @app.get("/dataset_images")

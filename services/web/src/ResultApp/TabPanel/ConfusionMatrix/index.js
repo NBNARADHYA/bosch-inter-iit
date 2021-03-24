@@ -46,7 +46,7 @@ const ConfusionMatrix = ({ confusion_matrix_path, most_confused_classes, conf_ma
         <Description />
       </DescriptionBox>
       <br />
-      <MagnifyImage url={confusion_matrix_path} />
+      <MagnifyImage url={confusion_matrix_path} width={4000} height={4000} />
       <br />
       <Histogram conf_matrix={conf_matrix} />
       <br />
