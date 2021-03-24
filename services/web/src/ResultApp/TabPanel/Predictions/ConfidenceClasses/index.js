@@ -5,9 +5,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import InfoButton from "@material-ui/icons/InfoOutlined";
 import React from "react";
-
+import DescriptionContent from "./DescriptionContent";
 import DescriptionBox from "../../DescriptionBox";
-
 import CarouselData from "./CarouselData";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +38,8 @@ const ConfidenceClasses = ({ top_5_classes }) => {
       <DescriptionBox
         descriptionBox={descriptionBox}
         handleDescriptionClose={handleDescriptionClose}
-        description="Description of Confidence Class"
+        title="Top 5 confidence classes"
+        children={<DescriptionContent/>}
       />
       <CarouselData top_5_classes={top_5_classes} />
     </div>

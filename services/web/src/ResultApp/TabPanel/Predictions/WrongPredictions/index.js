@@ -5,7 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import InfoButton from "@material-ui/icons/InfoOutlined";
 import React from "react";
-
+import DescriptionContent from "./DescriptionContent"
 import DescriptionBox from "../../DescriptionBox";
 
 import CarouselData from "./CarouselData";
@@ -39,7 +39,8 @@ const WrongPredictions = ({ wrong_pred }) => {
       <DescriptionBox
         descriptionBox={descriptionBox}
         handleDescriptionClose={handleDescriptionClose}
-        description="Description of Confused Class"
+        title="Wrong Predictions"
+        children={<DescriptionContent/>}
       />
       <CarouselData wrong_pred={wrong_pred} />
     </div>
