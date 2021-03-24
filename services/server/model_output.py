@@ -250,6 +250,8 @@ class Model_output:
         for i in range(len(onx)):
             onx[i] = int(onx[i])
         ony = cm.diagonal()[onx]
+        for i in range(len(onx)):
+            onx[i] = str(onx[i]).zfill(5)        
         ony = list(np.round(ony, 2))
         for i in range(len(ony)):
             ony[i] = float(ony[i])

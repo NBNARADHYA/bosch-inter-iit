@@ -8,7 +8,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import { Typography, Button } from '@material-ui/core'
+import { Typography, Button, Grid, Tooltip } from '@material-ui/core'
 import Navbar from "../DatasetApp/components/Navbar";
 
 const useStyles = makeStyles((theme) => ({
@@ -86,15 +86,35 @@ const App = (props) => {
         classes={classes}
         open={false}
         theme={theme}
+        showReset={!!modelOutput}
        />
        <div className={classes.drawerHeader} />
       <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="primary" />
+        <CircularProgress color="inherit" />
+        &nbsp; &nbsp;
+        <Typography variant="h6" color="inherit">
+          Running the model on test dataset
+        </Typography>
       </Backdrop>
-      {models.length && !modelOutput &&
-        <>
+      {!models.length && !modelOutput && <Grid container justify="center" alignItems="center" style={{minHeight: '250px'}}>
+        <Tooltip title="Upload .pth file of your model">
+        <Button
+            variant="contained"
+            component="label"
+          >
+            Upload Model
+            <input
+              type="file"
+              onChange={handleFileUpload}
+              hidden
+            />
+          </Button>
+        </Tooltip>          
+      </Grid>}
+      {!!models.length && !modelOutput &&
+        <Grid container justify="center" alignItems="center" style={{minHeight: '400px'}}>
           <FormControl className={classes.formControl}>
-            <InputLabel>Previously uploaded models</InputLabel>
+            <InputLabel>Select previously uploaded model</InputLabel>
             <Select
               value={modelIdx}
               onChange={(e) => setModelIdx(e.target.value)}
@@ -103,10 +123,9 @@ const App = (props) => {
                 <MenuItem key={idx} value={idx}>{model}</MenuItem>
               ))}
             </Select>
-          </FormControl>
-          <br />
-          <Typography variant="h5">OR</Typography>
-          <br />
+          </FormControl>&nbsp;&nbsp;&nbsp;&nbsp;
+          <Typography variant="h5">or</Typography>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <Button
             variant="contained"
             component="label"
@@ -118,7 +137,7 @@ const App = (props) => {
               hidden
             />
           </Button>
-        </>
+        </Grid>
       }
       {modelOutput && 
         <TabPanel {...modelOutput} />

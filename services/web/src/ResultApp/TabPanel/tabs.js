@@ -3,8 +3,10 @@ import HeatMap from "./HeatMap";
 import PlotCurves from "./PlotCurves";
 import Predictions from "./Predictions";
 import TestModel from "./TestModel";
+import Metrics from './Metrics';
 
 export const tabs = [
+  { name: "Metrics", component: (props) => <Metrics {...props} /> },  
   { name: "Predictions", component: (props) => <Predictions {...props} /> },
   {
     name: "Confusion Matrix",
