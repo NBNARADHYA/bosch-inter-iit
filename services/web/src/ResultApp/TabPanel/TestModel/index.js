@@ -6,50 +6,53 @@ import Dialog from "@material-ui/core/Dialog";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import Slide from "@material-ui/core/Slide";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
-import { Bar } from "@reactchartjs/react-chart.js";
-import React, { useCallback, useEffect, useState } from "react";
+import InfoButton from "@material-ui/icons/InfoOutlined";
+import {Bar} from "@reactchartjs/react-chart.js";
+import React, {useCallback, useEffect, useState} from "react";
 import Gallery from "react-grid-gallery";
 import ImageUploader from "react-images-upload";
-import InfoButton from "@material-ui/icons/InfoOutlined";
+
 import classLabels from "../../../Constants/classLabels";
 import colours from "../../../Constants/colours";
 import serverUrl from "../../../Constants/serverUrl";
 import DescriptionBox from "../DescriptionBox";
+
 import Description from "./Description";
 
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: "relative",
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-  },
-}));
+                               appBar : {
+                                 position : "relative",
+                               },
+                               title : {
+                                 marginLeft : theme.spacing(2),
+                                 flex : 1,
+                               },
+                               backdrop : {
+                                 zIndex : theme.zIndex.drawer + 1,
+                                 color : "#fff",
+                               },
+                             }));
 
 const options = {
-  scales: {
-    yAxes: [
+  scales : {
+    yAxes : [
       {
-        ticks: {
-          beginAtZero: true,
+        ticks : {
+          beginAtZero : true,
         },
       },
     ],
   },
-  maintainAspectRatio: false,
+  maintainAspectRatio : false,
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return < Slide direction = "up" ref = {ref} { ...props }
+  />;
 });
 
 export default function TestModel({ model_name: modelName }) {
@@ -153,8 +156,9 @@ export default function TestModel({ model_name: modelName }) {
   if (loading || imgLoading) {
     return (
       <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="inherit" />
-        &nbsp; &nbsp;
+        <CircularProgress color="inherit" / >&
+      nbsp;
+  &nbsp;
         <Typography variant="h6" color="inherit">
           {imgLoading
             ? "Dataset images are being loaded"
@@ -220,7 +224,8 @@ export default function TestModel({ model_name: modelName }) {
         {Boolean(classScores.x.length) && (
           <>
             <Grid container item direction="column" alignItems="center" xs={6}>
-              <Grid item style={{ paddingBottom: "10px" }}>
+              <Grid item style={{
+    paddingBottom: "10px" }}>
                 <Typography variant="h6">Selected Image</Typography>
                 <img src={previewImg} height="150px" width="150px" />
               </Grid>
@@ -231,7 +236,8 @@ export default function TestModel({ model_name: modelName }) {
           <br />
           <br />
           {Boolean(classScores.x.length) && (
-            <Bar data={barData} options={options} width={1500} height={600} />
+            <Bar data={barData} options={options} width={1500} height={
+      600} />
           )}
         </Grid>
       </Grid>
@@ -256,13 +262,15 @@ export default function TestModel({ model_name: modelName }) {
             </Typography>
           </Toolbar>
         </AppBar>
-        <div style={{ padding: "5px" }}>
+        <div style={{
+      padding: "5px" }}>
           {" "}
           {!loading && (
             <Gallery
               images={images}
               showLightboxThumbnails={true}
-              onSelectImage={onSelectImage}
+              onSelectImage={
+        onSelectImage}
             />
           )}
         </div>
