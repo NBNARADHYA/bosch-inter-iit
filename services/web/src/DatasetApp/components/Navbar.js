@@ -60,7 +60,7 @@ const uiOptions = [
   }
 ]
 
-export default function Navbar({ classes, open, handleDrawerOpen, toggleTimelineDrawer, openTour, showReset }) {
+export default function Navbar({ classes, open, isTimelineOpen, handleDrawerOpen, toggleTimelineDrawer, openTour, showReset }) {
   const navbarClasses = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -88,7 +88,9 @@ export default function Navbar({ classes, open, handleDrawerOpen, toggleTimeline
     <AppBar
       position="fixed"
       className={clsx(classes.appBar, {
-        [classes.appBarShift]: open,
+        [classes.appBarLeftShift]: open,
+        [classes.appBarRightShift]: isTimelineOpen,
+        [classes.appBarShift]: open&&isTimelineOpen,
       })}
     >
       <Toolbar>
