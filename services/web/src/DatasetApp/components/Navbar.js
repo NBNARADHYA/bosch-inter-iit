@@ -1,66 +1,56 @@
-import React from "react";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Button from '@material-ui/core/Button';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Toolbar from "@material-ui/core/Toolbar";
-import TimelineIcon from '@material-ui/icons/Timeline';
 import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import {makeStyles} from "@material-ui/core/styles";
+import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
-import MenuIcon from "@material-ui/icons/Menu";
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { Link, useLocation, useHistory } from "react-router-dom";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import MenuIcon from "@material-ui/icons/Menu";
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import clsx from "clsx";
+import React from "react";
+import {Link, useHistory, useLocation} from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
-  timelineButton: {
-  },
-  menuOptions: {
-    marginLeft: 'auto'
-  },
-  uiMenuOptions: {
-    float: "left"
-  },  
-  dropdownText: {
-    margin: theme.spacing(0, 0.5, 0, 1)
-   } ,
-  dropdownIcon: {
-    marginBottom: -4
-  }
-}));
+const useStyles =
+    makeStyles(theme => ({
+                 timelineButton : {},
+                 menuOptions : {marginLeft : 'auto'},
+                 uiMenuOptions : {float : "left"},
+                 dropdownText : {margin : theme.spacing(0, 0.5, 0, 1)},
+                 dropdownIcon : {marginBottom : -4}
+               }));
 
-const menuOptions = [{
-  'text': 'Apply transformations',
-  'link': '/'
-},
-{
-  'text': 'Balance dataset',
-  'link': '/balance/'
-},
-{
-  'text': 'Split dataset',
-  'link': '/split/'
-}
+const menuOptions = [
+  {'text' : 'Apply transformations', 'link' : '/'},
+  {'text' : 'Balance dataset', 'link' : '/balance/'},
+  {'text' : 'Split dataset', 'link' : '/split/'}
 ];
 
-const uiOptions = [
-  {
-    text: 'Dataset Creation UI',
-    links: menuOptions.map(({link}) => link),
-    link: "/"
-  },
-  {
-    text: 'Post Evaluation UI',
-    links: ['/evaluate'],
-    link: "/evaluate"
-  }
-]
+const uiOptions =
+    [
+      {
+        text : 'Dataset Creation UI',
+        links : menuOptions.map(({link}) => link),
+        link : "/"
+      },
+      {text : 'Post Evaluation UI', links : [ '/evaluate' ], link : "/evaluate"}
+    ]
 
-export default function Navbar({ classes, open, isTimelineOpen, handleDrawerOpen, toggleTimelineDrawer, openTour, showReset }) {
+    export default function
+    Navbar({
+      classes,
+      open,
+      isTimelineOpen,
+      handleDrawerOpen,
+      toggleTimelineDrawer,
+      openTour,
+      showReset
+    }) {
   const navbarClasses = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);

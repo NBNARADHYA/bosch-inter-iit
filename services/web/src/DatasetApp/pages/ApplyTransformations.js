@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
+
 import CustomSnackbar from "../../Common/CustomSnackbar";
 import augmentations from "../../Constants/augmentations";
 import serverUrl from "../../Constants/serverUrl";
@@ -8,16 +10,13 @@ import {
 } from "../../Utils";
 import AugmentationsTimeline from "../components/AugmentationsTimeline";
 import Content from "../components/Content";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
-import { useHistory } from "react-router-dom";
 import DatasetUITour from "../components/DatasetUITour";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
 function usePrevious(value) {
   const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
+  useEffect(() => { ref.current = value; });
   return ref.current;
 }
 
