@@ -6,12 +6,10 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
-import { Alert, AlertTitle } from "@material-ui/lab";
 import React, { useCallback, useEffect, useState } from "react";
-
+import UploadDescription from './UploadDescription';
 import serverUrl from "../Constants/serverUrl";
 import Navbar from "../DatasetApp/components/Navbar";
-
 import TabPanel from "./TabPanel";
 
 const useStyles = makeStyles((theme) => ({
@@ -99,6 +97,7 @@ const App = (props) => {
         </Typography>
       </Backdrop>
       {!models.length && !modelOutput && (
+        <>
         <Grid
           container
           justify="center"
@@ -112,6 +111,8 @@ const App = (props) => {
             </Button>
           </Tooltip>
         </Grid>
+          <UploadDescription/>
+        </>  
       )}
       {!!models.length && !modelOutput && (
         <>
@@ -142,32 +143,7 @@ const App = (props) => {
               <input type="file" onChange={handleFileUpload} hidden />
             </Button>
           </Grid>
-          <Alert
-            severity="info"
-            style={{
-              width: "900px",
-              padding: "30px",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            <AlertTitle>Post Evaluation</AlertTitle>
-            This tool lets you test your trained model on the test dataset and
-            analyze various metrics.
-            <br /> Tweak your network and dataset based on the suggestions and
-            features recommended by this tool, and decide what your next
-            experiment can be.
-            <br />
-            <br /> <strong>Features :</strong>
-            <ul>
-              <li>Metrics Predictions</li>
-              <li>Confusion Matrix</li>
-              <li>Curves</li>
-              <li>Heatmap</li>
-              <li>Test your own image</li>
-            </ul>
-            Select a previously selected model or upload a new one
-          </Alert>
+          <UploadDescription/>
         </>
       )}
       {modelOutput && <TabPanel {...modelOutput} />}
