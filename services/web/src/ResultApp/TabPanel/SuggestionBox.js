@@ -1,38 +1,35 @@
-import React from "react";
+import {Grid, Typography} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import { Grid, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
-  suggestion: {
-    backgroundColor: '#00a400',
-    minHeight: '70px',
-    borderRadius: '13px',
-    padding: '10px',
-    color: '#ffffff',
-    width: '75%'
-  },
-  text: {
-    color: '#ffffff',
-    marginTop: '0',
-    marginBottom: '4px',
-    textTransform: 'uppercase',
-    fontSize: '14px'
-  },
-  bulb: {
-    display: 'inline-block',
-    width: '22px',
-    height: '22px',
-    strokeWidth: '0',
-    fill: '#ffffff',
-    stroke: '#ffffff'    
-  }
-}))
+                               suggestion : {
+                                 backgroundColor : '#00a400',
+                                 minHeight : '70px',
+                                 borderRadius : '13px',
+                                 padding : '10px',
+                                 color : '#ffffff',
+                                 width : '75%'
+                               },
+                               text : {
+                                 color : '#ffffff',
+                                 marginTop : '0',
+                                 marginBottom : '4px',
+                                 textTransform : 'uppercase',
+                                 fontSize : '14px'
+                               },
+                               bulb : {
+                                 display : 'inline-block',
+                                 width : '22px',
+                                 height : '22px',
+                                 strokeWidth : '0',
+                                 fill : '#ffffff',
+                                 stroke : '#ffffff'
+                               }
+                             }))
 
-export default function SuggestionBox({
-  title,
-  children
-}) {
+export default function SuggestionBox({title, children}) {
   const classes = useStyles();
   return (
     <Grid container justify="center">
