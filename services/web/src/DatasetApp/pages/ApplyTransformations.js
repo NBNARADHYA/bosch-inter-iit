@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import CustomSnackbar from "../../Common/CustomSnackbar";
 import augmentations from "../../Constants/augmentations";
@@ -16,7 +16,9 @@ import Sidebar from "../components/Sidebar";
 
 function usePrevious(value) {
   const ref = useRef();
-  useEffect(() => { ref.current = value; });
+  useEffect(() => {
+    ref.current = value;
+  });
   return ref.current;
 }
 
@@ -25,11 +27,11 @@ const ApplyTransformations = (props) => {
   const [isTimelineOpen, setTimelineOpen] = useState(true);
   const [open, setOpen] = useState(pathname === "/");
 
-  const routerHistory = useHistory();  
+  const routerHistory = useHistory();
 
   useEffect(() => {
     setOpen(pathname === "/");
-  }, [pathname]);  
+  }, [pathname]);
 
   const toggleTimelineOpen = useCallback(() => {
     setTimelineOpen(!isTimelineOpen);
@@ -74,8 +76,7 @@ const ApplyTransformations = (props) => {
         history.length - 1
     )
       return;
-    if(history.length === prevHistory.length + 1)
-        return;
+    if (history.length === prevHistory.length + 1) return;
     const data = generateTransformationRequestBody(
       transformation,
       history,
@@ -104,7 +105,7 @@ const ApplyTransformations = (props) => {
     history,
     historyDimensions,
     originalDimensions,
-    prevHistory
+    prevHistory,
   ]);
 
   useEffect(() => {
@@ -152,7 +153,9 @@ const ApplyTransformations = (props) => {
           setSnackPack((prev) => [
             ...prev,
             {
-              message: `${displayName} with probability ${params["p"]||1.0} added to timeline`,
+              message: `${displayName} with probability ${
+                params["p"] || 1.0
+              } added to timeline`,
               key: new Date().getTime(),
             },
           ]);
@@ -176,7 +179,7 @@ const ApplyTransformations = (props) => {
       method: "POST",
       credentials: "include",
     });
-    routerHistory.push('/')
+    routerHistory.push("/");
   }, [routerHistory]);
 
   const handleUndo = useCallback(() => {
@@ -197,7 +200,7 @@ const ApplyTransformations = (props) => {
         theme={theme}
         toggleTimelineDrawer={toggleTimelineOpen}
         openTour={() => setIsTourOpen(true)}
-      />    
+      />
       <Sidebar
         classes={classes}
         open={open}
@@ -243,7 +246,7 @@ const ApplyTransformations = (props) => {
       <DatasetUITour
         isOpen={isTourOpen}
         onRequestClose={() => setIsTourOpen(false)}
-      />      
+      />
     </>
   );
 };
