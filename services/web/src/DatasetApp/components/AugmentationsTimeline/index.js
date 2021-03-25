@@ -15,11 +15,15 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   drawerPaper: {
-    width: '45vw'
+    width: '35vw'
   },
   closeMenuButton: {
     marginLeft: 'auto',
     marginRight: 0,
+  },  
+  drawer: {
+    width: '35vw',
+    flexShrink: 0,
   },  
 }));
 
@@ -78,12 +82,19 @@ function AugmentationsTimeline(props) {
         lastRef.current.scrollIntoView({ behavior: 'smooth', block: "end", inline: "nearest" });
       },100);
     }
-  },[isOpen]);
+  },[isOpen, history]);
 
   const classes = useStyles();
-  return <Drawer anchor='right' open={isOpen} onClose={closeDrawer} classes={{
-    paper: classes.drawerPaper,
-  }}>
+  return (
+  <Drawer
+        anchor='right'
+        open={isOpen}
+        className={classes.drawer}        
+        onClose={closeDrawer}
+        classes={{
+        paper: classes.drawerPaper,
+        }}
+        variant="persistent">
   <div className={classes.root}>
  <Grid container direction="row" justify="center" alignItems="center">
  <Grid item xs={10} >
@@ -143,7 +154,7 @@ function AugmentationsTimeline(props) {
         />            
     </Timeline>}
     </div>
-</Drawer>
+</Drawer>)
 }
 
 export default AugmentationsTimeline

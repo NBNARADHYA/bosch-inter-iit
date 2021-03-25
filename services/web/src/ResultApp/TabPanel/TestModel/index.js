@@ -159,7 +159,7 @@ export default function TestModel({ model_name: modelName }) {
         <Typography variant="h6" color="inherit">
           {imgLoading
             ? "Dataset images are being loaded"
-            : "Testing the model on selected image"}
+            : "Running the model on selected image"}
         </Typography>
       </Backdrop>
     );
