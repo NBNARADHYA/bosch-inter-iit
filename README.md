@@ -1,4 +1,4 @@
-# H1_BSC_18's Official code repository for Bosch's traffic sign recognition
+# H1_BSC_18's Official code repository for Inter IIT Tech Meet
 ## Set-up instructions
 
 ### Pre-requisites
@@ -10,8 +10,7 @@
 
 ### Steps
 
-1. Make sure you are in the root of the project (i.e., `./bosch-inter-iit/`
-   folder).
-2. Run `docker-compose up --build` to spin up the containers.
-3. Web interface would then be available locally at `http://localhost:3000`
-4. For help, run the command `docker-compose -h`.
+1. Unzip the file `H1_BSC_18.zip`.
+2. Run `cd bosch-inter-iit-production/` to change directory.
+3. Run `docker-compose up --build` to spin up the containers.
+4. Web interface would then be available locally at `http://localhost:3000`.
