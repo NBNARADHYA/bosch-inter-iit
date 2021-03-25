@@ -345,7 +345,7 @@ function SplitDataset(props) {
           )}
         </Grid>
         <Backdrop className={classes.backdrop} open={loading}>
-          <CircularProgress color="inherit" />& nbsp; &nbsp;
+          <CircularProgress color="inherit" />&nbsp; &nbsp;
           <Typography variant="h6" color="inherit">
             Splitting dataset into training and validation
           </Typography>

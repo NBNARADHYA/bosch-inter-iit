@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '13px',
     padding: '10px',
     color: '#ffffff',
-    width: '80%'
+    width: '75%'
   },
   text: {
     color: '#ffffff',
