@@ -23,7 +23,7 @@ function usePrevious(value) {
 
 const ApplyTransformations = (props) => {
   const { classes, theme, pathname } = props;
-  const [isTimelineOpen, setTimelineOpen] = useState(false);
+  const [isTimelineOpen, setTimelineOpen] = useState(true);
   const [open, setOpen] = useState(pathname === "/");
 
   const routerHistory = useHistory();  
@@ -192,6 +192,7 @@ const ApplyTransformations = (props) => {
       <Navbar
         classes={classes}
         open={open}
+        isTimelineOpen={isTimelineOpen}
         handleDrawerOpen={handleDrawerOpen}
         handleDrawerClose={handleDrawerClose}
         theme={theme}
@@ -217,6 +218,7 @@ const ApplyTransformations = (props) => {
       <Content
         classes={classes}
         open={open}
+        isTimelineOpen={isTimelineOpen}
         img={img}
         previewImg={previewImg}
         params={params}

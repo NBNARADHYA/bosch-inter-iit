@@ -25,6 +25,7 @@ const useStyles = makeStyles(() => ({
 const Content = ({
   classes,
   open,
+  isTimelineOpen,
   img,
   previewImg,
   history,
@@ -48,7 +49,8 @@ const Content = ({
   return (
     <main
       className={clsx(classes.content, {
-        [classes.contentShift]: open,
+        [classes.contentLeftShift]: open,
+        [classes.contentRightShift]: isTimelineOpen
       })}
     >
       <div className={classes.drawerHeader} />
