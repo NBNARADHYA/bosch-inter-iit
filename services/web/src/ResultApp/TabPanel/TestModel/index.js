@@ -47,7 +47,7 @@ const options = {
       },
     ],
   },
-  maintainAspectRatio: false,
+  maintainAspectRatio: true,
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -155,7 +155,7 @@ export default function TestModel({ model_name: modelName }) {
   if (loading || imgLoading) {
     return (
       <Backdrop className={classes.backdrop} open={loading}>
-        <CircularProgress color="inherit" />& nbsp; &nbsp;
+        <CircularProgress color="inherit" />&nbsp;&nbsp;
         <Typography variant="h6" color="inherit">
           {imgLoading
             ? "Dataset images are being loaded"
@@ -262,12 +262,7 @@ export default function TestModel({ model_name: modelName }) {
             </Typography>
           </Toolbar>
         </AppBar>
-        <div
-          style={{
-            padding: "5px",
-          }}
-        >
-          {" "}
+        <div style={{ padding: "5px" }}>
           {!loading && (
             <Gallery
               images={images}
