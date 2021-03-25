@@ -95,8 +95,7 @@ async def transform_image(
         elif img_url is not None or preview_url is not None:
             raise HTTPException(
                 status_code=400,
-                detail=
-                "Image has to be added to the history before refering it",
+                detail="Image has to be added to the history before refering it",
             )
 
         id = str(uuid.uuid4())
@@ -483,10 +482,11 @@ async def generate_heatmap(
 
 @app.post("/most_confused_classes")
 async def get_most_confused_classes(model_name: str = Form(...), no_most: Optional[int] = Form(None)):
-    model_op_obj = Model_output(model_path=model_name, first_time=False, is_plot=False, is_run=False, is_most_conf_classes=True)
+    model_op_obj = Model_output(model_path=model_name, first_time=False,
+                                is_plot=False, is_run=False, is_most_conf_classes=True)
 
     return {"most_confused_classes": model_op_obj.most_confused_classes(no_most=no_most)}
-    
+
 
 @app.get("/dataset_images")
 async def get_dataset_images():
