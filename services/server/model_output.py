@@ -1,3 +1,7 @@
+# This tool lets you test your trained model on the test dataset
+# and analyse various metrics and helps you to decide
+# what your next experiment could be. 
+
 import json
 import os
 import pickle
@@ -48,20 +52,24 @@ from torchvision import datasets
 from torchvision import models
 from torchvision import transforms
 
+# Load the computation device 
 device = torch.device("cpu")
 
 
+# Save data in .pickle file
 def save_pickle(filename, obj):
     with open(filename, "wb") as handle:
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+# Load data from .pickle file
 def load_pickle(filename):
     with open(filename, "rb") as handle:
         obj = pickle.load(handle)
     return obj
 
 
+# Feature class
 class Model_output:
     def __init__(
         self,
@@ -74,50 +82,70 @@ class Model_output:
         data_root="test_dataset/",
         batch_size=64,
     ):
-
+        # Model name with extension
         self.model_path_name = model_path.split(".")[0]
+        # Path to model file
         self.model_path = os.path.join("models", model_path)
+        # Path to test dataset's csv
         self.data_path = data_path
         self.path = data_path
+        # Path to test dataset
         self.root = data_root
+        # Size of batch
         self.batch_size = batch_size
         self.is_most_conf_classes = is_most_conf_classes
 
+        # If a new model is being loaded
         if first_time:
+            # Load the model
             model = torch.load(self.model_path, map_location=device)
-
+            # Assign a property with model train metrics
             self.train_metrics = model["train_metrics"]
+            # Assign a property with model
             self.model = model["model"]
+            # Assign a property with model model name
             self.model_name = model["name"]
+            # Set the model to evaluation
             self.model.eval()
-
+            # Read test dataset's csv
             self.df = pd.read_csv(data_path)
+            # Number of examples
             self.sz = self.df.shape[0]
-
+            # Model predictions
             self.predictions = []
+            # Actual labels
             self.labels = []
-
             self.metrics = {}
+            # Run prediction
             self.pred()
+            # Assign a property with confusion matrix
             self.conf_matrix = confusion_matrix(
                 self.labels, np.argmax(self.predictions, axis=1))
-
+            # Save data in .pickle file
             self.manage_pickles_dir()
+        # Else if a previously saved model is used
         elif not is_run and not is_most_conf_classes:
+            # Base path
             base_path = "pickles/" + self.model_path_name
-
+            # Load model labels and predictions from .pickle file 
             self.labels = load_pickle(base_path + "_labels.pickle")
             self.predictions = load_pickle(base_path + "_predictions.pickle")
 
             if not is_plot:
+                # Load train metrics from .pickle file
                 self.train_metrics = load_pickle(base_path +
                                                  "_train_metrics.pickle")
+                # Load test metrics from .pickle file
                 self.metrics = load_pickle(base_path + "_metrics.pickle")
+                # Load confusion matrix from .pickle file
                 self.conf_matrix = load_pickle(base_path +
                                                "_conf_matrix.pickle")
+                # Load csv into a dataframe from .pickle file
                 self.df = pd.read_csv(data_path)
+                # Load number of examples from .pickle file
                 self.sz = self.df.shape[0]
 
+    # Save data in .pickle file
     def manage_pickles_dir(self):
         base_path = "pickles/" + self.model_path_name
 
@@ -127,18 +155,16 @@ class Model_output:
         save_pickle(base_path + "_train_metrics.pickle", self.train_metrics)
         save_pickle(base_path + "_conf_matrix.pickle", self.conf_matrix)
 
+    # Prediction function
     def pred(self):
-        # n -> test images
-        # return output n * (48 dimensional vector)
-
-        # return metrics **
-
+        # Initialize data loader
         data_loader = provider(self.root,
                                self.path,
                                batch_size=self.batch_size)
         image_preds_all = []
         image_targets_all = []
 
+        # Iterate over batches and append predictions to the list
         for batch in data_loader:
             img, target = batch
             image_preds = self.model(img.to(device))
@@ -149,6 +175,7 @@ class Model_output:
             ]
             image_targets_all += [target.detach().cpu().numpy()]
 
+        # Normalize
         for i in range(len(self.predictions)):
             x = self.predictions[i]
             self.predictions[i] = np.exp(x) / sum(np.exp(x))
@@ -156,6 +183,7 @@ class Model_output:
         image_preds_all = np.concatenate(image_preds_all)
         image_targets_all = np.concatenate(image_targets_all)
 
+        # Metrics
         weighted_f1_score = f1_score(image_targets_all,
                                      image_preds_all,
                                      average="weighted")
@@ -178,9 +206,11 @@ class Model_output:
         self.metrics["precision_score"] = round(precision_score1, 4)
         self.metrics["recall_score"] = round(recall_score1, 4)
 
+    # Get metrics
     def get_metrics(self):
         return self.train_metrics, self.metrics
 
+    # Get top 5 classes for each image
     def top_5_classes(self, base_path):
         data = {}
         for itr in range(len(self.predictions)):
@@ -199,6 +229,7 @@ class Model_output:
             data[path].append(confidence_scores)
         return data
 
+    # Get confidence, predicted and actual class for each wrongly predicted image 
     def wrong_pred(self):
         # image_name pred correct dataframe
         data = []
@@ -219,6 +250,7 @@ class Model_output:
 
         return df.to_dict("records")
 
+    # Plot and save the confusion matrix
     def confusion(self):
         fig, ax = plt.subplots(figsize=(50, 50))
         cm_display = ConfusionMatrixDisplay(self.conf_matrix,
@@ -230,6 +262,7 @@ class Model_output:
         plt.close()
         return matrix_path
 
+    # Get list of classes sorted by accuracy in ascending order
     def worst_acc_classes(self):
         cm = (self.conf_matrix.astype("float") /
               self.conf_matrix.sum(axis=1)[:, np.newaxis]) * 100
@@ -244,6 +277,7 @@ class Model_output:
             ony[i] = float(ony[i])
         return onx, ony
 
+    # Get classes which have been confused with other classes
     def most_confused_classes(self, no_most=5):
         if not no_most:
             no_most = 5
@@ -291,6 +325,7 @@ class Model_output:
         thresholds = np.insert(thresholds, 0, 0)
         return precision, recall, thresholds
 
+    # Plot precision vs recall and precision-recall vs confidence curves and return their paths 
     def plot_precision_recall_curve(self, c):
         precision, recall, thresholds = self.precision_recall_curve(c)
         plt.plot(thresholds, precision, label="Precision")
@@ -328,6 +363,7 @@ class Model_output:
         fpr, tpr, thresholds = roc_curve(y_true, y_true, pos_label=1)
         return fpr, tpr, thresholds
 
+    # Plot roc curve and return the path
     def plot_roc_curve(self, c):
         fpr, tpr, thresholds = self.roc_curve(c=c)
         plt.plot(fpr, tpr)
@@ -342,12 +378,14 @@ class Model_output:
         plt.close()
         return path
 
+    # Helper function to plot all the curves
     def plot_curves(self, c):
         path1, path2 = self.plot_precision_recall_curve(c)
         path3 = self.plot_roc_curve(c)
 
         return path1, path2, path3
 
+    # Save gradient based attribution for the test image as an image and return the path
     def generate_heatmap(self, img):
         model = torch.load(self.model_path, map_location=device)
         model = model["model"]
@@ -408,6 +446,9 @@ class Model_output:
 
         return path
 
+    # Runs the model on a test image and returns class labels 
+    # and their corresponding confidence scores
+    # as two separate lists 
     def test_model(self, img):
         model = torch.load(self.model_path, map_location=device)
         
@@ -441,5 +482,6 @@ class Model_output:
 
         return onx, ony
 
-    def get_conf_matrix(self, class_id=0):
+    # Returns confusion matrix
+    def get_conf_matrix(self):
         return [[int(col) for col in row] for row in self.conf_matrix]

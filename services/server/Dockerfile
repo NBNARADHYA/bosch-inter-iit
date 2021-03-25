@@ -12,5 +12,3 @@ RUN apt-get install -y libgl1-mesa-dev
 COPY ./train-dataset/. /app/img_dataset
 COPY ./test-dataset/images/. /app/test_dataset
 COPY ./test-dataset/test.csv /app/test_dataset
-
-CMD /start-reload.sh

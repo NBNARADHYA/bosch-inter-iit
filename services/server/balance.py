@@ -1,4 +1,7 @@
-#  balancing dataset
+# This tool balances the dataset.It achieves this by oversampling 
+# the examples from the minority class by applying 
+# a set of transformations to the images.
+
 import os
 import random
 
@@ -9,9 +12,14 @@ import pandas as pd
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
-
+# Define a Balance class
 class Balance:
     def __init__(self, img_df, min_samples=None):
+        '''
+        Params:
+            img_df: Dataframe of image
+            min_samples: Minimum number of samples
+        '''
         self.df = img_df
         self.df.columns = ["image", "label"]
         self.min_samples = min_samples
@@ -21,6 +29,7 @@ class Balance:
 
         self.oversampling()
 
+    # Defines transforms
     def oversampling(self):
         self.transform = A.Compose([
             A.RandomBrightnessContrast(
@@ -29,10 +38,6 @@ class Balance:
                 brightness_limit=(-0.2, 0.2),
                 contrast_limit=(-0.2, 0.2),
             ),
-            # A.CLAHE(always_apply=False,
-            #         p=0.5,
-            #         clip_limit=(1, 4),
-            #         tile_grid_size=(8, 8)),
             A.GaussNoise(always_apply=False, p=0.4, var_limit=(20, 40)),
             A.Downscale(
                 always_apply=False,
@@ -50,6 +55,7 @@ class Balance:
             ),
         ])
 
+    # Balances the dataset
     def balance(self):
         class_ids = self.df.label.unique()
 
