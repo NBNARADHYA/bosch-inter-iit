@@ -114,7 +114,7 @@ async def transform_image(
     img_extension = ".png"
 
     if image is not None:
-        img_extension = "." + image.filename.split(".")[1]
+        img_extension = "." + image.filename.split(".")[-1]
 
         image = load_image_into_numpy_array(await image.read())
 
@@ -128,7 +128,7 @@ async def transform_image(
                     status_code=400,
                     detail="transformation_step field required")
 
-            img_extension = "." + img_url.split(".")[1]
+            img_extension = "." + img_url.split(".")[-1]
 
             img_url_new += ("/transformed_img_" + str(transformation_step) +
                             img_extension)
@@ -143,7 +143,7 @@ async def transform_image(
                     low=int(transformation_step),
                 )
         elif preview_url is not None:
-            img_extension = "." + preview_url.split(".")[1]
+            img_extension = "." + preview_url.split(".")[-1]
 
             img_url_new = "image_previews/" + str(id) + img_extension
 
@@ -243,10 +243,10 @@ async def transform_images(
     for idx in range(num_iterations):
         for i in range(len(images)):
             transformed = transform(image=images[i])
-            images[i] = transformed["image"]
+            temp = transformed["image"]
             transformed_images.append({
                 "image":
-                images[i],
+                temp,
                 "path":
                 base_img_path + str(idx) + "_" + str(uuid.uuid1()) + "_" +
                 img_names[i],

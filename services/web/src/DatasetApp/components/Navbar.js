@@ -103,7 +103,7 @@ export default function Navbar({ classes, open, isTimelineOpen, handleDrawerOpen
         >
           <MenuIcon />
         </IconButton>}
-        <Button color="inherit" onClick={(e) => setUIAnchorEl(e.currentTarget)}  aria-haspopup="true" className={navbarClasses.uiMenuOptions} id="step9">
+        <Button color="inherit" onClick={(e) => setUIAnchorEl(e.currentTarget)}  aria-haspopup="true" className={navbarClasses.uiMenuOptions}>
           <span className={navbarClasses.dropdownText}>
             {selectedUIOption}
             <ExpandMoreIcon fontSize="small" className={navbarClasses.dropdownIcon} />          
@@ -170,7 +170,7 @@ export default function Navbar({ classes, open, isTimelineOpen, handleDrawerOpen
         {selectedOption==='Apply transformations' && 
         <>
         <Tooltip TransitionComponent={Zoom} title="Timeline of applied augmentations">        
-          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Timeline" component="span" onClick={toggleTimelineDrawer} id="step6">
+          <IconButton color="inherit" className={navbarClasses.timelineButton} aria-label="Timeline" component="span" onClick={toggleTimelineDrawer}>
             <TimelineIcon/>
           </IconButton>
         </Tooltip>
