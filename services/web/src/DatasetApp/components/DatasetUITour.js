@@ -24,7 +24,7 @@ const steps = [
   },
   {
     selector: '#step6',
-    content: 'All the applied transformations, along with their previews in sequence can be viewed here.'
+    content: 'All the applied transformations, along with their previews in sequence can be viewed here. You can also remove some transformations or restore a previous stage.'
   },
   {
     selector: '#step7',
