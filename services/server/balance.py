@@ -9,6 +9,7 @@ import albumentations as A
 import cv2
 import matplotlib.pyplot as plt
 import pandas as pd
+import uuid 
 
 SERVER_BASE_URL = os.environ["SERVER_BASE_URL"]
 
@@ -70,6 +71,7 @@ class Balance:
 
             temp = images[0]
             path = temp[:temp.rfind("/") + 1]
+            
             if not os.path.exists(path):
                 os.makedirs(path)
 
@@ -81,7 +83,7 @@ class Balance:
                 image = plt.imread(imagepath)[:,:,:3]
                 transformed = self.transform(image=image)
                 transformed_image = transformed["image"]
-                pathimg = path + "newsample_" + str(id) + str(
+                pathimg = path + "newsample_" + str(id) + str(uuid.uuid1())+ str(
                     i) + "." + imagepath.split(".")[-1]
                 plt.imsave(pathimg, transformed_image)
                 balanced_img_paths.append(SERVER_BASE_URL + pathimg)

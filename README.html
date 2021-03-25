@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex,nofollow">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+  <meta name="theme-color" content="#3361cc">
+  <meta name="referrer" content="origin">
+  <title>H1_BSC_18's Official code repository for Inter IIT Tech Meet</title>
+  <style>
+    /* cyrillic-ext */
+@font-face {
+  font-family: 'Noto Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/notoserif/v9/ga6Iaw1J5X9T9RW6j9bNfFoWaCi_.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Noto Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/notoserif/v9/ga6Iaw1J5X9T9RW6j9bNfFMWaCi_.woff2) format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Noto Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/notoserif/v9/ga6Iaw1J5X9T9RW6j9bNfFsWaCi_.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Noto Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/notoserif/v9/ga6Iaw1J5X9T9RW6j9bNfFQWaCi_.woff2) format('woff2');
+  unicode-range: U+0370-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Noto Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/notoserif/v9/ga6Iaw1J5X9T9RW6j9bNfFgWaCi_.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Noto Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/notoserif/v9/ga6Iaw1J5X9T9RW6j9bNfFkWaCi_.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Noto Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/notoserif/v9/ga6Iaw1J5X9T9RW6j9bNfFcWaA.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+  </style>
+  <style>
+@charset "UTF-8";
+/* CSS compiled from SCSS - Do not edit .css directly.  Styles © Simperium  */
+html { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; }
+
+.published-wrap { margin: 0 auto; }
+.published-wrap.ad-size { max-width: 971px; }
+.published-wrap.no-ad-size { max-width: 832px; }
+.published-wrap img { max-width: 100%; height: auto; }
+
+.published-top { color: #333333; font-size: 14px; text-align: center; padding: 12px 10px 100px; }
+.published-top a, .published-top a:link, .published-top a:visited { color: #333333; border-bottom: none; font-weight: normal; text-decoration: none; }
+
+.logo { background: url(/img/logo.png) no-repeat left top; background-size: 18px; padding: 0px 0 9px 25px; margin: -9px 0; }
+@media print, (-o-min-device-pixel-ratio: 5 / 4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi), (min-width: 600px) { .logo { background: url(/img/logo@2x.png) no-repeat left top; background-size: 18px; } }
+
+.wrapper { position: relative; }
+
+.note { position: relative; padding: 40px 20px; font-size: 18px; line-height: 1.6em; min-height: 440px; }
+.ad-size .note { margin-left: 139px; }
+.note .tab { width: 2em; display: inline-block; }
+@media print { .note { /* make sure background graphics get printed */ }
+  .note li.checklist-item span { -webkit-print-color-adjust: exact !important; /* Chrome, Safari */ color-adjust: exact !important; /*Firefox*/ } }
+
+#published_footer { position: static; margin-top: 16px; padding-bottom: 15px; text-align: center; }
+#published_footer .footer-copyright { width: 100%; margin: 0 auto 10px; text-align: center; float: none; }
+#published_footer li { float: none; display: inline-block; }
+#published_footer .first-footer-link { clear: both; }
+
+.note-detail-markdown { user-select: auto; font-family: 'Noto Serif', serif; font-size: 18px; line-height: 1.7; word-wrap: break-word; }
+.note-detail-markdown h1, .note-detail-markdown h2, .note-detail-markdown h3, .note-detail-markdown h4, .note-detail-markdown h5, .note-detail-markdown h6, .note-detail-markdown #title { line-height: 1.15; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; margin: 1.7em 0 1em 0; }
+.note-detail-markdown h1, .note-detail-markdown #title { font-size: 2.2em; }
+.note-detail-markdown h1:first-of-type, .note-detail-markdown #title:first-of-type { margin-top: 0; }
+.note-detail-markdown h2 { font-size: 1.8em; }
+.note-detail-markdown h3 { font-size: 1.4em; }
+.note-detail-markdown h4 { font-size: 1.2em; }
+.note-detail-markdown h5, .note-detail-markdown h6 { font-size: 1em; text-transform: uppercase; }
+.note-detail-markdown #title { margin-bottom: 0.5em; font-weight: bold; }
+.note-detail-markdown p, .note-detail-markdown ul, .note-detail-markdown ol, .note-detail-markdown blockquote, .note-detail-markdown pre, .note-detail-markdown table, .note-detail-markdown img { margin-bottom: 1.7em; box-sizing: border-box; }
+.note-detail-markdown a { color: #4895d9; }
+.note-detail-markdown hr { border: 0; margin: 3.4em 0; color: #4895d9; height: 1em; }
+.note-detail-markdown hr:before { content: '...'; display: block; width: 100%; letter-spacing: 2em; text-indent: 2em; z-index: 1; line-height: .5; text-align: center; }
+.note-detail-markdown blockquote { font-style: italic; border-left: 4px solid currentColor; margin-left: 0; padding-left: 1.7em; }
+.note-detail-markdown code { font-size: 85%; background: #f1f2f3; border-radius: 3px; background: #f6f7f8; overflow-x: auto; display: inline; }
+.note-detail-markdown p code { display: inline; padding: 4px; color: #616870; }
+.note-detail-markdown pre { padding: 1em; border-radius: 3px; background: #f6f7f8; }
+.note-detail-markdown pre code { color: #616870; background: transparent; display: block; padding: 1em; }
+.note-detail-markdown table { border-collapse: collapse; border-spacing: 0; display: block; width: 100%; }
+.note-detail-markdown table tr:nth-child(2n) { background-color: #f6f7f8; }
+.note-detail-markdown table th, .note-detail-markdown table td { border: 1px solid #c0c4c8; padding: 6px 13px; }
+.note-detail-markdown table th { font-weight: 600; }
+.note-detail-markdown > ul { /* outer-most lists align to the left of the page */ margin-left: -40px; /* align the text with normal (non-checklist) lists; 28px is the size of the left padding */ }
+.note-detail-markdown > ul > li.checklist-item { margin-left: -28px; }
+.note-detail-markdown ul ul, .note-detail-markdown li p { /* remove padding from blocks within list items */ margin-bottom: 0; }
+.note-detail-markdown li p:last-child { margin-bottom: 1.7em; }
+.note-detail-markdown li.checklist-item { list-style: none; margin-left: 0; }
+.note-detail-markdown span.task-list-item-unchecked { background-image: url(/img/circle.svg); background-repeat: no-repeat; background-position: left center; background-size: 24px; padding-left: 28px; }
+.note-detail-markdown span.task-list-item-checked { background-image: url(/img/checkmark.svg); background-repeat: no-repeat; background-position: left center; background-size: 24px; padding-left: 28px; }
+@media only screen and (max-width: 480px) { .note-detail-markdown { font-size: 16px; }
+  .note-detail-markdown h1, .note-detail-markdown h2, .note-detail-markdown h3, .note-detail-markdown h4, .note-detail-markdown h5, .note-detail-markdown h6, .note-detail-markdown #title { margin: 1.19em 0 0.7em 0; }
+  .note-detail-markdown #title { margin-bottom: 0; } }
+
+  </style>
+</head>
+
+<body data-new-gr-c-s-check-loaded="14.1001.0" data-gr-ext-installed="">
+  <div class="published-wrap no-ad-size">
+    <div class="wrapper">
+      <div class="app">
+        <div class="note note-detail-markdown">
+          
+            <h1 id="h1_bsc_18s-official-code-repository-for-inter-iit-tech-meet">H1<em>BSC</em>18's Official code repository for Inter IIT Tech Meet</h1>
+
+<h2 id="set-up-instructions">Set-up instructions</h2>
+
+<h3 id="pre-requisites">Pre-requisites</h3>
+
+<ol>
+<li>Install <code>Docker</code> (&gt;= <code>v20.10.5</code>) by looking up the
+<a href="https://docs.docker.com/get-docker/" rel="nofollow">docs</a></li>
+<li>Install <code>Docker Compose</code> (&gt;= <code>v1.28.2</code>) by looking up the
+<a href="https://docs.docker.com/compose/install/" rel="nofollow">docs</a></li>
+</ol>
+
+<h3 id="steps">Steps</h3>
+
+<ol>
+<li>Unzip the file <code>H1_BSC_18.zip</code>.</li>
+<li>Run <code>cd bosch-inter-iit-production/</code> to change directory.</li>
+<li>Run <code>docker-compose up --build</code> to spin up the containers.</li>
+<li>Web interface would then be available locally at <code><a href="http://localhost:3000">http://localhost:3000</a></code>.</li>
+</ol>
+
+<h3 id="usage-info">Usage info</h3>
+
+<ol>
+<li>Baseline Model can be downloaded from <a href="https://drive.google.com/file/d/19HdNYmaXwmDZMWviMV6rh8BqdVGexxqp/view?usp=sharing" rel="nofollow">this link</a> (This model can be uploaded in the Post-evaluation UI)</li>
+<li>Sample train and test datasets have been attached in <code>services/server/train-dataset</code> and <code>services/server/test-dataset</code> respectively. (They will be mounted to the docker container as volumes)</li>
+</ol>
+
+<h2 id="file-structure">File Structure</h2>
+
+<ul>
+<li><strong>Detailed project report</strong> has been attached as <code>PROJECT_REPORT.pdf</code>.</li>
+<li>ML Training workflow has been attached in <code>notebooks/training.ipynb</code></li>
+<li>Backend code has been attached in <code>services/server/</code>.</li>
+<li>Frontend code has been attached in <code>services/web/</code>.</li>
+</ul>
+        </div>
+      </div>
+    </div>
+</body></html>
