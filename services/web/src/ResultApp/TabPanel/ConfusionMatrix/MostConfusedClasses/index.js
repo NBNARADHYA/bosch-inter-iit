@@ -15,7 +15,7 @@ import serverUrl from "../../../../Constants/serverUrl";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Backdrop from "@material-ui/core/Backdrop";
 import InfiniteScroll from "react-infinite-scroll-component";
-import SuggestionBox from "../SuggestionBox";
+import SuggestionBox from "../../SuggestionBox";
 import Description from "./Description";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,25 +32,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) => {
+const MostConfusedClasses = ({
+  most_confused_classes,
+  model_name: modelName,
+}) => {
   const classes = useStyles();
   const [descriptionBox, setDescriptionBox] = React.useState(false);
-  const [mostConfusedClasses, setMostConfusedClasses] = React.useState(most_confused_classes);
+  const [mostConfusedClasses, setMostConfusedClasses] = React.useState(
+    most_confused_classes
+  );
 
   const handleDescriptionClose = () => setDescriptionBox(false);
   const fetchMore = useCallback(() => {
-    const data = new FormData()
-    data.append("model_name", modelName)
+    const data = new FormData();
+    data.append("model_name", modelName);
     data.append("no_most", mostConfusedClasses.length + 10);
 
     fetch(`${serverUrl}most_confused_classes`, {
       method: "POST",
-      body: data
+      body: data,
     })
-    .then(res => res.json())
-    .then(res => setMostConfusedClasses(res.most_confused_classes))
-    .catch(console.error)
-
+      .then((res) => res.json())
+      .then((res) => setMostConfusedClasses(res.most_confused_classes))
+      .catch(console.error);
   }, [mostConfusedClasses.length]);
 
   return (
@@ -66,30 +70,44 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
         </Toolbar>
       </AppBar>
       <DescriptionBox
-          descriptionBox={descriptionBox}
-          handleDescriptionClose={handleDescriptionClose}
-          title="Most K confused classes"
+        descriptionBox={descriptionBox}
+        handleDescriptionClose={handleDescriptionClose}
+        title="Most K confused classes"
       >
-          <Description />
+        <Description />
       </DescriptionBox>
       <br />
-      {!!mostConfusedClasses.length &&  <SuggestionBox title="Suggestion">
-        "{classLabels[getClassString(mostConfusedClasses[0][1])]}" is classified as "{classLabels[getClassString(mostConfusedClasses[0][2])]}" the
-        most number of times. The following can be done to remove the confusion :
-        <ul>
-        <li>Increasing number of training Image of "{classLabels[getClassString(mostConfusedClasses[0][1])]}" by surveying or by augmentation.</li>
-        <li>Penalizing misclassifying "{classLabels[getClassString(mostConfusedClasses[0][1])]}" image in the loss function.</li>
-      </ul>
-      </SuggestionBox>}
-      <br/>
+      {!!mostConfusedClasses.length && (
+        <SuggestionBox title="Suggestion">
+          "{classLabels[getClassString(mostConfusedClasses[0][1])]}" is
+          classified as "
+          {classLabels[getClassString(mostConfusedClasses[0][2])]}" the most
+          number of times. The following can be done to remove the confusion :
+          <ul>
+            <li>
+              Increasing number of training Image of "
+              {classLabels[getClassString(mostConfusedClasses[0][1])]}" by
+              surveying or by augmentation.
+            </li>
+            <li>
+              Penalizing misclassifying "
+              {classLabels[getClassString(mostConfusedClasses[0][1])]}" image in
+              the loss function.
+            </li>
+          </ul>
+        </SuggestionBox>
+      )}
+      <br />
       <List className={classes.root}>
         <InfiniteScroll
           dataLength={mostConfusedClasses.length}
           next={fetchMore}
           hasMore={true}
-          loader={<Backdrop className={classes.backdrop} open={true}>
-                    <CircularProgress color="primary" />
-                  </Backdrop>}
+          loader={
+            <Backdrop className={classes.backdrop} open={true}>
+              <CircularProgress color="primary" />
+            </Backdrop>
+          }
         >
           {mostConfusedClasses.map((each, idx) => {
             const X = each[0];
@@ -101,9 +119,11 @@ const MostConfusedClasses = ({ most_confused_classes, model_name: modelName}) =>
             return (
               <ListItem key={idx}>
                 <ListItemText>
-                  {">>"} {X}% images of <strong>{classA}</strong> are being predicted to
-                  be of <strong>{classB}</strong>.
-                  <div style={{ display: "flex", justifyContent: "space-around" }}>
+                  {">>"} {X}% images of <strong>{classA}</strong> are being
+                  predicted to be of <strong>{classB}</strong>.
+                  <div
+                    style={{ display: "flex", justifyContent: "space-around" }}
+                  >
                     <div
                       style={{
                         display: "flex",

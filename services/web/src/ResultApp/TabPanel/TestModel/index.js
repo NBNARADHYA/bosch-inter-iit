@@ -59,6 +59,7 @@ export default function TestModel({ model_name: modelName }) {
   const [loading, setLoading] = useState(false);
   const [imgLoading, setImgLoading] = useState(false);
   const [descriptionBox, setDescriptionBox] = React.useState(false);
+  const [previewImg, setPreviewImg] = React.useState("");
 
   const [classScores, setClassScores] = useState({ x: [], y: [], colors: [] });
 
@@ -93,7 +94,8 @@ export default function TestModel({ model_name: modelName }) {
   }, []);
 
   const onImgUpload = useCallback(
-    ([image]) => {
+    ([image], pictures) => {
+      setPreviewImg(pictures);
       const formData = new FormData();
       formData.append("model_name", modelName);
       formData.append("image", image);
@@ -105,6 +107,7 @@ export default function TestModel({ model_name: modelName }) {
 
   const onSelectImage = useCallback(
     (index) => {
+      setPreviewImg(images[index].src);
       const formData = new FormData();
 
       formData.append("model_name", modelName);
@@ -153,7 +156,9 @@ export default function TestModel({ model_name: modelName }) {
         <CircularProgress color="inherit" />
         &nbsp; &nbsp;
         <Typography variant="h6" color="inherit">
-          {imgLoading ? "Dataset images are being loaded": "Testing the model on selected image"}
+          {imgLoading
+            ? "Dataset images are being loaded"
+            : "Testing the model on selected image"}
         </Typography>
       </Backdrop>
     );
@@ -178,36 +183,53 @@ export default function TestModel({ model_name: modelName }) {
       >
         <Description />
       </DescriptionBox>
-      <Grid
-        container
-        justify="flex-end"
-        direction="column"
-        alignItems="center"
-        spacing={1}
-      >
-        <Grid item>
-          <ImageUploader
-            label=""
-            buttonText="Upload image"
-            withIcon={true}
-            onChange={onImgUpload}
-            imgExtension={[".jpg", ".png", ".jpeg"]}
-            singleImage={true}
-          />
-        </Grid>
-        <Grid item>
-          <Typography variant="h5" color="primary">
-            OR
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-            Select an image from dataset
-          </Button>
+      <Grid container direction="row" alignItems="center" spacing={1}>
+        <Grid
+          container
+          item
+          direction="column"
+          alignItems="center"
+          xs={Boolean(classScores.x.length) ? 6 : 12}
+        >
+          <Grid item>
+            <ImageUploader
+              label=""
+              buttonText="Upload image"
+              withIcon={true}
+              onChange={onImgUpload}
+              imgExtension={[".jpg", ".png", ".jpeg"]}
+              singleImage={true}
+            />
+          </Grid>
+          <Grid item>
+            <Typography variant="h5" color="primary">
+              OR
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleClickOpen}
+            >
+              Select an image from dataset
+            </Button>
+          </Grid>
         </Grid>
         <br />
+        {Boolean(classScores.x.length) && (
+          <>
+            <Grid container item direction="column" alignItems="center" xs={6}>
+              <Grid item style={{ paddingBottom: "10px" }}>
+                <Typography variant="h6">Selected Image</Typography>
+                <img src={previewImg} height="150px" width="150px" />
+              </Grid>
+            </Grid>
+          </>
+        )}
         <Grid item style={{ paddingBottom: "10px" }}>
-          {" "}
+          <br />
+          <br />
           {Boolean(classScores.x.length) && (
             <Bar data={barData} options={options} width={1500} height={600} />
           )}
