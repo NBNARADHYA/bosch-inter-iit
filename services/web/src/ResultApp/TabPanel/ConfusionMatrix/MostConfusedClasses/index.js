@@ -1,64 +1,63 @@
-import {Typography} from "@material-ui/core";
-import {IconButton} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import InfoButton from "@material-ui/icons/InfoOutlined";
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import classLabels from "../../../../Constants/classLabels";
 import serverUrl from "../../../../Constants/serverUrl";
-import {getClassString} from "../../../../Utils";
+import { getClassString } from "../../../../Utils";
 import DescriptionBox from "../../DescriptionBox";
 import SuggestionBox from "../../SuggestionBox";
 
 import Description from "./Description";
 
-const useStyles =
-    makeStyles((theme) => ({
-                 root : {
-                   width : "100%",
-                   backgroundColor : theme.palette.background.paper,
-                 },
-                 title : {
-                   flexGrow : 1,
-                 },
-                 backdrop : {
-                   zIndex : theme.zIndex.drawer + 1,
-                   color : "#fff",
-                 },
-               }));
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    backgroundColor: theme.palette.background.paper,
+  },
+  title: {
+    flexGrow: 1,
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+}));
 
-const MostConfusedClasses =
-    ({
-      most_confused_classes,
-      model_name : modelName,
-    }) => {
-      const classes = useStyles();
-      const [descriptionBox, setDescriptionBox] = React.useState(false);
-      const [mostConfusedClasses, setMostConfusedClasses] =
-          React.useState(most_confused_classes);
+const MostConfusedClasses = ({
+  most_confused_classes,
+  model_name: modelName,
+}) => {
+  const classes = useStyles();
+  const [descriptionBox, setDescriptionBox] = React.useState(false);
+  const [mostConfusedClasses, setMostConfusedClasses] = React.useState(
+    most_confused_classes
+  );
 
-      const handleDescriptionClose = () => setDescriptionBox(false);
-      const fetchMore = useCallback(() => {
-        const data = new FormData();
-        data.append("model_name", modelName);
-        data.append("no_most", mostConfusedClasses.length + 10);
+  const handleDescriptionClose = () => setDescriptionBox(false);
+  const fetchMore = useCallback(() => {
+    const data = new FormData();
+    data.append("model_name", modelName);
+    data.append("no_most", mostConfusedClasses.length + 10);
 
-        fetch(`${serverUrl}most_confused_classes`, {
-          method : "POST",
-          body : data,
-        })
-            .then((res) => res.json())
-            .then((res) => setMostConfusedClasses(res.most_confused_classes))
-            .catch(console.error);
-      }, [ mostConfusedClasses.length ]);
+    fetch(`${serverUrl}most_confused_classes`, {
+      method: "POST",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((res) => setMostConfusedClasses(res.most_confused_classes))
+      .catch(console.error);
+  }, [mostConfusedClasses.length]);
 
   return (
     <>
@@ -84,11 +83,12 @@ const MostConfusedClasses =
         <SuggestionBox title="Suggestion">
           "{classLabels[getClassString(mostConfusedClasses[0][1])]}" is
           classified as "
-          {
-    classLabels[getClassString(mostConfusedClasses[0][2])]}" the most
-  number of times.The following can be done to remove the confusion: <ul>
-      <li>Increasing number of training images of "
-  { classLabels[getClassString(mostConfusedClasses[0][1])] } " by
+          {classLabels[getClassString(mostConfusedClasses[0][2])]}" the most
+          number of times.The following can be done to remove the confusion:{" "}
+          <ul>
+            <li>
+              Increasing number of training images of "
+              {classLabels[getClassString(mostConfusedClasses[0][1])]} " by
               surveying or by augmentation.
             </li>
             <li>
@@ -106,9 +106,9 @@ const MostConfusedClasses =
           next={fetchMore}
           hasMore={true}
           loader={
-    <Backdrop className = {classes.backdrop} open = {true}><
-        CircularProgress color = "primary" /><
-        /Backdrop>
+            <Backdrop className={classes.backdrop} open={true}>
+              <CircularProgress color="primary" />
+            </Backdrop>
           }
         >
           {mostConfusedClasses.map((each, idx) => {
@@ -121,8 +121,7 @@ const MostConfusedClasses =
               <ListItem key={idx}>
                 <ListItemText>
                   {"●"} {X}% images of <strong>{classA}</strong>
-        are being
-                  predicted to be of <strong>{classB}</strong>.
+                  are being predicted to be of <strong>{classB}</strong>.
                   <div
                     style={{ display: "flex", justifyContent: "space-around" }}
                   >
@@ -150,10 +149,10 @@ const MostConfusedClasses =
                 </ListItemText>
               </ListItem>
             );
-          })
-    }</InfiniteScroll>
-      </List><
-          />
+          })}
+        </InfiniteScroll>
+      </List>
+    </>
   );
 };
 
