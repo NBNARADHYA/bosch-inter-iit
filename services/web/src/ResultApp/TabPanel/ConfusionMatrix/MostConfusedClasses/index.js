@@ -85,7 +85,7 @@ const MostConfusedClasses = ({
           number of times. The following can be done to remove the confusion :
           <ul>
             <li>
-              Increasing number of training Image of "
+              Increasing number of training images of "
               {classLabels[getClassString(mostConfusedClasses[0][1])]}" by
               surveying or by augmentation.
             </li>
@@ -115,11 +115,10 @@ const MostConfusedClasses = ({
             const classB = classLabels[getClassString(each[2])];
             const urlA = `class_images\\${each[1]}.png`;
             const urlB = `class_images\\${each[2]}.png`;
-
             return (
               <ListItem key={idx}>
                 <ListItemText>
-                  {">>"} {X}% images of <strong>{classA}</strong> are being
+                  {"●"} {X}% images of <strong>{classA}</strong> are being
                   predicted to be of <strong>{classB}</strong>.
                   <div
                     style={{ display: "flex", justifyContent: "space-around" }}
@@ -145,8 +144,6 @@ const MostConfusedClasses = ({
                       {classB}
                     </div>
                   </div>
-                  <br />
-                  <br />
                 </ListItemText>
               </ListItem>
             );

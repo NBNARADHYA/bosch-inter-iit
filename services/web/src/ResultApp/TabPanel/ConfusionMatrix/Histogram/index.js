@@ -62,14 +62,12 @@ export default function Histogram({ conf_matrix }) {
       ],
     };
 
-    console.log(barData)
-
     return (
         <>
             <AppBar position="static" color="transparent">
                 <Toolbar>
                 <Typography variant="h6">
-                    Histogram
+                Confusion of selected class vs all classes
                 </Typography>
                 <span className={classes.dropDown}>
                     <FormControl variant="filled" size="small" className={classes.formControl}>

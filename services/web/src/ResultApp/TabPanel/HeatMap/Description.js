@@ -4,17 +4,17 @@ import Typography from "@material-ui/core/Typography";
 export default function Description() {
     return (
         <>
-            <Typography variant="body1" paragraph color="textSecondary">
-                <i>“How can we trust a model?” and “How does it really make its decisions?” </i>
+            <Typography variant="subtitle2" paragraph>
+                “How can we trust a model?” and “How does it really make its decisions?” 
             </Typography>
-            <Typography variant="body1" paragraph>
+            <Typography variant="body2" paragraph>
                 When a model predicts or finds our insights, it takes certain decisions and choices. 
                 Model interpretation tries to understand and explain these decisions taken 
                 by the response function i.e., the what, why and how. The key to model interpretation 
                 is transparency, the ability to question, and the ease of understanding model decisions by humans.
             </Typography>
-            <Typography variant="body1" color="textSecondary">Some of the main questions which need to be answered :</Typography> 
-            <Typography variant="body1" paragraph>
+            <Typography variant="body2">Some of the main questions which need to be answered :</Typography> 
+            <Typography variant="body2" paragraph>
                 <ol>
                     <li>
                         What drives model predictions? We should have the ability to query our model 
@@ -34,25 +34,25 @@ export default function Description() {
                     </li>
                 </ol>
             </Typography>
-            <Typography variant="body1" paragraph style={{marginTop: "10px"}}>
+            <Typography variant="body2" paragraph style={{marginTop: "10px"}}>
                 When tackling machine learning problems, we often have a tendency to fixate on 
                 model performance metrics like accuracy, precision and recall and many more. 
                 However, metrics only tell of a model’s predictive decisions. Over time, the performance 
                 might change due to model concept drift caused by various factors in the environment. 
                 Hence, it is of paramount importance to understand what drives a model to take certain decisions.
             </Typography>
-            <Typography variant="body1" paragraph style={{marginTop: "10px"}}>
+            <Typography variant="body2" paragraph style={{marginTop: "10px"}}>
                 Model interpretation helps us to interpret how our model approaches the decisions, 
                 where it focuses on the input Images.
             </Typography>
-            <Typography variant="body1" paragraph style={{marginTop: "10px"}}>
+            <Typography variant="body2" paragraph style={{marginTop: "10px"}}>
                 Captum’s Gradient SHAP is a gradient method to compute SHAP values, 
                 which are based on Shapley values proposed in cooperative game theory. 
                 Gradient SHAP adds Gaussian noise to each input sample multiple times, 
                 selects a random point along the path between baseline and input, and 
                 computes the gradient of outputs with respect to those selected random points.
             </Typography>
-            <Typography variant="subtitle1" gutterBottom>
+            <Typography variant="subtitle2" gutterBottom>
                 <i>Hence we can easily visualize where our model focuses.</i>
             </Typography>
         </>

@@ -220,7 +220,7 @@ function SplitDataset(props) {
           <Grid item>
             <br />
             <Typography align="center" variant="h5" color="primary">
-              {afterLoaded ? "Before" : "Current class counts"}
+              {afterLoaded ? "Before splitting" : "Current class counts"}
             </Typography>
           </Grid>
           <br />
@@ -317,7 +317,7 @@ function SplitDataset(props) {
               <Grid item>
                 <br />
                 <Typography align="center" variant="h5" color="primary">
-                  After
+                  After splitting
                 </Typography>
               </Grid>
               <br />

@@ -11,17 +11,17 @@ import Paper from '@material-ui/core/Paper';
 export default function Description() {
     return (
         <>
-            <Typography variant="body1" paragraph>
+            <Typography variant="body2" paragraph>
                 A Confusion matrix is plotted which is an N x N matrix where N is the number of target classes. 
                 The matrix compares the actual target values with those predicted by the machine learning model.
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary" gutterBottom><i>Why do we need it ?</i></Typography>
-            <Typography variant="body1" paragraph>
+            <Typography variant="subtitle2" gutterBottom>Why do we need it ?</Typography>
+            <Typography variant="body2" paragraph>
                 It is required for an imbalanced dataset. 
             </Typography>
-            <Typography variant="body1" paragraph>
+            <Typography variant="body2" paragraph>
                 As for binary classification, our confusion matrix will be a 2x2 matrix.&nbsp;
-                <Typography variant="body1" color="textSecondary"><i>It can be shown as  -</i></Typography> 
+                <Typography variant="body2"><i>It can be shown as  -</i></Typography> 
             </Typography>
             <Grid container direction="row" justify="space-between">
                 <Grid item><img src="/descriptions/confusionMatrix/matrixImg.png" alt="Confusion Matrix" /></Grid>
@@ -66,27 +66,29 @@ export default function Description() {
                     </TableContainer>
                 </Grid>
             </Grid>
-            <Typography variant="body1" paragraph style={{marginTop: "10px"}}>
+            <Typography variant="body2" paragraph style={{marginTop: "10px"}}>
                 Let us consider a medical dataset where there are 947 data points for the negative class and 
-                3 data points for the positive class. This is how we will calculate the accuracy
+                3 data points for the positive class. This is how we will calculate the accuracy :
             </Typography>
-            <img src="/descriptions/confusionMatrix/accuracy.png" alt="Accuracy1" />
-            <Typography variant="body1" paragraph style={{marginTop: "10px"}}>
+            <Grid container justify="center">
+                <img src="/descriptions/confusionMatrix/accuracy.png" alt="Accuracy1" />
+            </Grid>
+            <Typography variant="body2" paragraph style={{marginTop: "10px"}}>
                 The total outcome values are:
                 TP = 30, TN = 930, FP = 30 and FN = 10. So, the accuracy of our model turns out to be:
             </Typography>
-            <Grid container direction="row" justify="flex-start">
+            <Grid container direction="row" justify="center">
                 <Grid item><img src="/descriptions/confusionMatrix/accuracy1.png" alt="Accuracy2" /></Grid>
                 <Grid item><br /><i>&nbsp;&nbsp;&nbsp;<b>96%! Not bad!</b></i></Grid>
             </Grid>
-            <Typography variant="body1" paragraph style={{marginTop: "10px"}}>
+            <Typography variant="body2" paragraph style={{marginTop: "10px"}}>
                 But it is giving the wrong idea about the result. Think about it.
                 Our model is saying, “I can predict sick people 96% of the time”. However, it is doing the opposite. 
                 It is predicting the people who will not get sick with 96% accuracy while the sick are spreading the virus!
                 The same applies to multi-class classification. 
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary" gutterBottom><i>Post - Evaluation</i></Typography>
-            <Typography variant="body1" paragraph style={{marginTop: "10px"}}>
+            <Typography variant="subtitle2" gutterBottom>Post - Evaluation</Typography>
+            <Typography variant="body2" paragraph style={{marginTop: "10px"}}>
                 This gives us a holistic view of how well our classification model is performing 
                 and what kinds of errors it is making. It is a visual way to inspect the performance of a classification model. 
                 Metrics such as accuracy can be inadequate in cases where there are large class imbalances in the data, 

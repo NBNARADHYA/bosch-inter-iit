@@ -74,11 +74,11 @@ const ClasswiseAccuracy = ({ worst_acc_classes }) => {
     <Bar data={data} options={options} width={1400} height={400} />  
     <br/>
     {x.length>2 && <SuggestionBox title="Suggestion">
-     Class "{classLabels[x[0]]}" and "{classLabels[x[1]]}" are lowest in accuracy. Improving their performance will improve the overall metrics. This can be done by : <br/>
+     "{classLabels[x[0]]}" and "{classLabels[x[1]]}" are lowest in accuracy. Improving their performance will improve the overall metrics. This can be done by : <br/>
      <ul>
-       <li>identify general patterns by visual inspection in images of these classes, which is causing the failure.</li>
-       <li>add more images of that class in training by surveying or by augmentation.</li>
-       <li>penalizing misclassifying these classes in the loss function</li>
+       <li>Identifying general patterns by visual inspection in images of these classes, which is causing the failure.</li>
+       <li>Adding more images of these classes in training by surveying or by augmentation.</li>
+       <li>Penalizing misclassifying these classes in the loss function</li>
      </ul>
     </SuggestionBox>}
       <br/>      
