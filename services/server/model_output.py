@@ -48,7 +48,7 @@ from torchvision import datasets
 from torchvision import models
 from torchvision import transforms
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 
 
 def save_pickle(filename, obj):
