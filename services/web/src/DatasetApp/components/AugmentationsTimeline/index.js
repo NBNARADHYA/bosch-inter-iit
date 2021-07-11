@@ -94,7 +94,7 @@ function AugmentationsTimeline(props) {
         classes={{
         paper: classes.drawerPaper,
         }}
-        variant="persistent">
+        variant="persistent" id="step6">
   <div className={classes.root}>
  <Grid container direction="row" justify="center" alignItems="center">
  <Grid item xs={10} >
